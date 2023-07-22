@@ -38,5 +38,5 @@ Para mencionar a las personas involucradas en el proyecto en el README, puedes c
 
 El desarrollo de "Farmago" ha sido posible gracias al esfuerzo y dedicación de las siguientes personas:
 
-- [Blanco Candela](https://github.com/Candela-blanco): Desarrolladora
-- [Casiano Ezequiel](https://github.com/yoezequiel): Desarrollador
+- [Blanco Candela ](https://github.com/Candela-blanco): Desarrolladora
+- [Casiano Ezequiel ](https://github.com/yoezequiel): Desarrollador
