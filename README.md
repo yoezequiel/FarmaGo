@@ -32,8 +32,6 @@ El desarrollo de FarmaGo se realizará utilizando las siguientes tecnologías:
 
 FarmaGo está pensado y destinado para uso de un público general, dividiéndose en industrias farmacéuticas y clientes.
 
-Para mencionar a las personas involucradas en el proyecto en el README, puedes crear una sección específica titulada "Equipo" o "Colaboradores". Aquí te doy un ejemplo de cómo podría ser esa sección:
-
 ## Equipo
 
 El desarrollo de "Farmago" ha sido posible gracias al esfuerzo y dedicación de las siguientes personas:
