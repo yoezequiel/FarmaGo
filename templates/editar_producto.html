@@ -7,26 +7,16 @@
     <h1>Editar Producto</h1>
     <form method="post">
         <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" value="{{ producto.nombre }}" required>
-        <br>
-        <label for="imagen">Imagen:</label>
-        <input type="text" name="imagen" value="{{ producto.imagen }}" required>
+        <input type="text" id="nombre" name="nombre" value="{{ producto[0] }}">
         <br>
         <label for="descripcion">Descripción:</label>
-        <textarea name="descripcion" required>{{ producto.descripcion }}</textarea>
-        <br>
-        <label for="cantidad">Cantidad:</label>
-        <input type="number" name="cantidad" value="{{ producto.cantidad }}" required>
+        <textarea id="descripcion" name="descripcion">{{ producto[1] }}</textarea>
         <br>
         <label for="precio_unitario">Precio Unitario:</label>
-        <input type="number" name="precio_unitario" step="0.01" value="{{ producto.precio_unitario }}" required>
+        <input type="number" id="precio_unitario" name="precio_unitario" value="{{ producto[2] }}">
         <br>
-        <label for="id_categoria">Categoría:</label>
-        <select name="id_categoria" required>
-            {% for categoria in categorias %}
-            <option value="{{ categoria.id }}" {% if categoria.id == producto.id_categoria %}selected{% endif %}>{{ categoria.nombre }}</option>
-            {% endfor %}
-        </select>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" value="{{ producto[3] }}">
         <br>
         <input type="submit" value="Guardar Cambios">
     </form>

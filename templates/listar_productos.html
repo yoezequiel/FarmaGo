@@ -1,33 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Lista de Productos</title>
+    <title>Listado de Productos</title>
 </head>
 <body>
-    <h2>Lista de Productos</h2>
+    <h1>Listado de Productos</h1>
+    {% if user_role == 'farmacia' %}
+        <a href="/productos/agregar">Agregar Producto</a>
+    {% endif %}
     <table>
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
-            <th>Imagen</th>
             <th>Descripción</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
+            <th>Precio</th>
+            <th>Cantidad Disponible</th>
             <th>Categoría</th>
+            {% if user_role == 'farmacia' %}
+                <th>Acciones</th>
+            {% endif %}
         </tr>
-        
         {% for producto in productos %}
-            <tr>
-                <td>{{ producto[0] }}</td>
-                <td>{{ producto[1] }}</td>
-                <td>{{ producto[2] }}</td>
-                <td>{{ producto[3] }}</td>
-                <td>{{ producto[4] }}</td>
-                <td>{{ producto[5] }}</td>
-                <td>{{ producto[6] }}</td>
-            </tr>
+        <tr>
+            <td>{{ producto[1] }}</td>
+            <td>{{ producto[3] }}</td>
+            <td>{{ producto[4] }}</td>
+            <td>{{ producto[5] }}</td>
+            <td>{{ producto[6] }}</td>
+            {% if user_role == 'farmacia' %}
+            <td>
+                <a href="{{ url_for('editar_producto', id_producto=producto[0]) }}">Editar</a>
+            </td>
+            <td>
+                <form action="/productos/eliminar/{{ producto[0] }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
+                    <input type="submit" value="Eliminar">
+                </form>
+            </td>
+            
+            {% endif %}
+        </tr>
         {% endfor %}
-        
     </table>
 </body>
 </html>

@@ -1,28 +1,27 @@
-
-<h2>Agregar Producto</h2>
-<form method="post" action="{{ url_for('agregar_producto') }}">
-    <label for="nombre">Nombre:</label>
-    <input type="text" name="nombre" required>
-    <br>
-    <label for="imagen">Imagen:</label>
-    <input type="text" name="imagen" required>
-    <br>
-    <label for="descripcion">Descripción:</label>
-    <textarea name="descripcion" required></textarea>
-    <br>
-    <label for="cantidad">Cantidad:</label>
-    <input type="number" name="cantidad" required>
-    <br>
-    <label for="precio_unitario">Precio Unitario:</label>
-    <input type="number" name="precio_unitario" step="0.01" required>
-    <br>
-    <label for="id_categoria">Categoría:</label>
-    <select name="id_categoria">
-        {% for categoria in categorias %}
-        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-        {% endfor %}
-    </select>
-
-    <br>
-    <input type="submit" value="Agregar">
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Producto</title>
+</head>
+<body>
+    <h1>Agregar Producto</h1>
+    <form action="/productos/agregar" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <br>
+        <label for="imagen">Imagen (URL):</label>
+        <input type="text" id="imagen" name="imagen" required>
+        <br>
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" required></textarea>
+        <br>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" required>
+        <br>
+        <label for="precio_unitario">Precio Unitario:</label>
+        <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" required>
+        <br>
+        <input type="submit" value="Agregar Producto">
+    </form>
+</body>
+</html>

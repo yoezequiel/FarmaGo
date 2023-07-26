@@ -1,19 +1,10 @@
-{% extends 'base.html' %}
-{% block title %}TEST{% endblock %}
-
-{% block head%}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-{%endblock%}
-
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inicio</title>
+</head>
 <body>
-    {% block content %}
-    <h1>Bienvenido</h1>
-    <div class="options">
-        <a href="{{ url_for('register') }}" class="button">Registrarse</a>
-        <a href="{{ url_for('login') }}" class="button">Iniciar Sesión</a>
-    </div>
-    
-    {% endblock %}
+    <h1>Bienvenido al sitio web</h1>
+    <p>Esta es la página de inicio.</p>
 </body>
-
+</html>
