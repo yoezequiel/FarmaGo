@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Productos de la Categoría</title>
+</head>
+<body>
+    <h1>Productos de la Categoría: {{ categoria.nombre }}</h1>
+    <ul>
+        {% for producto in productos_categoria %}
+        <li>
+            <strong>{{ producto.nombre }}</strong> - {{ producto.descripcion }} - Precio: {{ producto.precio_unitario }} - Cantidad: {{ producto.cantidad }}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

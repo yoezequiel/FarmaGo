@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Producto</title>
+</head>
+<body>
+    <h1>Agregar Producto</h1>
+    <form method="POST" action="{{ url_for('agregar_producto') }}">
+        <label for="nombre_producto">Nombre del Producto:</label>
+        <input type="text" id="nombre_producto" name="nombre_producto" required>
+        <br>
+        <label for="imagen_producto">URL de la Imagen:</label>
+        <input type="text" id="imagen_producto" name="imagen_producto" required>
+        <br>
+        <label for="descripcion_producto">Descripción:</label>
+        <textarea id="descripcion_producto" name="descripcion_producto" required></textarea>
+        <br>
+        <label for="cantidad_producto">Cantidad:</label>
+        <input type="number" id="cantidad_producto" name="cantidad_producto" required>
+        <br>
+        <label for="precio_producto">Precio:</label>
+        <input type="number" step="0.01" id="precio_producto" name="precio_producto" required>
+        <br>
+        <input type="submit" value="Agregar Producto">
+    </form>
+</body>
+</html>
