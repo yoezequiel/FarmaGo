@@ -10,9 +10,8 @@
     {% block content %}
     <h1>Bienvenido</h1>
     <div class="options">
-        <a href="{{ url_for('registro_usuario') }}" class="button">Registrarse como Usuario</a>
-        <a href="{{ url_for('registro_farmacia') }}" class="button">Registrarse como Farmacia</a>
-        <a href="{{ url_for('iniciar_sesion') }}" class="button">Iniciar Sesión</a>
+        <a href="{{ url_for('register') }}" class="button">Registrarse</a>
+        <a href="{{ url_for('login') }}" class="button">Iniciar Sesión</a>
     </div>
     
     {% endblock %}

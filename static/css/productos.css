@@ -30,7 +30,7 @@ li span {
 }
 
 /* Styles for the 'Agregar al carrito' link */
-a {
+#a {
     display: inline-block;
     padding: 5px 10px;
     background-color: #007bff;

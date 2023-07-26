@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard de Farmacia</title>
+</head>
+<body>
+    <h1>Bienvenido a tu Dashboard de Farmacia</h1>
+    <h2>Información de la Farmacia</h2>
+    <p>Nombre: {{ farmacia_nombre }}</p>
+    <p>Dirección: {{ farmacia_direccion }}</p>
+    <p>Provincia: {{ farmacia_provincia }}</p>
+    <p>Localidad: {{ farmacia_localidad }}</p>
+    <p>Teléfono: {{ farmacia_telefono }}</p>
+    <p>Correo Electrónico: {{ farmacia_correo }}</p>
+
+    <h2>Lista de Productos</h2>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Imagen</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Categoría</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </tr>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.imagen }}</td>
+            <td>{{ producto.descripcion }}</td>
+            <td>{{ producto.cantidad }}</td>
+            <td>{{ producto.precio_unitario }}</td>
+            <td>{{ producto.categoria }}</td>
+            <td><a href="{{ url_for('editar_producto', id_producto=producto.id) }}">Editar</a></td>
+            <td>
+                <form action="{{ url_for('eliminar_producto', id_producto=producto.id) }}" method="post">
+                    <input type="submit" value="Eliminar">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Agregar Producto</h2>
+    <form method="post" action="{{ url_for('agregar_producto') }}">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" required>
+        <br>
+        <label for="imagen">Imagen:</label>
+        <input type="text" name="imagen" required>
+        <br>
+        <label for="descripcion">Descripción:</label>
+        <textarea name="descripcion" required></textarea>
+        <br>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" name="cantidad" required>
+        <br>
+        <label for="precio_unitario">Precio Unitario:</label>
+        <input type="number" name="precio_unitario" step="0.01" required>
+        <br>
+        <label for="id_categoria">Categoría:</label>
+        <select name="id_categoria">
+            {% for categoria in categorias %}
+            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <br>
+        <input type="submit" value="Agregar">
+    </form>
+
+    <h2>Editar Información de la Farmacia</h2>
+    <form method="post" action="{{ url_for('editar_farmacia') }}">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" value="{{ farmacia_nombre }}" required>
+        <br>
+        <label for="direccion">Dirección:</label>
+        <input type="text" name="direccion" value="{{ farmacia_direccion }}" required>
+        <br>
+        <label for="provincia">Provincia:</label>
+        <input type="text" name="provincia" value="{{ farmacia_provincia }}" required>
+        <br>
+        <label for="localidad">Localidad:</label>
+        <input type="text" name="localidad" value="{{ farmacia_localidad }}" required>
+        <br>
+        <label for="telefono">Teléfono:</label>
+        <input type="text" name="telefono" value="{{ farmacia_telefono }}" required>
+        <br>
+        <label for="correo">Correo Electrónico:</label>
+        <input type="email" name="correo" value="{{ farmacia_correo }}" required>
+        <br>
+        <input type="submit" value="Guardar Cambios">
+    </form>
+
+    <h2>Información Adicional</h2>
+    <!-- Aquí puedes mostrar más información específica para la farmacia -->
+</body>
+</html>
