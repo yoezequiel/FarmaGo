@@ -2,14 +2,14 @@
 <html>
 <head>
     <title>Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 <body>
     <h1>Bienvenido</h1>
-    <h2>Elige una opción:</h2>
-    <ul>
-        <li><a href="{{ url_for('registro_usuario') }}">Registrarse como Usuario</a></li>
-        <li><a href="{{ url_for('registro_farmacia') }}">Registrarse como Farmacia</a></li>
-        <li><a href="{{ url_for('iniciar_sesion') }}">Iniciar Sesión</a></li>
-    </ul>
+    <div class="options">
+        <a href="{{ url_for('registro_usuario') }}" class="button">Registrarse como Usuario</a>
+        <a href="{{ url_for('registro_farmacia') }}" class="button">Registrarse como Farmacia</a>
+        <a href="{{ url_for('iniciar_sesion') }}" class="button">Iniciar Sesión</a>
+    </div>
 </body>
 </html>

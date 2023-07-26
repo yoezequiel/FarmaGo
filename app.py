@@ -7,8 +7,10 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+
+
 # Configuración de la base de datos
-DATABASE = 'farmacia.db'
+DATABASE = 'FarmaGo.db'
 SCHEMA_FILE = 'schema.sql'
 
 # Configuración de Flask-Login
