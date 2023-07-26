@@ -1,0 +1,7 @@
+<!-- Enlace para acceder a la edición de la información del usuario -->
+<a href="{{ url_for('editar_usuario') }}">Editar Información</a>
+
+<!-- Formulario para eliminar la cuenta del usuario -->
+<form action="{{ url_for('eliminar_cuenta') }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar tu cuenta? Esta acción no se puede deshacer.')">
+    <input type="submit" value="Eliminar Cuenta">
+</form>

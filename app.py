@@ -3,7 +3,7 @@
 from flask import Flask, g, session, request, abort, redirect, url_for, render_template
 import sqlite3
 
-DATABASE = 'database.db'
+DATABASE = 'FarmaGo.db'
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Change this to a secure secret key in a real environment
 
@@ -128,9 +128,11 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
         db.commit()
 
 
-# CRUD Operations for managing inventory
+@app.route('/perfil')
+def perfil():
+    return render_template('perfil.html')
 
-# Route to view and manage inventory for a specific farmacia
+
 @app.route('/farmacia/inventario', methods=['GET', 'POST'])
 def farmacia_inventario():
     user_role = session.get('user_role')
@@ -277,6 +279,58 @@ def editar_farmacia():
             return render_template('editar_farmacia.html', farmacia_nombre=farmacia_nombre, farmacia_direccion=farmacia_direccion, farmacia_provincia=farmacia_provincia, farmacia_localidad=farmacia_localidad, farmacia_telefono=farmacia_telefono, farmacia_correo=farmacia_correo)
     else:
         abort(403)
+
+
+@app.route('/editar_usuario', methods=['GET', 'POST'])
+def editar_usuario():
+    user_id = session.get('user_id')
+    if user_id:
+        if request.method == 'POST':
+            # Obtener los datos del formulario para editar la información del usuario
+            nombre = request.form['nombre']
+            apellido = request.form['apellido']
+            # Agrega los demás campos que deseas editar
+
+            # Actualizar la información del usuario en la base de datos
+            with app.app_context():
+                db = get_db()
+                cursor = db.cursor()
+                cursor.execute('UPDATE usuarios SET nombre=?, apellido=? WHERE id=?', (nombre, apellido, user_id))
+                db.commit()
+
+            return redirect(url_for('dashboard'))  # Redirigir al dashboard después de guardar los cambios
+        else:
+            # Obtener los datos actuales del usuario para mostrar en el formulario de edición
+            with app.app_context():
+                db = get_db()
+                cursor = db.cursor()
+                cursor.execute('SELECT nombre, apellido FROM usuarios WHERE id=?', (user_id,))
+                usuario = cursor.fetchone()
+
+            if usuario:
+                return render_template('editar_usuario.html', usuario=usuario)
+            else:
+                abort(404)  # Usuario no encontrado
+    else:
+        abort(403)
+
+@app.route('/eliminar_cuenta', methods=['POST'])
+def eliminar_cuenta():
+    user_id = session.get('user_id')
+    if user_id:
+        # Eliminar la cuenta del usuario de la base de datos
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('DELETE FROM usuarios WHERE id=?', (user_id,))
+            db.commit()
+
+        # Eliminar la sesión actual y redirigir al formulario de inicio de sesión
+        session.clear()
+        return redirect(url_for('login'))
+    else:
+        abort(403)
+
 
 
 @app.route('/productos/agregar', methods=['GET', 'POST'])
