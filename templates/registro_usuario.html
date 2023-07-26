@@ -7,6 +7,9 @@
 </head>
 <body>
     <h1>Registro de Usuario</h1>
+    {% if error %}
+    <p>{{ error }}</p>
+    {% endif %}
     <form method="POST" action="{{ url_for('registro_usuario') }}">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required>
