@@ -1,33 +1,81 @@
-
-
-/* Estilos para el encabezado h1 */
-h1 {
-    color: #336699;
-    text-align: center;
+#contain {
+    display: flex;
+    padding-left: 0px;
 }
 
-/* Estilos para el párrafo */
-p {
+/* Left Column */
+.left-column {
+    flex: 1;
+    height: calc(100vh - 57px);
     text-align: center;
-    margin-bottom: 20px;
+    padding-top: 200px;
+    background-color: #b9ffe4;
 }
 
-/* Estilos para los enlaces de registrarse e iniciar sesión */
-#a {
+/* Right Column */
+.right-column {
+    flex: 1;
+    background-color: #b9ffe4;
+}
+
+/* Optional: Add styles for the content in the right column */
+.right-column h1 {
+    font-size: 35px;
+    background-color: rgb(153, 255, 0);
+    padding: 30px;
+    padding-top: 90px;
+    text-align: center;
+    color: white;
+    margin-bottom: 90px;
+    padding-bottom: 90px;
+}
+
+.right-column a {
     display: block;
-    width: 200px;
-    margin: 10px auto;
-    padding: 10px;
-    text-align: center;
+    margin: 10px auto; /* Use auto for centering horizontally */
     text-decoration: none;
-    color: #fff;
-    background-color: #336699;
-    border-radius: 4px;
+    color: white;
+    background-color: rgb(153, 255, 0);
+    text-align: center;
+    padding: 5px 10px; /* Adjust the padding to your preference */
+    border-radius: 10px;
+    margin-bottom: 30px;
+    margin-left: 250px;
+    margin-right: 250px;
+    font-size: 24px;
+    border: 2px solid transparent;
 }
 
-a:hover {
-    background-color: #0044cc;
+#a:hover{
+    color: white;
+    background-color: rgb(79, 132, 0);
+    border: 2px solid black;
 }
 
-/* Estilos adicionales para los enlaces y otros elementos */
-/* (Puedes agregar más estilos aquí para personalizar la página de inicio) */
+.right-column .a{
+    padding: 20px;
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    /* Breakpoint for screens up to 768px wide */
+    #contain {
+        flex-direction: column;
+    }
+    
+    .left-column {
+        display: none; /* Hide the left column on mobile devices */
+    }
+    
+    .right-column {
+        flex: auto;
+        height: calc(100vh - 57px);
+    }
+    
+    .right-column a {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}

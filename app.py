@@ -164,13 +164,30 @@ def farmacia_inventario():
 @app.route('/productos', methods=['GET'])
 def listar_productos():
     user_role = session.get('user_role')
+    if user_role == 'farmacia' or user_role == 'cliente':
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('SELECT * FROM productos')
+            productos = cursor.fetchall()
+
+        return render_template('listar_productos.html', productos=productos)
+    else:
+        abort(403)
+
+@app.route('/productos/<int:id_producto>', methods=['GET'])
+def ver_detalle_producto(id_producto):
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-        cursor.execute('SELECT p.id, p.nombre, p.imagen, p.descripcion, p.precio_unitario, i.cantidad_disponible, c.nombre AS categoria FROM productos p LEFT JOIN categorias c ON p.id_categoria = c.id LEFT JOIN inventario i ON p.id = i.id_producto')
-        productos = cursor.fetchall()
+        cursor.execute('SELECT * FROM productos WHERE id=?', (id_producto,))
+        producto = cursor.fetchone()
 
-    return render_template('listar_productos.html', productos=productos, user_role=user_role)
+    if producto:
+        return render_template('detalle_producto.html', producto=producto)
+    else:
+        abort(404)  # Producto no encontrado
+
 
 # Función para obtener el rol del usuario desde la base de datos.
 def get_user_role(nombre_usuario):

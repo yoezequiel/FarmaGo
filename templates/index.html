@@ -7,11 +7,15 @@
 </head>
 <body>
     {% block content %}
-    <h1>Bienvenido al sitio web</h1>
-    <p>Esta es la página de inicio.</p>
-    <a id="a" href="/register/farmacia">Registrar Farmacia</a>
-    <a id="a" href="/register/cliente">Registrarse</a>
-    <a id="a" href="/login">Iniciar Sesion</a>
+    <div class="left-column">
+        <img src="/static/img/back.png" alt="">
+    </div>
+    <div class="right-column">
+        <h1>Bienvenido al sitio web</h1>
+        <a id="a" class="a" href="/register/farmacia"><i class="fa-sharp fa-solid fa-shop fa-2xl"></i> Registrar Farmacia</a>
+        <a id="a" href="/register/cliente">Registrarse</a>
+        <a id="a" href="/login">Iniciar Sesion</a>
+    </div>
     {% endblock content %}
 </body>
 </html>

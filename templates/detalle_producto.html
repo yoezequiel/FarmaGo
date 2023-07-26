@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Detalle Producto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detalle_producto.css') }}">
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <h1>Detalle del Producto</h1>
+    <h2>{{ producto[1] }}</h2>
+    <img src="{{ producto[2] }}" alt="">
+    <p><strong>Descripción:</strong> {{ producto[3] }}</p>
+    <p><strong>Precio Unitario:</strong> ${{ producto[5] }}</p>
+    <p><strong>Cantidad:</strong> {{ producto[4] }}</p>
+    <!-- Agrega más detalles del producto según tus necesidades -->
+    <p><a href="{{ url_for('listar_productos') }}">Volver a la lista de productos</a></p>
+    {% endblock content %}
+</body>

@@ -15,32 +15,16 @@
     <table>
         <tr>
             <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
+            <th>Descripccion</th>
             <th>Cantidad Disponible</th>
-            <th>Categoría</th>
-            {% if user_role == 'farmacia' %}
-            <th>Acciones</th>
-            {% endif %}
+            <th>Precio</th>
         </tr>
         {% for producto in productos %}
-        <tr>
+        <tr onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';" style="cursor: pointer;">
             <td>{{ producto[1] }}</td>
             <td>{{ producto[3] }}</td>
             <td>{{ producto[4] }}</td>
             <td>{{ producto[5] }}</td>
-            <td>{{ producto[6] }}</td>
-            {% if user_role == 'farmacia' %}
-            <td>
-                <a id="a" href="{{ url_for('editar_producto', id_producto=producto[0]) }}">Editar</a>
-            </td>
-            <td>
-                <form action="/productos/eliminar/{{ producto[0] }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
-                    <input type="submit" value="Eliminar">
-                </form>
-            </td>
-            
-            {% endif %}
         </tr>
         {% endfor %}
     </table>
