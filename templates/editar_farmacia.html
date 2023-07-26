@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Editar Información de la Farmacia</title>
-</head>
-<body>
-    <h1>Editar Información de la Farmacia</h1>
-    <form method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" value="{{ farmacia_nombre }}" required>
-        <br>
-        <label for="direccion">Dirección:</label>
-        <input type="text" name="direccion" value="{{ farmacia_direccion }}" required>
-        <br>
-        <label for="provincia">Provincia:</label>
-        <input type="text" name="provincia" value="{{ farmacia_provincia }}" required>
-        <br>
-        <label for="localidad">Localidad:</label>
-        <input type="text" name="localidad" value="{{ farmacia_localidad }}" required>
-        <br>
-        <label for="telefono">Teléfono:</label>
-        <input type="text" name="telefono" value="{{ farmacia_telefono }}" required>
-        <br>
-        <label for="correo">Correo Electrónico:</label>
-        <input type="email" name="correo" value="{{ farmacia_correo }}" required>
-        <br>
-        <input type="submit" value="Guardar Cambios">
-    </form>
-</body>
-</html>
+
+
+<h2>Editar Información de la Farmacia</h2>
+<form method="post" action="{{ url_for('editar_farmacia') }}">
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" value="{{ farmacia_nombre }}" required>
+    <br>
+    <label for="direccion">Dirección:</label>
+    <input type="text" name="direccion" value="{{ farmacia_direccion }}" required>
+    <br>
+    <label for="provincia">Provincia:</label>
+    <input type="text" name="provincia" value="{{ farmacia_provincia }}" required>
+    <br>
+    <label for="localidad">Localidad:</label>
+    <input type="text" name="localidad" value="{{ farmacia_localidad }}" required>
+    <br>
+    <label for="telefono">Teléfono:</label>
+    <input type="text" name="telefono" value="{{ farmacia_telefono }}" required>
+    <br>
+    <label for="correo">Correo Electrónico:</label>
+    <input type="email" name="correo" value="{{ farmacia_correo }}" required>
+    <br>
+    <input type="submit" value="Guardar Cambios">
+</form>

@@ -1,34 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Agregar Producto</title>
-</head>
-<body>
-    <h1>Agregar Producto</h1>
-    <form method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" required>
-        <br>
-        <label for="imagen">Imagen:</label>
-        <input type="text" name="imagen" required>
-        <br>
-        <label for="descripcion">Descripción:</label>
-        <textarea name="descripcion" required></textarea>
-        <br>
-        <label for="cantidad">Cantidad:</label>
-        <input type="number" name="cantidad" required>
-        <br>
-        <label for="precio_unitario">Precio Unitario:</label>
-        <input type="number" name="precio_unitario" step="0.01" required>
-        <br>
-        <label for="id_categoria">Categoría:</label>
-        <select name="id_categoria" required>
-            {% for categoria in categorias %}
-            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-            {% endfor %}
-        </select>
-        <br>
-        <input type="submit" value="Agregar">
-    </form>
-</body>
-</html>
+
+<h2>Agregar Producto</h2>
+<form method="post" action="{{ url_for('agregar_producto') }}">
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" required>
+    <br>
+    <label for="imagen">Imagen:</label>
+    <input type="text" name="imagen" required>
+    <br>
+    <label for="descripcion">Descripción:</label>
+    <textarea name="descripcion" required></textarea>
+    <br>
+    <label for="cantidad">Cantidad:</label>
+    <input type="number" name="cantidad" required>
+    <br>
+    <label for="precio_unitario">Precio Unitario:</label>
+    <input type="number" name="precio_unitario" step="0.01" required>
+    <br>
+    <label for="id_categoria">Categoría:</label>
+    <select name="id_categoria">
+        {% for categoria in categorias %}
+        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+        {% endfor %}
+    </select>
+
+    <br>
+    <input type="submit" value="Agregar">
+</form>
