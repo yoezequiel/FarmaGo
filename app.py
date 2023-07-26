@@ -458,7 +458,6 @@ def page_not_found(error):
 def page_not_found(error):
     return render_template('404.html'), 404
 
-
 if __name__ == '__main__':
     create_tables()
     app.run(debug=True)
