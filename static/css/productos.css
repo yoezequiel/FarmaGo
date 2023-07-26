@@ -1,0 +1,46 @@
+/* Styles for the 'Productos' heading */
+h1 {
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Styles for the list items containing product information */
+ul li {
+    margin-bottom: 15px;
+    list-style-type: none;
+}
+
+/* Styles for the product name */
+strong {
+    color: #007bff;
+    /* Blue color for product names */
+}
+
+/* Styles for the product description */
+li {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Styles for the product price and quantity */
+li span {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Styles for the 'Agregar al carrito' link */
+a {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+a:hover {
+    background-color: #0056b3;
+    /* Darker shade of blue on hover */
+}
