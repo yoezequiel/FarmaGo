@@ -213,8 +213,8 @@ def login():
     else:
         return render_template('login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
+@app.route('/register/cliente', methods=['GET', 'POST'])
+def register_cliente():
     if request.method == 'POST':
         nombre = request.form['nombre']
         apellido = request.form['apellido']
@@ -225,7 +225,26 @@ def register():
         correo_electronico = request.form['correo_electronico']
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
-        role = request.form.get('role')
+        role = 'cliente'  # Asigna automáticamente el rol "cliente" al registro
+
+        register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
+        return redirect(url_for('login'))
+    else:
+        return render_template('register.html')
+
+@app.route('/register/farmacia', methods=['GET', 'POST'])
+def register_farmacia():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        apellido = request.form['apellido']
+        direccion = request.form['direccion']
+        numero_telefono = request.form['numero_telefono']
+        provincia = request.form['provincia']
+        localidad = request.form['localidad']
+        correo_electronico = request.form['correo_electronico']
+        nombre_usuario = request.form['nombre_usuario']
+        contraseña = request.form['contraseña']
+        role = 'farmacia'  # Asigna automáticamente el rol "farmacia" al registro
 
         register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
         return redirect(url_for('login'))
@@ -460,4 +479,4 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     create_tables()
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

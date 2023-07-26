@@ -1,45 +1,43 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <title>Registro de Usuario</title>
+    {% block head %}
+    <title>Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    {% endblock head %}
 </head>
 <body>
-    <h1>Registro de Usuario</h1>
-    <form action="/register" method="post">
+    {% block content %}
+    <h1>Registro</h1>
+    <form method="post">
         <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
+        <input type="text" id="nombre" name="nombre">
         <br>
         <label for="apellido">Apellido:</label>
-        <input type="text" id="apellido" name="apellido" required>
+        <input type="text" id="apellido" name="apellido">
         <br>
         <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" name="direccion" required>
+        <input type="text" id="direccion" name="direccion">
         <br>
         <label for="numero_telefono">Número de Teléfono:</label>
-        <input type="text" id="numero_telefono" name="numero_telefono" required>
+        <input type="text" id="numero_telefono" name="numero_telefono">
         <br>
         <label for="provincia">Provincia:</label>
-        <input type="text" id="provincia" name="provincia" required>
+        <input type="text" id="provincia" name="provincia">
         <br>
         <label for="localidad">Localidad:</label>
-        <input type="text" id="localidad" name="localidad" required>
+        <input type="text" id="localidad" name="localidad">
         <br>
         <label for="correo_electronico">Correo Electrónico:</label>
-        <input type="email" id="correo_electronico" name="correo_electronico" required>
+        <input type="email" id="correo_electronico" name="correo_electronico">
         <br>
         <label for="nombre_usuario">Nombre de Usuario:</label>
-        <input type="text" id="nombre_usuario" name="nombre_usuario" required>
+        <input type="text" id="nombre_usuario" name="nombre_usuario">
         <br>
         <label for="contraseña">Contraseña:</label>
-        <input type="password" id="contraseña" name="contraseña" required>
+        <input type="password" id="contraseña" name="contraseña">
         <br>
-        <label for="role">Rol:</label>
-        <select id="role" name="role" required>
-            <option value="cliente">Cliente</option>
-            <option value="farmacia">Farmacia</option>
-        </select>
-        <br>
-        <button type="submit">Registrarse</button>
+        <!-- Elimina el campo para seleccionar el rol -->
+        <input type="submit" value="Registrarse">
     </form>
+    {% endblock content %}
 </body>
-</html>

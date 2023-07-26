@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <meta charset="UTF-8">
-    <title>403 - Acceso Prohibido</title>
+    {% block head %}
+    <title>Inicio</title>
+    {% endblock head %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,7 +22,8 @@
     </style>
 </head>
 <body>
+    {% block content %}
     <h1>403</h1>
     <p>Acceso Prohibido - No tienes permiso para acceder a esta página.</p>
+    {% endblock content %}
 </body>
-</html>

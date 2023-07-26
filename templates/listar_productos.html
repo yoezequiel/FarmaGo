@@ -1,12 +1,16 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <title>Listado de Productos</title>
+    {% block head %}
+    <title>listado de producots</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/listar_productos.css') }}">
+
+    {% endblock head %}
 </head>
 <body>
+    {% block content %}
     <h1>Listado de Productos</h1>
     {% if user_role == 'farmacia' %}
-        <a href="/productos/agregar">Agregar Producto</a>
+    <a id="a" href="/productos/agregar">Agregar Producto</a>
     {% endif %}
     <table>
         <tr>
@@ -16,7 +20,7 @@
             <th>Cantidad Disponible</th>
             <th>Categoría</th>
             {% if user_role == 'farmacia' %}
-                <th>Acciones</th>
+            <th>Acciones</th>
             {% endif %}
         </tr>
         {% for producto in productos %}
@@ -28,7 +32,7 @@
             <td>{{ producto[6] }}</td>
             {% if user_role == 'farmacia' %}
             <td>
-                <a href="{{ url_for('editar_producto', id_producto=producto[0]) }}">Editar</a>
+                <a id="a" href="{{ url_for('editar_producto', id_producto=producto[0]) }}">Editar</a>
             </td>
             <td>
                 <form action="/productos/eliminar/{{ producto[0] }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
@@ -40,5 +44,5 @@
         </tr>
         {% endfor %}
     </table>
+    {% endblock content %}
 </body>
-</html>

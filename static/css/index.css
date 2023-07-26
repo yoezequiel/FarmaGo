@@ -1,0 +1,33 @@
+
+
+/* Estilos para el encabezado h1 */
+h1 {
+    color: #336699;
+    text-align: center;
+}
+
+/* Estilos para el párrafo */
+p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilos para los enlaces de registrarse e iniciar sesión */
+#a {
+    display: block;
+    width: 200px;
+    margin: 10px auto;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #336699;
+    border-radius: 4px;
+}
+
+a:hover {
+    background-color: #0044cc;
+}
+
+/* Estilos adicionales para los enlaces y otros elementos */
+/* (Puedes agregar más estilos aquí para personalizar la página de inicio) */

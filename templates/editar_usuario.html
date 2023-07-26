@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <title>Editar Información</title>
+    {% block head %}
+    <title>Editar usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editar usuario.css') }}">
+
+    {% endblock head %}
 </head>
 <body>
+    {% block content %}
     <h1>Editar Información</h1>
     <form method="post">
         <label for="nombre">Nombre:</label>
@@ -29,5 +33,5 @@
         <br>
         <input type="submit" value="Guardar Cambios">
     </form>
+    {% endblock content %}
 </body>
-</html>

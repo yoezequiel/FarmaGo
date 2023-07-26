@@ -1,7 +1,19 @@
-<!-- Enlace para acceder a la edición de la información del usuario -->
-<a href="{{ url_for('editar_usuario') }}">Editar Información</a>
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
 
-<!-- Formulario para eliminar la cuenta del usuario -->
-<form action="{{ url_for('eliminar_cuenta') }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar tu cuenta? Esta acción no se puede deshacer.')">
-    <input type="submit" value="Eliminar Cuenta">
-</form>
+    {% endblock head %}
+    
+</head>
+
+<body>
+    {% block content %}
+    <a href="{{ url_for('editar_usuario') }}">Editar Información</a>
+    
+    <form action="{{ url_for('eliminar_cuenta') }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar tu cuenta? Esta acción no se puede deshacer.')">
+        <input type="submit" value="Eliminar Cuenta">
+    </form>
+    {% endblock content %}
+</body>

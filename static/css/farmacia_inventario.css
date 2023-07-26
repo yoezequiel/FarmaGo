@@ -1,0 +1,50 @@
+/* farmacia_inventario.css */
+
+/* Center the heading and the welcome message */
+h1, p {
+    text-align: center;
+}
+
+/* Style the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+/* Style table header cells */
+th {
+    background-color: #f2f2f2;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Style table data cells */
+td {
+    padding: 8px;
+}
+
+/* Style table rows alternately for better readability */
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Style the "Editar" link */
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+/* Style the "Eliminar" button */
+input[type="submit"] {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+/* Float the "Agregar Nuevo Producto" and "Volver al Dashboard" links to the right */
+p {
+    text-align: right;
+}

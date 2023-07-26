@@ -1,13 +1,17 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
+    {% block head %}
     <title>Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    {% endblock head %}
 </head>
 <body>
+    {% block content %}
     <h1>Bienvenido al sitio web</h1>
     <p>Esta es la página de inicio.</p>
-    <a href="/register">Registrarse</a>
-    <a href="/login">Iniciar Sesion</a>
-    
+    <a id="a" href="/register/farmacia">Registrar Farmacia</a>
+    <a id="a" href="/register/cliente">Registrarse</a>
+    <a id="a" href="/login">Iniciar Sesion</a>
+    {% endblock content %}
 </body>
 </html>

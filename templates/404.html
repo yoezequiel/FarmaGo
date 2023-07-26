@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <meta charset="UTF-8">
-    <title>404 - Página No Encontrada</title>
+    {% block head %}
+    <title>Inicio</title>
+    {% endblock head %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,7 +22,8 @@
     </style>
 </head>
 <body>
+    {% block content %}
     <h1>404</h1>
     <p>Lo sentimos, la página que estás buscando no se encuentra.</p>
+    {% endblock content %}
 </body>
-</html>

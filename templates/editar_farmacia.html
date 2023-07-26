@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <title>Editar Información de la Farmacia</title>
+    {% block head %}
+    <title>Editar Farmacia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editar_farmacia.css') }}">
+
+    {% endblock head %}
 </head>
 <body>
+    {% block content %}
     <h1>Editar Información de la Farmacia</h1>
     <form action="/editar_farmacia" method="post">
         <label for="nombre">Nombre de la Farmacia:</label>
@@ -26,5 +30,6 @@
         <br>
         <button type="submit">Guardar Cambios</button>
     </form>
+    {% endblock content %}
 </body>
-</html>
+

@@ -1,0 +1,49 @@
+/* static/css/eliminar_cuenta.css */
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Estilos para el encabezado h1 */
+h1 {
+    color: #336699;
+    text-align: center;
+}
+
+/* Estilos para el párrafo */
+p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilos para el formulario de eliminar cuenta */
+form {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+form input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e74c3c;
+    color: #fff;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #c0392b;
+}
+
+/* Estilos adicionales para los enlaces y otros elementos */
+/* (Puedes agregar más estilos aquí para personalizar la página de eliminar cuenta) */

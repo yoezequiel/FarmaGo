@@ -1,0 +1,37 @@
+
+a {
+    text-decoration: none;
+    color: #336699;
+}
+
+a:hover {
+    color: #0044cc;
+}
+
+/* Estilos para el formulario de eliminación de cuenta */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+}
+
+form input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e74c3c;
+    color: #fff;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #c0392b;
+}
+
+/* Estilos adicionales para enlaces y otros elementos */
+/* (Puedes agregar más estilos aquí para personalizar el perfil) */

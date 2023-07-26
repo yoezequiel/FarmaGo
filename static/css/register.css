@@ -1,0 +1,60 @@
+/* static/css/farmacia.css */
+
+/* Personalización de los elementos del formulario */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    color: #336699;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    color: #336699;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #336699;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Estilos adicionales para el select de rol */
+select {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Estilos para los botones en el formulario */
+button[type="submit"] {
+    background-color: #2ecc71;
+}
+
+button[type="submit"]:hover {
+    background-color: #27ae60;
+}

@@ -1,0 +1,50 @@
+
+/* Estilos para el encabezado h1 */
+h1 {
+    color: #336699;
+    text-align: center;
+}
+
+/* Estilos para el formulario de editar usuario */
+form {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+    color: #336699;
+}
+
+form input[type="text"],
+form input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #336699;
+    color: #fff;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #0044cc;
+}
+
+/* Estilos adicionales para los enlaces y otros elementos */
+/* (Puedes agregar más estilos aquí para personalizar la página de editar usuario) */

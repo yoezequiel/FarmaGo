@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <title>Iniciar Sesión</title>
+    {% block head %}
+    <title>iniciar sesion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+    {% endblock head %}
 </head>
 <body>
+    {% block content %}
     <h1>Iniciar Sesión</h1>
     <form action="/login" method="post">
         <label for="username">Nombre de usuario:</label>
@@ -14,5 +18,6 @@
         <br>
         <input type="submit" value="Iniciar Sesión">
     </form>
+    {% endblock content %}
 </body>
 </html>

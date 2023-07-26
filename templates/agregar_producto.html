@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 <head>
-    <title>Agregar Producto</title>
+    {% block head %}
+    <title>Agregar Productos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agregar_producto.css') }}">
+
+    {% endblock head %}
 </head>
 <body>
+    {% block content %}
     <h1>Agregar Producto</h1>
     <form action="/productos/agregar" method="post">
         <label for="nombre">Nombre:</label>
@@ -23,5 +27,5 @@
         <br>
         <input type="submit" value="Agregar Producto">
     </form>
+    {% endblock content %}
 </body>
-</html>
