@@ -443,10 +443,20 @@ def eliminar_producto(id_producto):
         return redirect(url_for('listar_productos'))
     else:
         abort(403)
+        
+@app.route('/logout')
+def logout():
+    # Eliminar la sesión del usuario
+    session.clear()
+    return redirect(url_for('login'))
 
+@app.errorhandler(403)
+def page_not_found(error):
+    return render_template('403.html'), 403
 
-# ... (Other routes, CRUD for farmacia_inventario, listar_productos for users, etc.)
-
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     create_tables()
