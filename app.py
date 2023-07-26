@@ -1,5 +1,3 @@
-
-
 from flask import Flask, g, session, request, abort, redirect, url_for, render_template
 import sqlite3
 
