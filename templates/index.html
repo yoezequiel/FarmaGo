@@ -1,15 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Inicio</title>
+{% extends 'base.html' %}
+{% block title %}TEST{% endblock %}
+
+{% block head%}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-</head>
+{%endblock%}
+
+
 <body>
+    {% block content %}
     <h1>Bienvenido</h1>
     <div class="options">
         <a href="{{ url_for('registro_usuario') }}" class="button">Registrarse como Usuario</a>
         <a href="{{ url_for('registro_farmacia') }}" class="button">Registrarse como Farmacia</a>
         <a href="{{ url_for('iniciar_sesion') }}" class="button">Iniciar Sesión</a>
     </div>
+    
+    {% endblock %}
 </body>
-</html>
+

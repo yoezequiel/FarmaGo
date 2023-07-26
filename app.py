@@ -153,7 +153,7 @@ def iniciar_sesion():
         if user and user['contraseña'] == contraseña:
             user_obj = Usuario(user['id'])
             login_user(user_obj)
-            return redirect(url_for('perfil_usuario'))
+            return redirect(url_for('productos'))
         elif pharmacy and pharmacy['contraseña'] == contraseña:
             farmacia_obj = Farmacia(pharmacy['id'])
             login_user(farmacia_obj)
@@ -188,6 +188,8 @@ def perfil_farmacia():
 @app.route('/agregar_producto', methods=['GET', 'POST'])
 @login_required  # Esta ruta solo será accesible para usuarios autenticados (farmacias)
 def agregar_producto():
+    if not isinstance(current_user, Farmacia):
+        return redirect(url_for('productos'))
     conn = get_db_connection()
     cursor = conn.cursor()
     

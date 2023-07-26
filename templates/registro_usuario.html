@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registro de Usuario</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/registro_usuario.css') }}">
+{% extends 'base.html' %}
+{% block title %}TEST{% endblock %}
 
-</head>
+{% block head%}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/registro_usuario.css') }}">
+{%endblock%}
 <body>
+    {% block content %}
     <h1>Registro de Usuario</h1>
     {% if error %}
     <p>{{ error }}</p>
@@ -40,5 +40,6 @@
         <br>
         <input type="submit" value="Registrarse">
     </form>
+    {% endblock %}
 </body>
 </html>

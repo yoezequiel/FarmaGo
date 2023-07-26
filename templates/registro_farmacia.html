@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registro de Farmacia</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/registro_farmacia.css') }}">
+{% extends 'base.html' %}
+{% block title %}TEST{% endblock %}
 
-</head>
+{% block head%}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/registro_farmacia.css') }}">
+{%endblock%}
+
 <body>
+    {% block content %}
     <h1>Registro de Farmacia</h1>
     <form method="POST" action="{{ url_for('registro_farmacia') }}">
         <label for="nombre">Nombre:</label>
@@ -40,5 +41,6 @@
         <br>
         <input type="submit" value="Registrarse">
     </form>
+    {% endblock %}
 </body>
 </html>

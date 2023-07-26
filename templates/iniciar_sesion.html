@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/iniciar_sesion.css') }}">
+{% extends 'base.html' %}
+{% block title %}TEST{% endblock %}
 
-</head>
+{% block head%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/iniciar_sesion.css') }}">
+{%endblock%}
+
 <body>
+    {% block content %}
     <h1>Iniciar Sesión</h1>
     <form method="POST" action="{{ url_for('iniciar_sesion') }}">
         <label for="nombre_usuario">Nombre de Usuario:</label>
@@ -16,5 +17,6 @@
         <br>
         <input type="submit" value="Iniciar Sesión">
     </form>
+    {% endblock %}
 </body>
 </html>
