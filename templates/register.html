@@ -1,43 +1,88 @@
 {% extends 'base.html' %}
 <head>
     {% block head %}
-    <title>Perfil</title>
+    <title>Registro</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
     {% endblock head %}
 </head>
 <body>
     {% block content %}
-    <h1>Registro</h1>
-    <form method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre">
-        <br>
-        <label for="apellido">Apellido:</label>
-        <input type="text" id="apellido" name="apellido">
-        <br>
-        <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" name="direccion">
-        <br>
-        <label for="numero_telefono">Número de Teléfono:</label>
-        <input type="text" id="numero_telefono" name="numero_telefono">
-        <br>
-        <label for="provincia">Provincia:</label>
-        <input type="text" id="provincia" name="provincia">
-        <br>
-        <label for="localidad">Localidad:</label>
-        <input type="text" id="localidad" name="localidad">
-        <br>
-        <label for="correo_electronico">Correo Electrónico:</label>
-        <input type="email" id="correo_electronico" name="correo_electronico">
-        <br>
-        <label for="nombre_usuario">Nombre de Usuario:</label>
-        <input type="text" id="nombre_usuario" name="nombre_usuario">
-        <br>
-        <label for="contraseña">Contraseña:</label>
-        <input type="password" id="contraseña" name="contraseña">
-        <br>
-        <!-- Elimina el campo para seleccionar el rol -->
-        <input type="submit" value="Registrarse">
-    </form>
+    <div class="left-column">
+        <img src="/static/img/logo.png" alt="">
+    </div>
+    <div class="right-column">
+    <h1>Registrarse</h1>
+        <form method="post">
+            <div class="row">
+                <label for="nombre" class="col-sm-2 col-form-label col-form-label-lg">Nombre</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="nombre" name="nombre" placeholder="Nombre" required>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="apellido" class="col-sm-2 col-form-label col-form-label-lg">Apellido</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="apellido" name="apellido" placeholder="Apellido" required>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="direccion" class="col-sm-2 col-form-label col-form-label-lg">Dirección</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="direccion" name="direccion" placeholder="Dirección" required>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="numero_telefono" class="col-sm-2 col-form-label col-form-label-lg">Número de Teléfono</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="numero_telefono" name="numero_telefono" placeholder="Número de Teléfono" required>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="provincia" class="col-sm-2 col-form-label col-form-label-lg">Provincia</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="provincia" name="provincia" placeholder="Provincia" required>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="localidad" class="col-sm-2 col-form-label col-form-label-lg">Localidad</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="localidad" name="localidad" placeholder="Localidad" required>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="correo_electronico" class="col-sm-2 col-form-label col-form-label-lg">Correo Electrónico</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control form-control-lg" id="correo_electronico" name="correo_electronico" placeholder="Correo Electrónico">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="nombre_usuario" class="col-sm-2 col-form-label col-form-label-lg">Nombre de Usuario</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="nombre_usuario" name="nombre_usuario" placeholder="Nombre de Usuario">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <label for="contraseña" class="col-sm-2 col-form-label col-form-label-lg">Contraseña</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control form-control-lg" id="contraseña" name="contraseña" placeholder="Contraseña">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <input type="submit" class="btn btn-primary btn-lg" value="Registrarse">
+                </div>
+            </div>
+            
+        </form>
+    </div>
     {% endblock content %}
 </body>

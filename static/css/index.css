@@ -1,3 +1,6 @@
+html{
+    background-color: #b9ffe4;
+}
 #contain {
     display: flex;
     padding-left: 0px;
@@ -6,7 +9,6 @@
 /* Left Column */
 .left-column {
     flex: 1;
-    height: calc(100vh - 57px);
     text-align: center;
     padding-top: 200px;
     background-color: #b9ffe4;
@@ -32,12 +34,12 @@
 
 .right-column a {
     display: block;
-    margin: 10px auto; /* Use auto for centering horizontally */
+    margin: 10px auto;
     text-decoration: none;
     color: white;
     background-color: rgb(153, 255, 0);
     text-align: center;
-    padding: 5px 10px; /* Adjust the padding to your preference */
+    padding: 5px 10px;
     border-radius: 10px;
     margin-bottom: 30px;
     margin-left: 250px;
@@ -46,36 +48,36 @@
     border: 2px solid transparent;
 }
 
-#a:hover{
+.right-column .a{
+    padding: 20px;
+}
+
+#a:hover {
     color: white;
     background-color: rgb(79, 132, 0);
     border: 2px solid black;
 }
 
-.right-column .a{
-    padding: 20px;
-    margin-left: 200px;
-    margin-right: 200px;
-}
-
-/* Responsive styles */
-@media screen and (max-width: 768px) {
-    /* Breakpoint for screens up to 768px wide */
+/* Media Queries for Responsiveness */
+@media (max-width: 1500px) {
     #contain {
         flex-direction: column;
     }
-    
-    .left-column {
-        display: none; /* Hide the left column on mobile devices */
+    .left-column{
+        display: none;
     }
-    
-    .right-column {
-        flex: auto;
-        height: calc(100vh - 57px);
+    .right-column h1{
+        padding: 10px;
+        padding-top: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
     }
-    
     .right-column a {
-        margin-left: 20px;
-        margin-right: 20px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    .right-column .a{
+        padding: 10px;
     }
 }
+

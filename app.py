@@ -242,7 +242,7 @@ def register_cliente():
         correo_electronico = request.form['correo_electronico']
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
-        role = 'cliente'  # Asigna automáticamente el rol "cliente" al registro
+        role = 'cliente'
 
         register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
         return redirect(url_for('login'))
@@ -261,7 +261,7 @@ def register_farmacia():
         correo_electronico = request.form['correo_electronico']
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
-        role = 'farmacia'  # Asigna automáticamente el rol "farmacia" al registro
+        role = 'farmacia'
 
         register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
         return redirect(url_for('login'))

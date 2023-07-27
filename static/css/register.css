@@ -1,60 +1,100 @@
-/* static/css/farmacia.css */
+html{
+    background-color: #b9ffe4;
+}
+#contain {
+    display: flex;
+    flex-wrap: wrap;
+    height: min-content;
+}
 
-/* Personalización de los elementos del formulario */
+.form-control {
+    width: 100% !important;
+    box-sizing: border-box; /
+}
+
 form {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 2px solid #ccc;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
+    width: 100% !important;
+    max-width: 700px;
+    margin: 0 auto !important;
+}
+.row{
+    flex-wrap: nowrap !important;
+    margin-right: auto !important;
+}
+.col-sm-2{
+    width: auto !important;
+}
+.col-sm-10{
+    max-width: none !important;
+    width: auto !important;
+    margin-left: auto;
+}
+.row>*{
+    max-width: none !important;
+}
+.col-sm-12{
+    background-color: rgb(153, 255, 0);
+    padding: 30px;
+    width: 700px;
 }
 
-h1 {
+input[type="submit"]{
+    background-color: lightgreen;
+    font-size: 30px;
+    padding-left: 150px;
+    padding-right: 150px;
+}
+input[type="submit"]:hover{
+    background-color: green;
+}
+.left-column {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #b9ffe4;
+}
+
+.right-column {
+    flex: 1;
+    flex-direction: column;
+    background-color: #b9ffe4;
+}
+
+.right-column h1 {
+    font-size: 35px;
+    background-color: rgb(153, 255, 0);
+    padding: 70px;
+    color: white;
+    width: 100%;
     text-align: center;
-    color: #336699;
 }
 
-label {
-    display: block;
-    margin-top: 10px;
-    color: #336699;
+@media screen and (max-width: 1080px) {
+
+    .left-column{
+        display: none;
+    }
+    .row{
+        flex-wrap: wrap !important;
+    }
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #336699;
-    color: #fff;
-    cursor: pointer;
-}
-
-/* Estilos adicionales para el select de rol */
-select {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
-/* Estilos para los botones en el formulario */
-button[type="submit"] {
-    background-color: #2ecc71;
-}
-
-button[type="submit"]:hover {
-    background-color: #27ae60;
+@media screen and (max-width: 700px) {
+    .left-column{
+        display: none;
+    }
+    .col-sm-2{
+        text-align: center !important;
+    }
+    .row{
+        flex-wrap: wrap !important;
+        text-align: center !important;
+        display: block !important;
+    }
+    input[type="submit"]{
+        background-color: lightgreen;
+        padding: 30px;
+    }
 }
