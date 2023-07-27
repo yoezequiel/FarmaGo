@@ -1,9 +1,10 @@
 from flask import Flask, g, session, request, abort, redirect, url_for, render_template
 import sqlite3
+from config import SECRET_KEY
 
 DATABASE = 'FarmaGo.db'
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Change this to a secure secret key in a real environment
+app.secret_key = SECRET_KEY
 
 
 def get_db():
@@ -81,7 +82,6 @@ def create_tables():
         ''')
         db.commit()
 
-# Función para obtener el ID del usuario desde la base de datos.
 def get_user_id(nombre_usuario):
     with app.app_context():
         db = get_db()
@@ -90,7 +90,6 @@ def get_user_id(nombre_usuario):
         result = cursor.fetchone()
         return result[0] if result else None
 
-# Función para obtener la información actual de la farmacia desde la base de datos.
 def get_farmacia_info(id_usuario):
     with app.app_context():
         db = get_db()
@@ -114,8 +113,6 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
             cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid))
             farmacia_id = cursor.lastrowid
             db.commit()
-
-            # Agregar el inventario para la nueva farmacia
             cursor.execute('SELECT id FROM productos')
             productos = cursor.fetchall()
             for producto in productos:
@@ -148,7 +145,6 @@ def farmacia_inventario():
                     cursor.execute('INSERT INTO inventario (id_farmacia, id_producto, cantidad_disponible) VALUES (?, ?, ?)', (farmacia_id, id_producto, cantidad))
                 db.commit()
         else:
-            # Display inventory for the farmacia
             farmacia_id = session.get('user_id')
             with app.app_context():
                 db = get_db()
@@ -160,7 +156,6 @@ def farmacia_inventario():
     else:
         abort(403)
 
-# Centralized view of products for users
 @app.route('/productos', methods=['GET'])
 def listar_productos():
     user_role = session.get('user_role')
@@ -186,10 +181,9 @@ def ver_detalle_producto(id_producto):
     if producto:
         return render_template('detalle_producto.html', producto=producto)
     else:
-        abort(404)  # Producto no encontrado
+        abort(404) 
 
 
-# Función para obtener el rol del usuario desde la base de datos.
 def get_user_role(nombre_usuario):
     with app.app_context():
         db = get_db()
@@ -198,7 +192,6 @@ def get_user_role(nombre_usuario):
         result = cursor.fetchone()
         return result[0] if result else None
 
-# Función para autenticar al usuario y verificar su contraseña.
 def authenticate_user(nombre_usuario, contraseña):
     with app.app_context():
         db = get_db()
@@ -286,7 +279,6 @@ def editar_farmacia():
         id_usuario = session.get('user_id')
         farmacia_info = get_farmacia_info(id_usuario)
         if request.method == 'POST':
-            # Obtener los datos del formulario para editar la información de la farmacia
             nombre = request.form['nombre']
             direccion = request.form['direccion']
             provincia = request.form['provincia']
@@ -294,7 +286,6 @@ def editar_farmacia():
             telefono = request.form['numero_telefono']
             correo = request.form['correo_electronico']
 
-            # Actualizar la información de la farmacia en la base de datos
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
@@ -302,12 +293,11 @@ def editar_farmacia():
                             (nombre, direccion, provincia, localidad, telefono, correo, id_usuario))
                 db.commit()
 
-            return redirect(url_for('dashboard'))  # Redirigir al dashboard después de guardar los cambios
+            return redirect(url_for('dashboard'))  
         else:
             if farmacia_info:
                 farmacia_nombre, farmacia_direccion, farmacia_provincia, farmacia_localidad, farmacia_telefono, farmacia_correo = farmacia_info
             else:
-                # Si no se encuentra la información de la farmacia en la base de datos, se pueden proporcionar valores predeterminados o mostrar mensajes de error
                 farmacia_nombre, farmacia_direccion, farmacia_provincia, farmacia_localidad, farmacia_telefono, farmacia_correo = "", "", "", "", "", ""
 
             return render_template('editar_farmacia.html', farmacia_nombre=farmacia_nombre, farmacia_direccion=farmacia_direccion, farmacia_provincia=farmacia_provincia, farmacia_localidad=farmacia_localidad, farmacia_telefono=farmacia_telefono, farmacia_correo=farmacia_correo)
@@ -320,21 +310,16 @@ def editar_usuario():
     user_id = session.get('user_id')
     if user_id:
         if request.method == 'POST':
-            # Obtener los datos del formulario para editar la información del usuario
             nombre = request.form['nombre']
             apellido = request.form['apellido']
-            # Agrega los demás campos que deseas editar
-
-            # Actualizar la información del usuario en la base de datos
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
                 cursor.execute('UPDATE usuarios SET nombre=?, apellido=? WHERE id=?', (nombre, apellido, user_id))
                 db.commit()
 
-            return redirect(url_for('dashboard'))  # Redirigir al dashboard después de guardar los cambios
+            return redirect(url_for('dashboard')) 
         else:
-            # Obtener los datos actuales del usuario para mostrar en el formulario de edición
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
@@ -344,7 +329,7 @@ def editar_usuario():
             if usuario:
                 return render_template('editar_usuario.html', usuario=usuario)
             else:
-                abort(404)  # Usuario no encontrado
+                abort(404) 
     else:
         abort(403)
 
@@ -352,14 +337,11 @@ def editar_usuario():
 def eliminar_cuenta():
     user_id = session.get('user_id')
     if user_id:
-        # Eliminar la cuenta del usuario de la base de datos
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
             cursor.execute('DELETE FROM usuarios WHERE id=?', (user_id,))
             db.commit()
-
-        # Eliminar la sesión actual y redirigir al formulario de inicio de sesión
         session.clear()
         return redirect(url_for('login'))
     else:
@@ -378,23 +360,16 @@ def agregar_producto():
             descripcion = request.form['descripcion']
             cantidad = int(request.form['cantidad'])
             precio_unitario = float(request.form['precio_unitario'])
-
-            # Insertar el producto en la tabla "productos"
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
                 cursor.execute('INSERT INTO productos (nombre, imagen, descripcion, cantidad, precio_unitario) VALUES (?, ?, ?, ?, ?)', (nombre, imagen, descripcion, cantidad, precio_unitario,))
-
                 product_id = cursor.lastrowid
                 db.commit()
-
-                # Asociar el producto a la farmacia actual en la tabla "farmacia_productos"
                 cursor.execute('INSERT INTO farmacia_productos (id_usuario, id_producto) VALUES (?, ?)', (session.get('user_id'), product_id))
                 db.commit()
-
             return redirect(url_for('listar_productos'))
         else:
-            # Obtener las categorías existentes para mostrarlas en el formulario
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
@@ -408,7 +383,6 @@ def agregar_producto():
 def editar_producto(id_producto):
     user_role = session.get('user_role')
     if user_role == 'farmacia':
-        # Verificar que el producto pertenece a la farmacia actual
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
@@ -418,13 +392,10 @@ def editar_producto(id_producto):
                 abort(403)
 
         if request.method == 'POST':
-            # Obtener los datos del formulario para editar el producto
             nombre = request.form['nombre']
             descripcion = request.form['descripcion']
             precio_unitario = float(request.form['precio_unitario'])
             cantidad = int(request.form['cantidad'])
-
-            # Actualizar los datos del producto en la base de datos
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
@@ -434,7 +405,6 @@ def editar_producto(id_producto):
 
             return redirect(url_for('listar_productos'))
         else:
-            # Obtener los datos actuales del producto para mostrarlos en el formulario de edición
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
@@ -445,16 +415,14 @@ def editar_producto(id_producto):
             if producto:
                 return render_template('editar_producto.html', producto=producto)
             else:
-                abort(404)  # Producto no encontrado
+                abort(404) 
     else:
         abort(403)
-
 
 @app.route('/productos/eliminar/<int:id_producto>', methods=['POST'])
 def eliminar_producto(id_producto):
     user_role = session.get('user_role')
     if user_role == 'farmacia':
-        # Verificar que el producto pertenece a la farmacia actual
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
@@ -462,27 +430,18 @@ def eliminar_producto(id_producto):
             product_owner = cursor.fetchone()
             if not product_owner or product_owner[0] != session.get('user_id'):
                 abort(403)
-
-        # Eliminar el producto de la base de datos
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
-
-            # Eliminar el producto de la tabla "productos"
             cursor.execute('DELETE FROM productos WHERE id=?', (id_producto,))
-
-            # Eliminar la referencia del producto en la tabla "farmacia_productos"
             cursor.execute('DELETE FROM farmacia_productos WHERE id_producto=?', (id_producto,))
-
             db.commit()
-
         return redirect(url_for('listar_productos'))
     else:
         abort(403)
         
 @app.route('/logout')
 def logout():
-    # Eliminar la sesión del usuario
     session.clear()
     return redirect(url_for('login'))
 

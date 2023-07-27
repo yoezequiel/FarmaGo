@@ -1,12 +1,12 @@
 
 
-/* Estilos para el encabezado h1 */
+
 h1 {
     color: #336699;
     text-align: center;
 }
 
-/* Estilos para el enlace "Agregar Producto" */
+
 #a {
     display: block;
     width: 200px;
@@ -23,7 +23,7 @@ a:hover {
     background-color: #0044cc;
 }
 
-/* Estilos para la tabla de productos */
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -40,7 +40,6 @@ th {
     background-color: #f2f2f2;
 }
 
-/* Estilos para el formulario de eliminación de productos */
 form {
     display: inline;
     margin: 0;

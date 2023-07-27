@@ -6,7 +6,7 @@ html{
     padding-left: 0px;
 }
 
-/* Left Column */
+
 .left-column {
     flex: 1;
     text-align: center;
@@ -14,13 +14,12 @@ html{
     background-color: #b9ffe4;
 }
 
-/* Right Column */
+
 .right-column {
     flex: 1;
     background-color: #b9ffe4;
 }
 
-/* Optional: Add styles for the content in the right column */
 .right-column h1 {
     font-size: 35px;
     background-color: rgb(153, 255, 0);
@@ -58,7 +57,6 @@ html{
     border: 2px solid black;
 }
 
-/* Media Queries for Responsiveness */
 @media (max-width: 1500px) {
     #contain {
         flex-direction: column;

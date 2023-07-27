@@ -1,11 +1,9 @@
 
-/* Estilos para el encabezado h1 */
 h1 {
     color: #336699;
     text-align: center;
 }
 
-/* Estilos para el formulario de editar farmacia */
 form {
     max-width: 300px;
     margin: 0 auto;

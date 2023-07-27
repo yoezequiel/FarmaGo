@@ -1,25 +1,20 @@
-/* static/css/eliminar_cuenta.css */
 
-/* Estilos generales */
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
     color: #333;
 }
 
-/* Estilos para el encabezado h1 */
 h1 {
     color: #336699;
     text-align: center;
 }
 
-/* Estilos para el párrafo */
 p {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Estilos para el formulario de eliminar cuenta */
 form {
     max-width: 300px;
     margin: 0 auto;
