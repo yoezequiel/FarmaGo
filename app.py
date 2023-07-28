@@ -112,6 +112,14 @@ def get_farmacia_info(id_usuario):
         result = cursor.fetchone()
         return result if result else None
 
+def get_user_info(id_usuario):
+    with app.app_context():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña FROM usuarios WHERE id = ?', (id_usuario,))
+        result = cursor.fetchone()
+        return result if result else None
+
 def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid=None):
     with app.app_context():
         db = get_db()
@@ -318,29 +326,34 @@ def editar_farmacia():
 
 @app.route('/editar_usuario', methods=['GET', 'POST'])
 def editar_usuario():
-    user_id = session.get('user_id')
-    if user_id:
-        if request.method == 'POST':
-            nombre = request.form['nombre']
-            apellido = request.form['apellido']
-            with app.app_context():
-                db = get_db()
-                cursor = db.cursor()
-                cursor.execute('UPDATE usuarios SET nombre=?, apellido=? WHERE id=?', (nombre, apellido, user_id))
-                db.commit()
-            return redirect(url_for('dashboard')) 
-        else:
-            with app.app_context():
-                db = get_db()
-                cursor = db.cursor()
-                cursor.execute('SELECT nombre, apellido FROM usuarios WHERE id=?', (user_id,))
-                usuario = cursor.fetchone()
-            if usuario:
-                return render_template('editar_usuario.html', usuario=usuario)
-            else:
-                abort(404) 
+    id_usuario = session.get('user_id')
+    usuario_info = get_user_info(id_usuario)
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        apellido = request.form['apellido']
+        direccion = request.form['direccion']
+        provincia = request.form['provincia']
+        localidad = request.form['localidad']
+        telefono = request.form['numero_telefono']
+        correo = request.form['correo_electronico']
+        nombre_usuario = request.form['nombre_usuario'] 
+        contraseña = request.form['contraseña'] 
+
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('UPDATE usuarios SET nombre=?, apellido=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=?, nombre_usuario=?, contraseña=? WHERE id=?',
+                        (nombre, apellido, direccion, provincia, localidad, telefono, correo, nombre_usuario, contraseña, id_usuario))
+            db.commit()
+
+        return redirect(url_for('perfil'))
     else:
-        abort(403)
+        if usuario_info:
+            usuario_nombre, usuario_apellido, usuario_direccion, usuario_provincia, usuario_localidad, usuario_telefono, usuario_correo, usuario_nombre_usuario, usuario_contraseña = usuario_info
+        else:
+            usuario_nombre, usuario_apellido, usuario_direccion, usuario_provincia, usuario_localidad, usuario_telefono, usuario_correo, usuario_nombre_usuario, usuario_contraseña = "", "", "", "", "", "", "", "", ""
+        
+        return render_template('editar_usuario.html', usuario=(id_usuario, usuario_nombre, usuario_apellido, usuario_direccion, usuario_provincia, usuario_localidad, usuario_telefono, usuario_correo, usuario_nombre_usuario, usuario_contraseña))
 
 @app.route('/eliminar_cuenta', methods=['POST'])
 def eliminar_cuenta():
