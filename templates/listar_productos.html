@@ -1,32 +1,36 @@
-{% extends 'base.html' %}
-<head>
-    {% block head %}
-    <title>listado de producots</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/listar_productos.css') }}">
-
-    {% endblock head %}
-</head>
-<body>
-    {% block content %}
+{% extends 'base.html' %} {% block head %}
+<title>Listado de productos</title>
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/listar_productos.css') }}"
+/>
+{% endblock head %} {% block content %}
+<div class="productos">
     <h1>Listado de Productos</h1>
     {% if user_role == 'farmacia' %}
-    <a id="a" href="/productos/agregar">Agregar Producto</a>
+    <a href="/productos/agregar" class="add-button">Agregar Producto</a>
     {% endif %}
-    <table>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripccion</th>
-            <th>Cantidad Disponible</th>
-            <th>Precio</th>
-        </tr>
+    <div class="product-list">
         {% for producto in productos %}
-        <tr onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';" style="cursor: pointer;">
-            <td>{{ producto[1] }}</td>
-            <td>{{ producto[3] }}</td>
-            <td>{{ producto[4] }}</td>
-            <td>{{ producto[5] }}</td>
-        </tr>
+        <div
+            class="product-card"
+            onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';"
+        >
+            <div class="product-image">
+                <img src="{{ producto[2] }}" alt="">
+            </div>
+            <div class="product-info">
+                <h2 class="product-name">{{ producto[1] }}</h2>
+                <p class="product-description">{{ producto[3] }}</p>
+                <div class="product-details">
+                    <p class="product-quantity">
+                        Cantidad Disponible: {{ producto[4] }}
+                    </p>
+                    <p class="product-price">Precio: {{ producto[5] }}</p>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </table>
-    {% endblock content %}
-</body>
+    </div>
+</div>
+{% endblock content %}

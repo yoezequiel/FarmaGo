@@ -1,60 +1,90 @@
+html{
+    background-color: aqua;
+}
+#contain{
+    background-color: aqua;
+}
 
-
+.productos {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
 h1 {
-    color: #336699;
     text-align: center;
+    margin-bottom: 30px;
 }
 
-
-#a {
-    display: block;
-    width: 200px;
-    margin: 10px auto;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    color: #fff;
-    background-color: #336699;
-    border-radius: 4px;
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-gap: 20px;
 }
 
-a:hover {
-    background-color: #0044cc;
-}
-
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-form {
-    display: inline;
-    margin: 0;
-}
-
-form input[type="submit"] {
-    padding: 5px 10px;
-    margin: 0;
-    border: none;
-    background-color: #e74c3c;
-    color: #fff;
-    border-radius: 4px;
+.product-card {
+    border: 1px solid #014649;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #fff;
     cursor: pointer;
 }
 
-form input[type="submit"]:hover {
-    background-color: #c0392b;
+.product-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    display: flex;
+    justify-content: center;
+    max-width: 300px;
+}
+
+.product-image img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.product-name {
+    font-size: 20px;
+    margin: 0;
+    color: #333;
+}
+
+.product-description {
+    font-size: 14px;
+    color: #777;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-details {
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+.product-quantity,
+.product-price {
+    font-size: 14px;
+    margin: 0;
+    color: black;
+}
+
+.add-button {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    text-align: center;
+    padding: 10px;
+    background-color: #f06723;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.add-button:hover {
+    background-color: #d95d1f;
 }

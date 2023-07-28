@@ -377,7 +377,7 @@ def agregar_producto():
                 db.commit()
                 cursor.execute('INSERT INTO farmacia_productos (id_usuario, id_producto) VALUES (?, ?)', (id_farmacia, product_id))
                 db.commit()
-            return redirect(url_for('listar_productos'))
+            return redirect(url_for('farmacia_inventario'))
         else:
             with app.app_context():
                 db = get_db()
@@ -443,7 +443,7 @@ def eliminar_producto(id_producto):
             cursor.execute('DELETE FROM productos WHERE id=?', (id_producto,))
             cursor.execute('DELETE FROM farmacia_productos WHERE id_producto=?', (id_producto,))
             db.commit()
-        return redirect(url_for('listar_productos'))
+        return redirect(url_for('farmacia_inventario'))
     else:
         abort(403)
 
@@ -512,4 +512,4 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     create_tables()
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", extra_files=['/static/css/listar_productos.css'])

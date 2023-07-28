@@ -9,8 +9,9 @@
     {% block content %}
     <h1>Detalle del Producto</h1>
     <h2>{{ producto[1] }}</h2>
-    <p><strong>Descripción:</strong> {{ producto[2] }}</p>
-    <p><strong>Precio Unitario:</strong> ${{ producto[3] }}</p>
+    <img src="{{producto[2]}}" alt="">
+    <p><strong>Descripción:</strong> {{ producto[3] }}</p>
+    <p><strong>Precio Unitario:</strong> ${{ producto[5] }}</p>
     <p><strong>Cantidad:</strong> {{ producto[4] }}</p>
     <p><strong>Farmacia:</strong> <a href="{{ url_for('productos_por_farmacia', id_usuario=id_farmacia) }}">{{ farmacia_info[1] }}</a></p>
     <form method="post" action="{{ url_for('agregar_al_carrito', id_producto=producto[0]) }}">
