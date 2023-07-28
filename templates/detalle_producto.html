@@ -9,11 +9,15 @@
     {% block content %}
     <h1>Detalle del Producto</h1>
     <h2>{{ producto[1] }}</h2>
-    <img src="{{ producto[2] }}" alt="">
-    <p><strong>Descripción:</strong> {{ producto[3] }}</p>
-    <p><strong>Precio Unitario:</strong> ${{ producto[5] }}</p>
+    <p><strong>Descripción:</strong> {{ producto[2] }}</p>
+    <p><strong>Precio Unitario:</strong> ${{ producto[3] }}</p>
     <p><strong>Cantidad:</strong> {{ producto[4] }}</p>
-    <!-- Agrega más detalles del producto según tus necesidades -->
+    <p><strong>Farmacia:</strong> <a href="{{ url_for('productos_por_farmacia', id_usuario=id_farmacia) }}">{{ farmacia_info[1] }}</a></p>
+    <form method="post" action="{{ url_for('agregar_al_carrito', id_producto=producto[0]) }}">
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" min="1" max="{{ producto[4] }}" value="1">
+        <input type="submit" value="Agregar al Carrito">
+    </form>
     <p><a href="{{ url_for('listar_productos') }}">Volver a la lista de productos</a></p>
-    {% endblock content %}
+    {% endblock content%}
 </body>

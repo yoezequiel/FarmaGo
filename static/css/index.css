@@ -6,14 +6,12 @@ html{
     padding-left: 0px;
 }
 
-
 .left-column {
     flex: 1;
     text-align: center;
     padding-top: 200px;
     background-color: #b9ffe4;
 }
-
 
 .right-column {
     flex: 1;

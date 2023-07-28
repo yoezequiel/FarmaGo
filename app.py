@@ -49,7 +49,9 @@ def create_tables():
                 cantidad INTEGER,
                 precio_unitario REAL,
                 id_categoria INTEGER,
-                FOREIGN KEY(id_categoria) REFERENCES categorias(id)
+                id_farmacia INTEGER,  -- Nuevo campo para el id de la farmacia
+                FOREIGN KEY(id_categoria) REFERENCES categorias(id),
+                FOREIGN KEY(id_farmacia) REFERENCES usuarios(id)
             );
 
             CREATE TABLE IF NOT EXISTS categorias (
@@ -73,12 +75,24 @@ def create_tables():
                 FOREIGN KEY(id_farmacia) REFERENCES usuarios(id),
                 FOREIGN KEY(id_producto) REFERENCES productos(id)
             );
-
-            -- Insertar algunas categorías predefinidas
-            INSERT INTO categorias (nombre) VALUES ('Medicamentos');
-            INSERT INTO categorias (nombre) VALUES ('Perfumes');
-            INSERT INTO categorias (nombre) VALUES ('Cremas');
-            INSERT INTO categorias (nombre) VALUES ('Maquillaje');
+            
+            CREATE TABLE IF NOT EXISTS carritos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_usuario INTEGER,
+                fecha TEXT,
+                estado TEXT,
+                total REAL,
+                FOREIGN KEY(id_usuario) REFERENCES usuarios(id)
+            );
+            CREATE TABLE IF NOT EXISTS detalles_carrito (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_carrito INTEGER,
+                id_producto INTEGER,
+                cantidad INTEGER,
+                precio_unitario REAL,
+                FOREIGN KEY(id_carrito) REFERENCES carritos(id),
+                FOREIGN KEY(id_producto) REFERENCES productos(id)
+            );
         ''')
         db.commit()
 
@@ -97,8 +111,6 @@ def get_farmacia_info(id_usuario):
         cursor.execute('SELECT nombre, direccion, provincia, localidad, numero_telefono, correo_electronico FROM usuarios WHERE id = ?', (id_usuario,))
         result = cursor.fetchone()
         return result if result else None
-
-
 
 def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid=None):
     with app.app_context():
@@ -122,21 +134,17 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
             cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico))
         db.commit()
 
-
 @app.route('/perfil')
 def perfil():
     return render_template('perfil.html')
-
 
 @app.route('/farmacia/inventario', methods=['GET', 'POST'])
 def farmacia_inventario():
     user_role = session.get('user_role')
     if user_role == 'farmacia':
         if request.method == 'POST':
-            # Update inventory
             inventario = request.form.getlist('inventario')
             farmacia_id = session.get('user_id')
-
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
@@ -151,7 +159,6 @@ def farmacia_inventario():
                 cursor = db.cursor()
                 cursor.execute('SELECT p.id, p.nombre, i.cantidad_disponible FROM productos p LEFT JOIN inventario i ON p.id = i.id_producto AND i.id_farmacia = ?', (farmacia_id,))
                 inventario = cursor.fetchall()
-
         return render_template('farmacia_inventario.html', inventario=inventario)
     else:
         abort(403)
@@ -165,7 +172,6 @@ def listar_productos():
             cursor = db.cursor()
             cursor.execute('SELECT * FROM productos')
             productos = cursor.fetchall()
-
         return render_template('listar_productos.html', productos=productos)
     else:
         abort(403)
@@ -177,11 +183,25 @@ def ver_detalle_producto(id_producto):
         cursor = db.cursor()
         cursor.execute('SELECT * FROM productos WHERE id=?', (id_producto,))
         producto = cursor.fetchone()
+        farmacia_info = get_farmacia_info(producto[7])
+        id_farmacia = producto[7]  # Suponiendo que 'id_farmacia' es el octavo elemento en la tupla
 
-    if producto:
-        return render_template('detalle_producto.html', producto=producto)
+    if producto and farmacia_info:
+        return render_template('detalle_producto.html', producto=producto, farmacia_info=farmacia_info, id_farmacia=id_farmacia)
     else:
-        abort(404) 
+        abort(404)
+
+
+@app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
+def productos_por_farmacia(id_usuario):
+    with app.app_context():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM productos WHERE id_farmacia=?', (id_usuario,))
+        productos = cursor.fetchall()
+        farmacia_info = get_farmacia_info(id_usuario)
+        print(farmacia_info)
+    return render_template('productos_farmacia.html', productos=productos, farmacia_info=farmacia_info)
 
 
 def get_user_role(nombre_usuario):
@@ -211,9 +231,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-
         user_role = authenticate_user(username, password)
-
         if user_role:
             session['user_role'] = user_role
             session['user_id'] = get_user_id(username)
@@ -236,7 +254,6 @@ def register_cliente():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'cliente'
-
         register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
         return redirect(url_for('login'))
     else:
@@ -255,7 +272,6 @@ def register_farmacia():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'farmacia'
-
         register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
         return redirect(url_for('login'))
     else:
@@ -268,7 +284,6 @@ def dashboard():
         return render_template('panel.html')
     elif user_role == 'cliente':
         return redirect(url_for('listar_productos'))
-
     else:
         abort(403)
 
@@ -285,25 +300,21 @@ def editar_farmacia():
             localidad = request.form['localidad']
             telefono = request.form['numero_telefono']
             correo = request.form['correo_electronico']
-
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
                 cursor.execute('UPDATE usuarios SET nombre=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=? WHERE id=?',
                             (nombre, direccion, provincia, localidad, telefono, correo, id_usuario))
                 db.commit()
-
             return redirect(url_for('dashboard'))  
         else:
             if farmacia_info:
                 farmacia_nombre, farmacia_direccion, farmacia_provincia, farmacia_localidad, farmacia_telefono, farmacia_correo = farmacia_info
             else:
                 farmacia_nombre, farmacia_direccion, farmacia_provincia, farmacia_localidad, farmacia_telefono, farmacia_correo = "", "", "", "", "", ""
-
             return render_template('editar_farmacia.html', farmacia_nombre=farmacia_nombre, farmacia_direccion=farmacia_direccion, farmacia_provincia=farmacia_provincia, farmacia_localidad=farmacia_localidad, farmacia_telefono=farmacia_telefono, farmacia_correo=farmacia_correo)
     else:
         abort(403)
-
 
 @app.route('/editar_usuario', methods=['GET', 'POST'])
 def editar_usuario():
@@ -317,7 +328,6 @@ def editar_usuario():
                 cursor = db.cursor()
                 cursor.execute('UPDATE usuarios SET nombre=?, apellido=? WHERE id=?', (nombre, apellido, user_id))
                 db.commit()
-
             return redirect(url_for('dashboard')) 
         else:
             with app.app_context():
@@ -325,7 +335,6 @@ def editar_usuario():
                 cursor = db.cursor()
                 cursor.execute('SELECT nombre, apellido FROM usuarios WHERE id=?', (user_id,))
                 usuario = cursor.fetchone()
-
             if usuario:
                 return render_template('editar_usuario.html', usuario=usuario)
             else:
@@ -347,12 +356,9 @@ def eliminar_cuenta():
     else:
         abort(403)
 
-
-
 @app.route('/productos/agregar', methods=['GET', 'POST'])
 def agregar_producto():
     user_role = session.get('user_role')
-    print(user_role)
     if user_role == 'farmacia':
         if request.method == 'POST':
             nombre = request.form['nombre']
@@ -360,13 +366,16 @@ def agregar_producto():
             descripcion = request.form['descripcion']
             cantidad = int(request.form['cantidad'])
             precio_unitario = float(request.form['precio_unitario'])
+            id_categoria = int(request.form['categoria'])
+            id_farmacia = session.get('user_id')
+
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('INSERT INTO productos (nombre, imagen, descripcion, cantidad, precio_unitario) VALUES (?, ?, ?, ?, ?)', (nombre, imagen, descripcion, cantidad, precio_unitario,))
+                cursor.execute('INSERT INTO productos (nombre, imagen, descripcion, cantidad, precio_unitario, id_categoria, id_farmacia) VALUES (?, ?, ?, ?, ?, ?, ?)', (nombre, imagen, descripcion, cantidad, precio_unitario, id_categoria, id_farmacia))
                 product_id = cursor.lastrowid
                 db.commit()
-                cursor.execute('INSERT INTO farmacia_productos (id_usuario, id_producto) VALUES (?, ?)', (session.get('user_id'), product_id))
+                cursor.execute('INSERT INTO farmacia_productos (id_usuario, id_producto) VALUES (?, ?)', (id_farmacia, product_id))
                 db.commit()
             return redirect(url_for('listar_productos'))
         else:
@@ -379,6 +388,7 @@ def agregar_producto():
     else:
         abort(403)
 
+
 @app.route('/productos/editar/<int:id_producto>', methods=['GET', 'POST'])
 def editar_producto(id_producto):
     user_role = session.get('user_role')
@@ -390,7 +400,6 @@ def editar_producto(id_producto):
             product_owner = cursor.fetchone()
             if not product_owner or product_owner[0] != session.get('user_id'):
                 abort(403)
-
         if request.method == 'POST':
             nombre = request.form['nombre']
             descripcion = request.form['descripcion']
@@ -402,7 +411,6 @@ def editar_producto(id_producto):
                 cursor.execute('UPDATE productos SET nombre=?, descripcion=?, precio_unitario=?, cantidad=? WHERE id=?',
                             (nombre, descripcion, precio_unitario, cantidad, id_producto))
                 db.commit()
-
             return redirect(url_for('listar_productos'))
         else:
             with app.app_context():
@@ -411,7 +419,6 @@ def editar_producto(id_producto):
                 cursor.execute('SELECT nombre, descripcion, precio_unitario, cantidad FROM productos WHERE id=?',
                             (id_producto,))
                 producto = cursor.fetchone()
-
             if producto:
                 return render_template('editar_producto.html', producto=producto)
             else:
@@ -439,7 +446,57 @@ def eliminar_producto(id_producto):
         return redirect(url_for('listar_productos'))
     else:
         abort(403)
-        
+
+@app.route('/agregar_al_carrito/<int:id_producto>', methods=['POST'])
+def agregar_al_carrito(id_producto):
+    user_id = session.get('user_id')
+    if user_id:
+        cantidad = int(request.form['cantidad'])
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('SELECT * FROM productos WHERE id=?', (id_producto,))
+            producto = cursor.fetchone()
+            if producto:
+                cursor.execute('SELECT * FROM carritos WHERE id_usuario=? AND estado="abierto"', (user_id,))
+                carrito = cursor.fetchone()
+                if not carrito:
+                    cursor.execute('INSERT INTO carritos (id_usuario, fecha, estado, total) VALUES (?, ?, ?, ?)', (user_id, "2023-07-26", "abierto", 0))
+                    db.commit()
+                    carrito_id = cursor.lastrowid
+                else:
+                    carrito_id = carrito[0]
+                cursor.execute('INSERT OR REPLACE INTO detalles_carrito (id_carrito, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', (carrito_id, id_producto, cantidad, producto[5]))
+                db.commit()
+                return redirect(url_for('ver_detalle_producto', id_producto=id_producto))
+            else:
+                abort(404)
+    else:
+        abort(403)
+
+@app.route('/carrito', methods=['GET'])
+def ver_carrito():
+    user_id = session.get('user_id')
+    if user_id:
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('SELECT * FROM carritos WHERE id_usuario=? AND estado="abierto"', (user_id,))
+            carrito = cursor.fetchone()
+            if carrito:
+                carrito_id = carrito[0]
+                cursor.execute('SELECT p.id, p.nombre, p.precio_unitario, dc.cantidad FROM detalles_carrito AS dc INNER JOIN productos AS p ON dc.id_producto = p.id WHERE dc.id_carrito = ?', (carrito_id,))
+                productos_carrito = cursor.fetchall()
+                total_carrito = sum(producto[2] * producto[3] for producto in productos_carrito)
+            else:
+                carrito_id = None
+                productos_carrito = []
+                total_carrito = 0
+        return render_template('carrito.html', productos_carrito=productos_carrito, total_carrito=total_carrito)
+    else:
+        abort(403)
+
+
 @app.route('/logout')
 def logout():
     session.clear()

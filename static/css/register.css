@@ -9,7 +9,8 @@ html{
 
 .form-control {
     width: 100% !important;
-    box-sizing: border-box; /
+    box-sizing: border-box;
+    color: black !important;
 }
 
 form {
