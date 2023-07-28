@@ -10,7 +10,7 @@
 
 <body>
     {% block content %}
-    <a href="{{ url_for('editar_usuario') }}">Editar Información</a>
+    <a id="a" href="{{ url_for('editar_usuario') }}">Editar Información</a>
     
     <form action="{{ url_for('eliminar_cuenta') }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar tu cuenta? Esta acción no se puede deshacer.')">
         <input type="submit" value="Eliminar Cuenta">
