@@ -1,10 +1,12 @@
-{% extends 'base.html' %} {% block head %}
+{% extends 'base.html' %} 
+{% block head %}
 <title>Listado de productos</title>
 <link
     rel="stylesheet"
     href="{{ url_for('static', filename='css/listar_productos.css') }}"
 />
-{% endblock head %} {% block content %}
+{% endblock head %}
+{% block content %}
 <div class="productos">
     <h1>Listado de Productos</h1>
     {% if user_role == 'farmacia' %}
@@ -32,5 +34,23 @@
         </div>
         {% endfor %}
     </div>
+
+    <nav aria-label="Navegación de páginas">
+        <ul class="pagination">
+            {% if pagina > 1 %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', pagina=pagina-1) }}">Anterior</a></li>
+            {% endif %}
+            {% for num_pagina in range(1, total_paginas + 1) %}
+                {% if num_pagina == pagina %}
+                    <li class="page-item active"><span class="page-link">{{ num_pagina }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', pagina=num_pagina) }}">{{ num_pagina }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if pagina < total_paginas %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', pagina=pagina+1) }}">Siguiente</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endblock content %}
