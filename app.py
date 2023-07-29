@@ -145,7 +145,11 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
 
 @app.route('/perfil')
 def perfil():
-    return render_template('perfil.html')
+    user_role = session.get('user_role')
+    if user_role == 'farmacia' or user_role == 'cliente':
+        return render_template('perfil.html')
+    else:
+        abort(403)
 
 @app.route('/farmacia/inventario', methods=['GET', 'POST'])
 def farmacia_inventario():
@@ -205,7 +209,7 @@ def ver_detalle_producto(id_producto):
         cursor.execute('SELECT * FROM productos WHERE id=?', (id_producto,))
         producto = cursor.fetchone()
         farmacia_info = get_farmacia_info(producto[7])
-        id_farmacia = producto[7]  # Suponiendo que 'id_farmacia' es el octavo elemento en la tupla
+        id_farmacia = producto[7]
 
     if producto and farmacia_info:
         return render_template('detalle_producto.html', producto=producto, farmacia_info=farmacia_info, id_farmacia=id_farmacia)

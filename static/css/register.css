@@ -1,12 +1,14 @@
 html{
-    background-color: #b9ffe4;
+    background-color: #D5FFB9;
 }
 #contain {
     display: flex;
     flex-wrap: wrap;
     height: min-content;
 }
-
+img{
+    width: 450px;
+}
 .form-control {
     width: 100% !important;
     box-sizing: border-box;
@@ -53,13 +55,13 @@ input[type="submit"]:hover{
     flex: 1;
     justify-content: center;
     align-items: center;
-    background-color: #b9ffe4;
+    background-color: #D5FFB9;
 }
 
 .right-column {
     flex: 1;
     flex-direction: column;
-    background-color: #b9ffe4;
+    background-color: #D5FFB9;
 }
 
 .right-column h1 {
