@@ -9,9 +9,6 @@
 {% block content %}
 <div class="productos">
     <h1>Listado de Productos</h1>
-    {% if user_role == 'farmacia' %}
-    <a href="/productos/agregar" class="add-button">Agregar Producto</a>
-    {% endif %}
     <div class="product-list">
         {% for producto in productos %}
         <div

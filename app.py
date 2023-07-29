@@ -208,6 +208,20 @@ def ver_detalle_producto(id_producto):
     else:
         abort(404)
 
+@app.route('/todas_farmacias', methods=['GET'])
+def todas_farmacias():
+    user_role = session.get('user_role')
+    if user_role == 'cliente':  # Ensure only users with the role 'cliente' can access this page
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('SELECT id, nombre FROM usuarios WHERE role = ?', ('farmacia',))
+            farmacias = cursor.fetchall()
+
+        return render_template('todas_farmacias.html', farmacias=farmacias)
+    else:
+        abort(403)
+
 @app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
 def productos_por_farmacia(id_usuario):
     with app.app_context():

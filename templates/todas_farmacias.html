@@ -1,0 +1,15 @@
+<!-- todas_farmacias.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todas las Farmacias</title>
+</head>
+<body>
+    <h1>Todas las Farmacias</h1>
+    <ul>
+        {% for farmacia in farmacias %}
+            <li><a href="{{ url_for('productos_por_farmacia', id_usuario=farmacia[0]) }}">{{ farmacia[1] }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
