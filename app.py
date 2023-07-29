@@ -36,6 +36,7 @@ def create_tables():
                 nombre_usuario TEXT UNIQUE,
                 contraseña TEXT,
                 role TEXT,
+                logo_url TEXT,
                 pharmacy_uuid TEXT
             );
             CREATE TABLE IF NOT EXISTS productos (
@@ -116,7 +117,7 @@ def get_user_info(id_usuario):
         result = cursor.fetchone()
         return result if result else None
 
-def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid=None):
+def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid=None,logo_url=None):
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
@@ -125,7 +126,7 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
         if existing_user:
             return "El correo electrónico ya está en uso. Por favor, elige otro."
         if role == 'farmacia':
-            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid))
+            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid, logo_url))
             farmacia_id = cursor.lastrowid
             db.commit()
             cursor.execute('SELECT id FROM productos')
@@ -134,7 +135,7 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
                 cursor.execute('INSERT INTO inventario (id_farmacia, id_producto, cantidad_disponible) VALUES (?, ?, ?)', (farmacia_id, producto[0], 0))
             db.commit()
         else:
-            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico))
+            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url))
         db.commit()
 
 @app.route('/perfil')
@@ -208,20 +209,6 @@ def ver_detalle_producto(id_producto):
     else:
         abort(404)
 
-@app.route('/todas_farmacias', methods=['GET'])
-def todas_farmacias():
-    user_role = session.get('user_role')
-    if user_role == 'cliente':  # Ensure only users with the role 'cliente' can access this page
-        with app.app_context():
-            db = get_db()
-            cursor = db.cursor()
-            cursor.execute('SELECT id, nombre FROM usuarios WHERE role = ?', ('farmacia',))
-            farmacias = cursor.fetchall()
-
-        return render_template('todas_farmacias.html', farmacias=farmacias)
-    else:
-        abort(403)
-
 @app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
 def productos_por_farmacia(id_usuario):
     with app.app_context():
@@ -283,7 +270,8 @@ def register_cliente():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'cliente'
-        error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
+        logo_url = request.form.get('logo_url')  # Get the logo URL from the form
+        error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url=logo_url)
         if error_message:
             return render_template('register.html', error=error_message)
         return redirect(url_for('login'))
@@ -303,7 +291,9 @@ def register_farmacia():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'farmacia'
-        error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
+        logo_url = request.form.get('logo_url')  # Get the logo URL from the form
+
+        error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico,logo_url=logo_url)
         if error_message:
             return render_template('register.html', error=error_message)
         return redirect(url_for('login'))
