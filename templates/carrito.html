@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+
 <head>
+    {% block head %}
     <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/carrito.css') }}">
+    {% endblock head %}
 </head>
 <body>
+    {% block content %}
     <h1>Carrito de Compras</h1>
     {% if productos_carrito %}
         <table>
@@ -14,7 +18,7 @@
                 <th>Total</th>
             </tr>
             {% for producto in productos_carrito %}
-            <tr>
+            <tr onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';">
                 <td>{{ producto[1] }}</td>
                 <td>${{ producto[2] }}</td>
                 <td>{{ producto[3] }}</td>
@@ -29,6 +33,5 @@
     {% else %}
         <p>No hay productos en el carrito.</p>
     {% endif %}
-    <p><a href="{{ url_for('listar_productos') }}">Volver a la lista de productos</a></p>
+    {% endblock content %}
 </body>
-</html>

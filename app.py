@@ -7,20 +7,17 @@ DATABASE = 'FarmaGo.db'
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
-
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
-
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
-
 
 def create_tables():
     with app.app_context():
@@ -30,18 +27,17 @@ def create_tables():
             CREATE TABLE IF NOT EXISTS usuarios (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT,
-                role TEXT,
                 apellido TEXT,
                 direccion TEXT,
                 numero_telefono TEXT,
                 provincia TEXT,
                 localidad TEXT,
-                correo_electronico TEXT,
+                correo_electronico TEXT UNIQUE,
                 nombre_usuario TEXT UNIQUE,
                 contraseña TEXT,
+                role TEXT,
                 pharmacy_uuid TEXT
             );
-
             CREATE TABLE IF NOT EXISTS productos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT,
@@ -50,16 +46,14 @@ def create_tables():
                 cantidad INTEGER,
                 precio_unitario REAL,
                 id_categoria INTEGER,
-                id_farmacia INTEGER,  -- Nuevo campo para el id de la farmacia
+                id_farmacia INTEGER, 
                 FOREIGN KEY(id_categoria) REFERENCES categorias(id),
                 FOREIGN KEY(id_farmacia) REFERENCES usuarios(id)
             );
-
             CREATE TABLE IF NOT EXISTS categorias (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT
             );
-
             CREATE TABLE IF NOT EXISTS farmacia_productos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_usuario INTEGER,
@@ -97,11 +91,11 @@ def create_tables():
         ''')
         db.commit()
 
-def get_user_id(nombre_usuario):
+def get_user_id(correo_electronico):
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-        cursor.execute('SELECT id FROM usuarios WHERE nombre_usuario = ?', (nombre_usuario,))
+        cursor.execute('SELECT id FROM usuarios WHERE correo_electronico = ?', (correo_electronico,))
         result = cursor.fetchone()
         return result[0] if result else None
 
@@ -112,6 +106,7 @@ def get_farmacia_info(id_usuario):
         cursor.execute('SELECT nombre, direccion, provincia, localidad, numero_telefono, correo_electronico FROM usuarios WHERE id = ?', (id_usuario,))
         result = cursor.fetchone()
         return result if result else None
+
 
 def get_user_info(id_usuario):
     with app.app_context():
@@ -125,11 +120,10 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-        cursor.execute('SELECT id FROM usuarios WHERE nombre_usuario = ?', (nombre_usuario,))
+        cursor.execute('SELECT id FROM usuarios WHERE correo_electronico = ?', (correo_electronico,))
         existing_user = cursor.fetchone()
         if existing_user:
-            return "El nombre de usuario ya está en uso. Por favor, elige otro."
-        
+            return "El correo electrónico ya está en uso. Por favor, elige otro."
         if role == 'farmacia':
             cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid))
             farmacia_id = cursor.lastrowid
@@ -163,14 +157,15 @@ def farmacia_inventario():
                 cursor = db.cursor()
                 cursor.execute('DELETE FROM inventario WHERE id_farmacia = ?', (farmacia_id,))
                 for id_producto, cantidad in enumerate(inventario, start=1):
-                    cursor.execute('INSERT INTO inventario (id_farmacia, id_producto, cantidad_disponible) VALUES (?, ?, ?)', (farmacia_id, id_producto, cantidad))
+                    if cantidad.isdigit() and int(cantidad) >= 0:
+                        cursor.execute('INSERT INTO inventario (id_farmacia, id_producto, cantidad_disponible) VALUES (?, ?, ?)', (farmacia_id, id_producto, cantidad))
                 db.commit()
         else:
             farmacia_id = session.get('user_id')
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('SELECT p.id, p.nombre, i.cantidad_disponible FROM productos p LEFT JOIN inventario i ON p.id = i.id_producto AND i.id_farmacia = ?', (farmacia_id,))
+                cursor.execute('SELECT p.id, p.nombre, COALESCE(i.cantidad_disponible, 0) as cantidad_disponible FROM productos p LEFT JOIN inventario i ON p.id = i.id_producto AND i.id_farmacia = ? WHERE p.id_farmacia = ?', (farmacia_id, farmacia_id))
                 inventario = cursor.fetchall()
         return render_template('farmacia_inventario.html', inventario=inventario)
     else:
@@ -199,8 +194,6 @@ def listar_productos():
     else:
         abort(403)
 
-
-
 @app.route('/productos/<int:id_producto>', methods=['GET'])
 def ver_detalle_producto(id_producto):
     with app.app_context():
@@ -210,12 +203,10 @@ def ver_detalle_producto(id_producto):
         producto = cursor.fetchone()
         farmacia_info = get_farmacia_info(producto[7])
         id_farmacia = producto[7]
-
     if producto and farmacia_info:
         return render_template('detalle_producto.html', producto=producto, farmacia_info=farmacia_info, id_farmacia=id_farmacia)
     else:
         abort(404)
-
 
 @app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
 def productos_por_farmacia(id_usuario):
@@ -225,9 +216,7 @@ def productos_por_farmacia(id_usuario):
         cursor.execute('SELECT * FROM productos WHERE id_farmacia=?', (id_usuario,))
         productos = cursor.fetchall()
         farmacia_info = get_farmacia_info(id_usuario)
-        print(farmacia_info)
     return render_template('productos_farmacia.html', productos=productos, farmacia_info=farmacia_info)
-
 
 def get_user_role(nombre_usuario):
     with app.app_context():
@@ -237,32 +226,33 @@ def get_user_role(nombre_usuario):
         result = cursor.fetchone()
         return result[0] if result else None
 
-def authenticate_user(nombre_usuario, contraseña):
-    with app.app_context():
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute('SELECT contraseña FROM usuarios WHERE nombre_usuario = ?', (nombre_usuario,))
-        result = cursor.fetchone()
-        if result and (contraseña, result[0]):
-            return get_user_role(nombre_usuario)
-        return None
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
+def authenticate_user(correo_electronico, contraseña):
+    with app.app_context():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT id, role FROM usuarios WHERE correo_electronico = ? AND contraseña = ?', (correo_electronico, contraseña))
+        result = cursor.fetchone()
+        if result:
+            return result[0], result[1]
+        return None, None
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
+        correo_electronico = request.form.get('correo_electronico')
         password = request.form.get('password')
-        user_role = authenticate_user(username, password)
-        if user_role:
+        user_id, user_role = authenticate_user(correo_electronico, password)
+        if user_id and user_role:
+            session['user_id'] = user_id
             session['user_role'] = user_role
-            session['user_id'] = get_user_id(username)
             return redirect(url_for('dashboard'))
         else:
-            return "Credenciales inválidas. Por favor, inténtalo nuevamente."
+            error="Credenciales inválidas. Por favor, inténtalo nuevamente."
+            return render_template('login.html', error=error)
     else:
         return render_template('login.html')
 
@@ -279,7 +269,9 @@ def register_cliente():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'cliente'
-        register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
+        error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
+        if error_message:
+            return render_template('register.html', error=error_message)
         return redirect(url_for('login'))
     else:
         return render_template('register.html')
@@ -297,7 +289,9 @@ def register_farmacia():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'farmacia'
-        register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
+        error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico)
+        if error_message:
+            return render_template('register.html', error=error_message)
         return redirect(url_for('login'))
     else:
         return render_template('register.html')
@@ -312,64 +306,37 @@ def dashboard():
     else:
         abort(403)
 
-@app.route('/editar_farmacia', methods=['GET', 'POST'])
-def editar_farmacia():
+@app.route('/editar_perfil', methods=['GET', 'POST'])
+def editar_perfil():
     user_role = session.get('user_role')
-    if user_role == 'farmacia':
-        id_usuario = session.get('user_id')
-        farmacia_info = get_farmacia_info(id_usuario)
+    if user_role in ('farmacia', 'cliente'):
+        user_id = session.get('user_id')
+        user_info = get_user_info(user_id)
         if request.method == 'POST':
             nombre = request.form['nombre']
+            apellido = request.form['apellido']
             direccion = request.form['direccion']
             provincia = request.form['provincia']
             localidad = request.form['localidad']
-            telefono = request.form['numero_telefono']
-            correo = request.form['correo_electronico']
+            numero_telefono = request.form['numero_telefono']
+            correo_electronico = request.form['correo_electronico']
+            nombre_usuario = request.form['nombre_usuario']
+            contraseña = request.form['contraseña']
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('UPDATE usuarios SET nombre=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=? WHERE id=?',
-                            (nombre, direccion, provincia, localidad, telefono, correo, id_usuario))
+                cursor.execute('UPDATE usuarios SET nombre=?, apellido=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=?, contraseña=?, nombre_usuario=? WHERE id=?',
+                            (nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, contraseña, nombre_usuario, user_id))
                 db.commit()
-            return redirect(url_for('dashboard'))  
+            return redirect(url_for('perfil'))
         else:
-            if farmacia_info:
-                farmacia_nombre, farmacia_direccion, farmacia_provincia, farmacia_localidad, farmacia_telefono, farmacia_correo = farmacia_info
+            if user_info:
+                nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña = user_info
             else:
-                farmacia_nombre, farmacia_direccion, farmacia_provincia, farmacia_localidad, farmacia_telefono, farmacia_correo = "", "", "", "", "", ""
-            return render_template('editar_farmacia.html', farmacia_nombre=farmacia_nombre, farmacia_direccion=farmacia_direccion, farmacia_provincia=farmacia_provincia, farmacia_localidad=farmacia_localidad, farmacia_telefono=farmacia_telefono, farmacia_correo=farmacia_correo)
+                nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña = "", "", "", "", "", "", "", "", ""
+            return render_template('editar_perfil.html', nombre=nombre, apellido=apellido, direccion=direccion, provincia=provincia, localidad=localidad, numero_telefono=numero_telefono, correo_electronico=correo_electronico, nombre_usuario=nombre_usuario, contraseña=contraseña)
     else:
         abort(403)
-
-@app.route('/editar_usuario', methods=['GET', 'POST'])
-def editar_usuario():
-    id_usuario = session.get('user_id')
-    usuario_info = get_user_info(id_usuario)
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        apellido = request.form['apellido']
-        direccion = request.form['direccion']
-        provincia = request.form['provincia']
-        localidad = request.form['localidad']
-        telefono = request.form['numero_telefono']
-        correo = request.form['correo_electronico']
-        nombre_usuario = request.form['nombre_usuario'] 
-        contraseña = request.form['contraseña'] 
-
-        with app.app_context():
-            db = get_db()
-            cursor = db.cursor()
-            cursor.execute('UPDATE usuarios SET nombre=?, apellido=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=?, nombre_usuario=?, contraseña=? WHERE id=?',
-                        (nombre, apellido, direccion, provincia, localidad, telefono, correo, nombre_usuario, contraseña, id_usuario))
-            db.commit()
-        return redirect(url_for('perfil'))
-    else:
-        if usuario_info:
-            usuario_nombre, usuario_apellido, usuario_direccion, usuario_provincia, usuario_localidad, usuario_telefono, usuario_correo, usuario_nombre_usuario, usuario_contraseña = usuario_info
-        else:
-            usuario_nombre, usuario_apellido, usuario_direccion, usuario_provincia, usuario_localidad, usuario_telefono, usuario_correo, usuario_nombre_usuario, usuario_contraseña = "", "", "", "", "", "", "", "", ""
-        
-        return render_template('editar_usuario.html', usuario=(id_usuario, usuario_nombre, usuario_apellido, usuario_direccion, usuario_provincia, usuario_localidad, usuario_telefono, usuario_correo, usuario_nombre_usuario, usuario_contraseña))
 
 @app.route('/eliminar_cuenta', methods=['POST'])
 def eliminar_cuenta():
@@ -415,7 +382,6 @@ def agregar_producto():
             return render_template('agregar_producto.html', categorias=categorias)
     else:
         abort(403)
-
 
 @app.route('/productos/editar/<int:id_producto>', methods=['GET', 'POST'])
 def editar_producto(id_producto):
@@ -523,7 +489,6 @@ def ver_carrito():
         return render_template('carrito.html', productos_carrito=productos_carrito, total_carrito=total_carrito)
     else:
         abort(403)
-
 
 @app.route('/logout')
 def logout():
