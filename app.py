@@ -717,7 +717,7 @@ def logout():
     return redirect(url_for('login'))
 
 @app.errorhandler(403)
-def page_not_found(error):
+def forbidden_error(error):
     return render_template('403.html'), 403
 
 @app.errorhandler(404)
