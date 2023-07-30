@@ -3,7 +3,7 @@ import sqlite3
 from math import ceil
 import mercadopago
 from datetime import datetime
-from config import SECRET_KEY
+from config import SECRET_KEY, access_token
 
 DATABASE = 'FarmaGo.db'
 app = Flask(__name__)
@@ -179,7 +179,7 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
             cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url))
         db.commit()
 
-access_token = 'APP_USR-3436436354988838-072923-0e601b5d781b901bb9f39defa154e49a-755883327'
+
 def crear_enlace_de_pago(producto, precio, moneda='ARS', cantidad=1, descripcion=''):
     mp = mercadopago.SDK(access_token)
 
