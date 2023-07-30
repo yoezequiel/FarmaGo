@@ -65,32 +65,3 @@ h1 {
     margin: 0;
     color: black;
 }
-
-.navbar2{
-    background-color: rgb(0, 190, 0) !important;
-    display: flex;
-    justify-content: center;
-    padding: 3px;
-}
-.page-link{
-    color: black !important;
-}
-
-form{
-    display: flex;
-    flex-direction: column;
-}
-
-.btn-primary{
-    background-color: green !important;
-    border-color: green !important;
-}
-
-.btn-primary:hover{
-    background-color: rgb(2, 175, 2) !important;
-    border-color: black !important;
-}
-
-#busqueda{
-    margin-right: 30px;
-}

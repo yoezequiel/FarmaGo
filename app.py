@@ -182,7 +182,6 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
 
 def crear_enlace_de_pago(producto, precio, moneda='ARS', cantidad=1, descripcion=''):
     mp = mercadopago.SDK(access_token)
-
     preference_data = {
         "items": [
             {
@@ -199,7 +198,6 @@ def crear_enlace_de_pago(producto, precio, moneda='ARS', cantidad=1, descripcion
         },
         "auto_return": "approved",
     }
-
     preference = mp.preference().create(preference_data)
     return preference['response']['init_point']
 
@@ -241,18 +239,29 @@ def farmacia_inventario():
     else:
         abort(403)
 
+# app.py
+
 @app.route('/productos', methods=['GET'])
 def listar_productos():
     user_role = session.get('user_role')
     if user_role == 'farmacia' or user_role == 'cliente':
         pagina = request.args.get('pagina', default=1, type=int)
         productos_por_pagina = 9
+        categoria_id = request.args.get('categoria_id', default=None, type=int)  # Obtener el ID de la categoría seleccionada
         search_query = request.args.get('search_query')
-        if search_query:
-            with app.app_context():
-                db = get_db()
-                cursor = db.cursor()
-                cursor.execute('SELECT COUNT(*) FROM productos WHERE nombre LIKE ?', ('%' + search_query + '%',))
+
+
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+
+            # Obtener la lista de categorías para mostrar en el campo de selección
+            cursor.execute('SELECT id, nombre FROM categorias')
+            categorias = cursor.fetchall()
+
+            # Filtrar productos por categoría si se ha seleccionado alguna
+            if categoria_id is not None:
+                cursor.execute('SELECT COUNT(*) FROM productos WHERE id_categoria = ?', (categoria_id,))
                 total_productos = cursor.fetchone()[0]
                 total_paginas = ceil(total_productos / productos_por_pagina)
                 if pagina < 1:
@@ -260,13 +269,24 @@ def listar_productos():
                 elif pagina > total_paginas:
                     pagina = total_paginas
                 inicio = (pagina - 1) * productos_por_pagina
-                cursor.execute('SELECT * FROM productos WHERE nombre LIKE ? LIMIT ? OFFSET ?', ('%' + search_query + '%', productos_por_pagina, inicio))
+                cursor.execute('SELECT * FROM productos WHERE id_categoria = ? LIMIT ? OFFSET ?', (categoria_id, productos_por_pagina, inicio))
                 productos = cursor.fetchall()
-            return render_template('listar_productos.html', productos=productos, pagina=pagina, total_paginas=total_paginas, user_role=user_role, search_query=search_query)
-        else: 
-            with app.app_context():
-                db = get_db()
-                cursor = db.cursor()
+            elif search_query:
+                with app.app_context():
+                    db = get_db()
+                    cursor = db.cursor()
+                    cursor.execute('SELECT COUNT(*) FROM productos WHERE nombre LIKE ?', ('%' + search_query + '%',))
+                    total_productos = cursor.fetchone()[0]
+                    total_paginas = ceil(total_productos / productos_por_pagina)
+                    if pagina < 1:
+                        pagina = 1
+                    elif pagina > total_paginas:
+                        pagina = total_paginas
+                    inicio = (pagina - 1) * productos_por_pagina
+                    cursor.execute('SELECT * FROM productos WHERE nombre LIKE ? LIMIT ? OFFSET ?', ('%' + search_query + '%', productos_por_pagina, inicio))
+                    productos = cursor.fetchall()
+                return render_template('listar_productos.html', productos=productos, pagina=pagina, total_paginas=total_paginas, user_role=user_role, search_query=search_query)
+            else:
                 cursor.execute('SELECT COUNT(*) FROM productos')
                 total_productos = cursor.fetchone()[0]
                 total_paginas = ceil(total_productos / productos_por_pagina)
@@ -277,7 +297,8 @@ def listar_productos():
                 inicio = (pagina - 1) * productos_por_pagina
                 cursor.execute('SELECT * FROM productos LIMIT ? OFFSET ?', (productos_por_pagina, inicio))
                 productos = cursor.fetchall()
-            return render_template('listar_productos.html', productos=productos, pagina=pagina, total_paginas=total_paginas, user_role=user_role)
+
+        return render_template('listar_productos.html', productos=productos, pagina=pagina, total_paginas=total_paginas, user_role=user_role, categorias=categorias, categoria_id=categoria_id)
     else:
         abort(403)
 
@@ -288,12 +309,35 @@ def ver_detalle_producto(id_producto):
         cursor = db.cursor()
         cursor.execute('SELECT * FROM productos WHERE id=?', (id_producto,))
         producto = cursor.fetchone()
-        farmacia_info = get_farmacia_info(producto[7])
+        farmacia_info = get_farmacia_info(producto[7])  
         id_farmacia = producto[7]
+
+        # Obtener el nombre de la categoría del producto
+        cursor.execute('SELECT nombre FROM categorias WHERE id=?', (producto[6],))
+        categoria_nombre = cursor.fetchone()[0]
+
     if producto and farmacia_info:
-        return render_template('detalle_producto.html', producto=producto, farmacia_info=farmacia_info, id_farmacia=id_farmacia)
+        return render_template('detalle_producto.html', producto=producto, farmacia_info=farmacia_info, id_farmacia=id_farmacia, categoria_nombre=categoria_nombre)
     else:
         abort(404)
+
+@app.route('/productos/categoria/<int:id_categoria>', methods=['GET'])
+def productos_por_categoria(id_categoria):
+    with app.app_context():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM productos WHERE id_categoria = ?', (id_categoria,))
+        productos = cursor.fetchall()
+
+        # Obtener el nombre de la categoría para mostrar en el encabezado
+        cursor.execute('SELECT nombre FROM categorias WHERE id = ?', (id_categoria,))
+        categoria_nombre = cursor.fetchone()[0]
+
+    return render_template('productos_por_categoria.html', productos=productos, categoria_nombre=categoria_nombre)
+
+
+
+
 
 @app.route('/todas_farmacias', methods=['GET', 'POST'])
 def todas_farmacias():
