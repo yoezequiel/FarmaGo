@@ -1,6 +1,7 @@
 from flask import Flask, g, session, request, abort, redirect, url_for, render_template
 import sqlite3
 from math import ceil
+import mercadopago
 from datetime import datetime
 from config import SECRET_KEY
 
@@ -177,6 +178,30 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
         else:
             cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url))
         db.commit()
+
+access_token = 'APP_USR-3436436354988838-072923-0e601b5d781b901bb9f39defa154e49a-755883327'
+def crear_enlace_de_pago(producto, precio, moneda='ARS', cantidad=1, descripcion=''):
+    mp = mercadopago.SDK(access_token)
+
+    preference_data = {
+        "items": [
+            {
+                "title": producto,
+                "quantity": cantidad,
+                "currency_id": moneda,
+                "unit_price": precio,
+            }
+        ],
+        "back_urls": {
+            "success": "192.168.0.106:5000/pago_exitoso",
+            "failure": "192.168.0.106:5000/pago_fallido",
+            "pending": "192.168.0.106:5000/pago_pendiente",
+        },
+        "auto_return": "approved",
+    }
+
+    preference = mp.preference().create(preference_data)
+    return preference['response']['init_point']
 
 @app.route('/')
 def index():
@@ -521,9 +546,11 @@ def agregar_al_carrito(id_producto):
                 if not carrito:
                     cursor.execute('INSERT INTO carritos (id_usuario, fecha, estado, total) VALUES (?, ?, ?, ?)', (user_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "abierto", 0))
                     db.commit()
-                    carrito_id = cursor.lastrowid
+                    carrito = cursor.execute('SELECT * FROM carritos WHERE id_usuario=? AND estado="abierto"', (user_id,)).fetchone()
+                    carrito_id = carrito[0]
                 else:
                     carrito_id = carrito[0]
+                # Calcular el nuevo total sumando el precio_unitario del producto agregado multiplicado por la cantidad
                 new_total = carrito[4] + (producto[5] * cantidad)
                 cursor.execute('UPDATE carritos SET total=? WHERE id=?', (new_total, carrito_id))
                 db.commit()
@@ -534,6 +561,7 @@ def agregar_al_carrito(id_producto):
                 abort(404)
     else:
         abort(403)
+
 
 @app.route('/carrito', methods=['GET'])
 def ver_carrito():
@@ -572,17 +600,58 @@ def comprar_carrito():
                 total = sum(detalle[3] * detalle[4] for detalle in detalles_carrito)
                 cursor.execute('SELECT id_usuario FROM farmacia_productos WHERE id_producto = ?', (detalles_carrito[0][2],))
                 id_vendedor = cursor.fetchone()[0]
-                cursor.execute('INSERT INTO ventas (id_vendedor, id_comprador, fecha, total) VALUES (?, ?, ?, ?)', (id_vendedor, user_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), total))
-                venta_id = cursor.lastrowid
-                for detalle in detalles_carrito:
-                    cursor.execute('INSERT INTO detalles_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', (venta_id, detalle[2], detalle[3], detalle[4]))
-                    cursor.execute('UPDATE productos SET cantidad = cantidad - ? WHERE id = ?', (detalle[3], detalle[2]))
-                cursor.execute('DELETE FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
-                cursor.execute('DELETE FROM carritos WHERE id = ?', (carrito[0],))
+                nombre_producto = "Compra en Tienda"
+                precio_producto = total
+                cantidad_producto = 1
+                descripcion_producto = "Productos en el carrito de compra"
+                link_pago = crear_enlace_de_pago(nombre_producto, precio_producto, cantidad=cantidad_producto, descripcion=descripcion_producto)
                 db.commit()
-                success="success"
-                return render_template('carrito.html' ,success=success)
+            
+                return render_template('carrito_pago.html', link_pago=link_pago)
+
     return redirect(url_for('ver_carrito'))
+
+@app.route('/pago_exitoso', methods=['GET'])
+def pago_exitoso():
+    payment_status = request.args.get('status')
+    collection_status = request.args.get('collection_status')
+    preference_id = request.args.get('preference_id')
+    site_id = request.args.get('site_id')
+    external_reference = request.args.get('external_reference')
+    merchant_order_id = request.args.get('merchant_order_id')
+    collection_id = request.args.get('collection_id')
+    payment_id = request.args.get('payment_id')
+    payment_type = request.args.get('payment_type')
+    processing_mode = request.args.get('processing_mode')
+    if payment_status == 'approved' and collection_status == 'approved':
+        user_id = session.get('user_id')
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('SELECT * FROM carritos WHERE id_usuario = ?', (user_id,))
+            carrito = cursor.fetchone()
+            if carrito:
+                cursor.execute('SELECT * FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
+                detalles_carrito = cursor.fetchall()
+                if detalles_carrito:
+                    total = sum(detalle[3] * detalle[4] for detalle in detalles_carrito)
+                    cursor.execute('SELECT id_usuario FROM farmacia_productos WHERE id_producto = ?', (detalles_carrito[0][2],))
+                    id_vendedor = cursor.fetchone()[0]
+                    cursor.execute('INSERT INTO ventas (id_vendedor, id_comprador, fecha, total) VALUES (?, ?, ?, ?)', (id_vendedor, user_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), total))
+                    venta_id = cursor.lastrowid
+                    for detalle in detalles_carrito:
+                        cursor.execute('INSERT INTO detalles_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', (venta_id, detalle[2], detalle[3], detalle[4]))
+                        cursor.execute('UPDATE productos SET cantidad = cantidad - ? WHERE id = ?', (detalle[3], detalle[2]))
+                    cursor.execute('DELETE FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
+                    cursor.execute('DELETE FROM carritos WHERE id = ?', (carrito[0],))
+                    db.commit()
+                    success = "Pago exitoso. Gracias por tu compra."
+                    return render_template('carrito.html', success=success)
+    else:
+        error = "Pago fallido o pendiente. Por favor, intenta nuevamente."
+        return render_template('carrito.html', error=error)
+    error = "Error en la respuesta de pago."
+    return render_template('carrito.html', error=error)              
 
 @app.route('/ventas')
 def ventas():
