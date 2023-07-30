@@ -113,7 +113,7 @@ def get_user_info(id_usuario):
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-        cursor.execute('SELECT nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña FROM usuarios WHERE id = ?', (id_usuario,))
+        cursor.execute('SELECT nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña, logo_url FROM usuarios WHERE id = ?', (id_usuario,))
         result = cursor.fetchone()
         return result if result else None
 
@@ -367,19 +367,20 @@ def editar_perfil():
             correo_electronico = request.form['correo_electronico']
             nombre_usuario = request.form['nombre_usuario']
             contraseña = request.form['contraseña']
+            logo_url= request.form['logo_url']
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('UPDATE usuarios SET nombre=?, apellido=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=?, contraseña=?, nombre_usuario=? WHERE id=?',
-                            (nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, contraseña, nombre_usuario, user_id))
+                cursor.execute('UPDATE usuarios SET nombre=?, apellido=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=?, contraseña=?, nombre_usuario=? logo_url=? WHERE id=?',
+                            (nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, contraseña, nombre_usuario, logo_url, user_id))
                 db.commit()
             return redirect(url_for('perfil'))
         else:
             if user_info:
-                nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña = user_info
+                nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña, logo_url = user_info
             else:
-                nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña = "", "", "", "", "", "", "", "", ""
-            return render_template('editar_perfil.html', nombre=nombre, apellido=apellido, direccion=direccion, provincia=provincia, localidad=localidad, numero_telefono=numero_telefono, correo_electronico=correo_electronico, nombre_usuario=nombre_usuario, contraseña=contraseña)
+                nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña, logo_url = "", "", "", "", "", "", "", "", "", ""
+            return render_template('editar_perfil.html', nombre=nombre, apellido=apellido, direccion=direccion, provincia=provincia, localidad=localidad, numero_telefono=numero_telefono, correo_electronico=correo_electronico, nombre_usuario=nombre_usuario, contraseña=contraseña, logo_url=logo_url)
     else:
         abort(403)
 
