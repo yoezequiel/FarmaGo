@@ -9,6 +9,7 @@
 <body>
     {% block content %}
     <h1>Carrito de Compras</h1>
+    <p class="success">{{ success }}</p>
     {% if productos_carrito %}
         <table>
             <tr>
@@ -30,6 +31,10 @@
                 <td><strong>${{ total_carrito }}</strong></td>
             </tr>
         </table>
+
+        <form action="{{ url_for('comprar_carrito') }}" method="post">
+            <button type="submit">Comprar</button>
+        </form>
     {% else %}
         <p>No hay productos en el carrito.</p>
     {% endif %}

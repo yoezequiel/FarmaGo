@@ -1,6 +1,7 @@
 from flask import Flask, g, session, request, abort, redirect, url_for, render_template
 import sqlite3
 from math import ceil
+from datetime import datetime
 from config import SECRET_KEY
 
 DATABASE = 'FarmaGo.db'
@@ -89,6 +90,25 @@ def create_tables():
                 FOREIGN KEY(id_carrito) REFERENCES carritos(id),
                 FOREIGN KEY(id_producto) REFERENCES productos(id)
             );
+            CREATE TABLE IF NOT EXISTS ventas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_vendedor INTEGER,
+                id_comprador INTEGER,
+                fecha TEXT,
+                total REAL,
+                FOREIGN KEY(id_vendedor) REFERENCES usuarios(id),  -- Vincular la venta con la farmacia vendedora
+                FOREIGN KEY(id_comprador) REFERENCES usuarios(id)  -- Vincular la venta con el comprador
+            );
+
+            CREATE TABLE IF NOT EXISTS detalles_venta (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id_venta INTEGER,
+                id_producto INTEGER,
+                cantidad INTEGER,
+                precio_unitario REAL,
+                FOREIGN KEY(id_venta) REFERENCES ventas(id),
+                FOREIGN KEY(id_producto) REFERENCES productos(id)
+            );
         ''')
         db.commit()
 
@@ -121,6 +141,10 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
+        cursor.execute('SELECT id FROM usuarios WHERE nombre_usuario = ?', (nombre_usuario,))
+        existing_username = cursor.fetchone()
+        if existing_username:
+            return "El nombre de usuario ya está en uso. Por favor, elige otro."
         cursor.execute('SELECT id FROM usuarios WHERE correo_electronico = ?', (correo_electronico,))
         existing_user = cursor.fetchone()
         if existing_user:
@@ -501,11 +525,14 @@ def agregar_al_carrito(id_producto):
                 cursor.execute('SELECT * FROM carritos WHERE id_usuario=? AND estado="abierto"', (user_id,))
                 carrito = cursor.fetchone()
                 if not carrito:
-                    cursor.execute('INSERT INTO carritos (id_usuario, fecha, estado, total) VALUES (?, ?, ?, ?)', (user_id, "2023-07-26", "abierto", 0))
+                    cursor.execute('INSERT INTO carritos (id_usuario, fecha, estado, total) VALUES (?, ?, ?, ?)', (user_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), "abierto", 0))
                     db.commit()
                     carrito_id = cursor.lastrowid
                 else:
                     carrito_id = carrito[0]
+                new_total = carrito[4] + (producto[5] * cantidad)
+                cursor.execute('UPDATE carritos SET total=? WHERE id=?', (new_total, carrito_id))
+                db.commit()
                 cursor.execute('INSERT OR REPLACE INTO detalles_carrito (id_carrito, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', (carrito_id, id_producto, cantidad, producto[5]))
                 db.commit()
                 return redirect(url_for('ver_detalle_producto', id_producto=id_producto))
@@ -513,6 +540,7 @@ def agregar_al_carrito(id_producto):
                 abort(404)
     else:
         abort(403)
+
 
 @app.route('/carrito', methods=['GET'])
 def ver_carrito():
@@ -535,6 +563,59 @@ def ver_carrito():
         return render_template('carrito.html', productos_carrito=productos_carrito, total_carrito=total_carrito)
     else:
         abort(403)
+
+@app.route('/carrito/comprar', methods=['POST'])
+def comprar_carrito():
+    user_id = session.get('user_id')
+    with app.app_context():
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute('SELECT * FROM carritos WHERE id_usuario = ?', (user_id,))
+        carrito = cursor.fetchone()
+
+        if carrito:
+            cursor.execute('SELECT * FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
+            detalles_carrito = cursor.fetchall()
+
+            if detalles_carrito:
+                total = sum(detalle[3] * detalle[4] for detalle in detalles_carrito)
+
+                cursor.execute('SELECT id_usuario FROM farmacia_productos WHERE id_producto = ?', (detalles_carrito[0][2],))
+                id_vendedor = cursor.fetchone()[0]
+
+                cursor.execute('INSERT INTO ventas (id_vendedor, id_comprador, fecha, total) VALUES (?, ?, ?, ?)', (id_vendedor, user_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), total))
+                venta_id = cursor.lastrowid
+
+                for detalle in detalles_carrito:
+                    cursor.execute('INSERT INTO detalles_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', (venta_id, detalle[2], detalle[3], detalle[4]))
+
+                    cursor.execute('UPDATE productos SET cantidad = cantidad - ? WHERE id = ?', (detalle[3], detalle[2]))
+
+                cursor.execute('DELETE FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
+                cursor.execute('DELETE FROM carritos WHERE id = ?', (carrito[0],))
+                db.commit()
+                success="success"
+                return render_template('carrito.html' ,success=success)
+    return redirect(url_for('ver_carrito'))
+
+
+@app.route('/ventas')
+def ventas():
+    user_role = session.get('user_role')
+    if user_role == 'farmacia':
+        farmacia_id = session.get('user_id')
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+
+            cursor.execute('SELECT v.id, v.fecha, v.total, u.nombre AS comprador_nombre, u.correo_electronico AS comprador_correo FROM ventas v INNER JOIN usuarios u ON v.id_comprador = u.id WHERE v.id_vendedor = ?', (farmacia_id,))
+            ventas = cursor.fetchall()
+
+        return render_template('ventas.html', ventas=ventas)
+    else:
+        abort(403) 
+
 
 @app.route('/logout')
 def logout():
