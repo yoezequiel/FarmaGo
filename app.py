@@ -228,6 +228,28 @@ def ver_detalle_producto(id_producto):
     else:
         abort(404)
 
+@app.route('/todas_farmacias', methods=['GET', 'POST'])
+def todas_farmacias():
+    if request.method == 'POST':
+        search_query = request.form.get('search_query', '').strip()
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            if search_query:
+                cursor.execute('SELECT * FROM usuarios WHERE role="farmacia" AND nombre LIKE ?', ('%' + search_query + '%',))
+            else:
+                cursor.execute('SELECT * FROM usuarios WHERE role="farmacia"')
+            farmacias = cursor.fetchall()
+    else:
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('SELECT * FROM usuarios WHERE role="farmacia"')
+            farmacias = cursor.fetchall()
+    return render_template('todas_farmacias.html', farmacias=farmacias)
+
+
+
 @app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
 def productos_por_farmacia(id_usuario):
     with app.app_context():
