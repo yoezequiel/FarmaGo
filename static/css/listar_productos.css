@@ -66,18 +66,25 @@ h1 {
     color: black;
 }
 
-.add-button {
-    display: block;
-    width: 200px;
-    margin: 20px auto;
-    text-align: center;
-    padding: 10px;
-    background-color: #f06723;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
+.page-item.active .page-link{
+    background-color: green !important;
+}
+.page-link{
+    color: black !important;
 }
 
-.add-button:hover {
-    background-color: #d95d1f;
+form{
+    display: flex;
+    justify-content: center;
+    background-color: rgb(1, 187, 1);
+}
+
+.btn-primary{
+    background-color: green !important;
+    border-color: green !important;
+}
+
+.btn-primary:hover{
+    background-color: rgb(2, 175, 2) !important;
+    border-color: black !important;
 }

@@ -7,6 +7,12 @@
 />
 {% endblock head %}
 {% block content %}
+<form action="{{ url_for('listar_productos') }}" method="get">
+    <div class="form-group">
+        <input type="text" class="form-control" name="search_query" placeholder="Buscar productos por nombre">
+    </div>
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
 <div class="productos">
     <h1>Listado de Productos</h1>
     <div class="product-list">
