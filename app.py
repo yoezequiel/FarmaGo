@@ -99,7 +99,6 @@ def create_tables():
                 FOREIGN KEY(id_vendedor) REFERENCES usuarios(id),  -- Vincular la venta con la farmacia vendedora
                 FOREIGN KEY(id_comprador) REFERENCES usuarios(id)  -- Vincular la venta con el comprador
             );
-
             CREATE TABLE IF NOT EXISTS detalles_venta (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_venta INTEGER,
@@ -128,7 +127,6 @@ def get_farmacia_info(id_usuario):
         result = cursor.fetchone()
         return result if result else None
 
-
 def get_user_info(id_usuario):
     with app.app_context():
         db = get_db()
@@ -136,6 +134,24 @@ def get_user_info(id_usuario):
         cursor.execute('SELECT nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña, logo_url FROM usuarios WHERE id = ?', (id_usuario,))
         result = cursor.fetchone()
         return result if result else None
+
+def get_user_role(nombre_usuario):
+    with app.app_context():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT role FROM usuarios WHERE nombre_usuario = ?', (nombre_usuario,))
+        result = cursor.fetchone()
+        return result[0] if result else None
+
+def authenticate_user(correo_electronico, contraseña):
+    with app.app_context():
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT id, role FROM usuarios WHERE correo_electronico = ? AND contraseña = ?', (correo_electronico, contraseña))
+        result = cursor.fetchone()
+        if result:
+            return result[0], result[1]
+        return None, None
 
 def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid=None,logo_url=None):
     with app.app_context():
@@ -161,6 +177,10 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
         else:
             cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url))
         db.commit()
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/perfil')
 def perfil():
@@ -233,10 +253,8 @@ def listar_productos():
                 cursor.execute('SELECT * FROM productos LIMIT ? OFFSET ?', (productos_por_pagina, inicio))
                 productos = cursor.fetchall()
             return render_template('listar_productos.html', productos=productos, pagina=pagina, total_paginas=total_paginas, user_role=user_role)
-
     else:
         abort(403)
-
 
 @app.route('/productos/<int:id_producto>', methods=['GET'])
 def ver_detalle_producto(id_producto):
@@ -272,8 +290,6 @@ def todas_farmacias():
             farmacias = cursor.fetchall()
     return render_template('todas_farmacias.html', farmacias=farmacias)
 
-
-
 @app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
 def productos_por_farmacia(id_usuario):
     with app.app_context():
@@ -283,28 +299,6 @@ def productos_por_farmacia(id_usuario):
         productos = cursor.fetchall()
         farmacia_info = get_farmacia_info(id_usuario)
     return render_template('productos_farmacia.html', productos=productos, farmacia_info=farmacia_info)
-
-def get_user_role(nombre_usuario):
-    with app.app_context():
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute('SELECT role FROM usuarios WHERE nombre_usuario = ?', (nombre_usuario,))
-        result = cursor.fetchone()
-        return result[0] if result else None
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-def authenticate_user(correo_electronico, contraseña):
-    with app.app_context():
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute('SELECT id, role FROM usuarios WHERE correo_electronico = ? AND contraseña = ?', (correo_electronico, contraseña))
-        result = cursor.fetchone()
-        if result:
-            return result[0], result[1]
-        return None, None
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -541,7 +535,6 @@ def agregar_al_carrito(id_producto):
     else:
         abort(403)
 
-
 @app.route('/carrito', methods=['GET'])
 def ver_carrito():
     user_id = session.get('user_id')
@@ -570,35 +563,26 @@ def comprar_carrito():
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-
         cursor.execute('SELECT * FROM carritos WHERE id_usuario = ?', (user_id,))
         carrito = cursor.fetchone()
-
         if carrito:
             cursor.execute('SELECT * FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
             detalles_carrito = cursor.fetchall()
-
             if detalles_carrito:
                 total = sum(detalle[3] * detalle[4] for detalle in detalles_carrito)
-
                 cursor.execute('SELECT id_usuario FROM farmacia_productos WHERE id_producto = ?', (detalles_carrito[0][2],))
                 id_vendedor = cursor.fetchone()[0]
-
                 cursor.execute('INSERT INTO ventas (id_vendedor, id_comprador, fecha, total) VALUES (?, ?, ?, ?)', (id_vendedor, user_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), total))
                 venta_id = cursor.lastrowid
-
                 for detalle in detalles_carrito:
                     cursor.execute('INSERT INTO detalles_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)', (venta_id, detalle[2], detalle[3], detalle[4]))
-
                     cursor.execute('UPDATE productos SET cantidad = cantidad - ? WHERE id = ?', (detalle[3], detalle[2]))
-
                 cursor.execute('DELETE FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
                 cursor.execute('DELETE FROM carritos WHERE id = ?', (carrito[0],))
                 db.commit()
                 success="success"
                 return render_template('carrito.html' ,success=success)
     return redirect(url_for('ver_carrito'))
-
 
 @app.route('/ventas')
 def ventas():
@@ -608,14 +592,11 @@ def ventas():
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
-
             cursor.execute('SELECT v.id, v.fecha, v.total, u.nombre AS comprador_nombre, u.correo_electronico AS comprador_correo FROM ventas v INNER JOIN usuarios u ON v.id_comprador = u.id WHERE v.id_vendedor = ?', (farmacia_id,))
             ventas = cursor.fetchall()
-
         return render_template('ventas.html', ventas=ventas)
     else:
         abort(403) 
-
 
 @app.route('/logout')
 def logout():
