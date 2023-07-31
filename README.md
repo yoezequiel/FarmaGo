@@ -12,10 +12,6 @@ Con FarmaGo, los usuarios pueden realizar pedidos de productos de farmacia desde
 
 - **Pedidos en Línea:** Los usuarios pueden realizar pedidos de forma sencilla y rápida a través de la aplicación, eliminando la necesidad de desplazarse físicamente a la farmacia.
 
-- **Entrega a Domicilio:** FarmaGo ofrece la opción de entrega a domicilio, brindando comodidad adicional a los clientes, especialmente en situaciones en las que la movilidad puede ser un desafío.
-
-- **Rastreo de Pedidos:** Los usuarios pueden hacer un seguimiento de sus pedidos en tiempo real, lo que les permite conocer el estado actual y el tiempo estimado de entrega.
-
 - **Registro de Usuarios:** FarmaGo ofrece la posibilidad de registrar cuentas de usuarios, lo que permite un proceso de compra más rápido en futuros pedidos y la posibilidad de recibir ofertas y promociones personalizadas.
 
 ## Tecnologías y Plataformas
