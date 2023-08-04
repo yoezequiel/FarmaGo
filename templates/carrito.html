@@ -10,7 +10,7 @@
     {% block content %}
     <h1>Carrito de Compras</h1>
     <p class="success">{{ success }}</p>
-    {% if productos_carrito %}
+    {% if carrito %}
         <table>
             <tr>
                 <th>Nombre</th>
@@ -18,12 +18,16 @@
                 <th>Cantidad</th>
                 <th>Total</th>
             </tr>
-            {% for producto in productos_carrito %}
+            {% for producto in carrito %}
             <tr onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';">
                 <td>{{ producto[1] }}</td>
                 <td>${{ producto[2] }}</td>
                 <td>{{ producto[3] }}</td>
-                <td>${{ producto[2] * producto[3] }}</td>
+                <td>
+                    <form action="{{ url_for('eliminar_del_carrito', id_detalle_carrito=producto[0]) }}" method="post">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
             <tr>

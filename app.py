@@ -607,6 +607,20 @@ def agregar_al_carrito(id_producto):
         abort(403)
 
 
+@app.route('/eliminar_del_carrito/<int:id_detalle_carrito>', methods=['POST'])
+def eliminar_del_carrito(id_detalle_carrito):
+    user_id = session.get('user_id')
+    if user_id:
+        with app.app_context():
+            db = get_db()
+            cursor = db.cursor()
+            cursor.execute('DELETE FROM detalles_carrito WHERE id = ? AND id_carrito IN (SELECT id FROM carritos WHERE id_usuario = ? AND estado = "abierto")', (id_detalle_carrito, user_id))
+            db.commit()
+            return redirect(url_for('ver_carrito'))
+    else:
+        abort(403)
+
+
 @app.route('/carrito', methods=['GET'])
 def ver_carrito():
     user_id = session.get('user_id')
@@ -617,15 +631,14 @@ def ver_carrito():
             cursor.execute('SELECT * FROM carritos WHERE id_usuario=? AND estado="abierto"', (user_id,))
             carrito = cursor.fetchone()
             if carrito:
-                carrito_id = carrito[0]
-                cursor.execute('SELECT p.id, p.nombre, p.precio_unitario, dc.cantidad FROM detalles_carrito AS dc INNER JOIN productos AS p ON dc.id_producto = p.id WHERE dc.id_carrito = ?', (carrito_id,))
-                productos_carrito = cursor.fetchall()
-                total_carrito = sum(producto[2] * producto[3] for producto in productos_carrito)
-            else:
-                carrito_id = None
-                productos_carrito = []
+                cursor.execute('SELECT dc.id, p.id, p.nombre, p.precio_unitario, dc.cantidad FROM detalles_carrito dc JOIN productos p ON dc.id_producto = p.id JOIN carritos c ON dc.id_carrito = c.id WHERE c.id_usuario = ? AND c.estado = "abierto"', (user_id,))
+                carrito = cursor.fetchall()
                 total_carrito = 0
-        return render_template('carrito.html', productos_carrito=productos_carrito, total_carrito=total_carrito)
+                for detalle_carrito in carrito:
+                    total_carrito += detalle_carrito[3] * detalle_carrito[4]
+                return render_template('carrito.html', carrito=carrito, total_carrito=total_carrito)
+            else:
+                return redirect(url_for('listar_productos'))
     else:
         abort(403)
 
