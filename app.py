@@ -64,7 +64,6 @@ def create_tables():
                 FOREIGN KEY(id_usuario) REFERENCES usuarios(id),
                 FOREIGN KEY(id_producto) REFERENCES productos(id)
             );
-            
             CREATE TABLE IF NOT EXISTS inventario (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_farmacia INTEGER,
@@ -73,7 +72,6 @@ def create_tables():
                 FOREIGN KEY(id_farmacia) REFERENCES usuarios(id),
                 FOREIGN KEY(id_producto) REFERENCES productos(id)
             );
-            
             CREATE TABLE IF NOT EXISTS carritos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_usuario INTEGER,
@@ -97,8 +95,8 @@ def create_tables():
                 id_comprador INTEGER,
                 fecha TEXT,
                 total REAL,
-                FOREIGN KEY(id_vendedor) REFERENCES usuarios(id),  -- Vincular la venta con la farmacia vendedora
-                FOREIGN KEY(id_comprador) REFERENCES usuarios(id)  -- Vincular la venta con el comprador
+                FOREIGN KEY(id_vendedor) REFERENCES usuarios(id),
+                FOREIGN KEY(id_comprador) REFERENCES usuarios(id)
             );
             CREATE TABLE IF NOT EXISTS detalles_venta (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -179,7 +177,6 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
             cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url))
         db.commit()
 
-
 def crear_enlace_de_pago(producto, precio, moneda='ARS', cantidad=1, descripcion=''):
     mp = mercadopago.SDK(access_token)
     preference_data = {
@@ -239,27 +236,19 @@ def farmacia_inventario():
     else:
         abort(403)
 
-# app.py
-
 @app.route('/productos', methods=['GET'])
 def listar_productos():
     user_role = session.get('user_role')
     if user_role == 'farmacia' or user_role == 'cliente':
         pagina = request.args.get('pagina', default=1, type=int)
         productos_por_pagina = 9
-        categoria_id = request.args.get('categoria_id', default=None, type=int)  # Obtener el ID de la categoría seleccionada
+        categoria_id = request.args.get('categoria_id', default=None, type=int)
         search_query = request.args.get('search_query')
-
-
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
-
-            # Obtener la lista de categorías para mostrar en el campo de selección
             cursor.execute('SELECT id, nombre FROM categorias')
             categorias = cursor.fetchall()
-
-            # Filtrar productos por categoría si se ha seleccionado alguna
             if categoria_id is not None:
                 cursor.execute('SELECT COUNT(*) FROM productos WHERE id_categoria = ?', (categoria_id,))
                 total_productos = cursor.fetchone()[0]
@@ -297,7 +286,6 @@ def listar_productos():
                 inicio = (pagina - 1) * productos_por_pagina
                 cursor.execute('SELECT * FROM productos LIMIT ? OFFSET ?', (productos_por_pagina, inicio))
                 productos = cursor.fetchall()
-
         return render_template('listar_productos.html', productos=productos, pagina=pagina, total_paginas=total_paginas, user_role=user_role, categorias=categorias, categoria_id=categoria_id)
     else:
         abort(403)
@@ -311,11 +299,8 @@ def ver_detalle_producto(id_producto):
         producto = cursor.fetchone()
         farmacia_info = get_farmacia_info(producto[7])  
         id_farmacia = producto[7]
-
-        # Obtener el nombre de la categoría del producto
         cursor.execute('SELECT nombre FROM categorias WHERE id=?', (producto[6],))
         categoria_nombre = cursor.fetchone()[0]
-
     if producto and farmacia_info:
         return render_template('detalle_producto.html', producto=producto, farmacia_info=farmacia_info, id_farmacia=id_farmacia, categoria_nombre=categoria_nombre)
     else:
@@ -328,16 +313,9 @@ def productos_por_categoria(id_categoria):
         cursor = db.cursor()
         cursor.execute('SELECT * FROM productos WHERE id_categoria = ?', (id_categoria,))
         productos = cursor.fetchall()
-
-        # Obtener el nombre de la categoría para mostrar en el encabezado
         cursor.execute('SELECT nombre FROM categorias WHERE id = ?', (id_categoria,))
         categoria_nombre = cursor.fetchone()[0]
-
     return render_template('productos_por_categoria.html', productos=productos, categoria_nombre=categoria_nombre)
-
-
-
-
 
 @app.route('/todas_farmacias', methods=['GET', 'POST'])
 def todas_farmacias():
@@ -398,7 +376,7 @@ def register_cliente():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'cliente'
-        logo_url = request.form.get('logo_url')  # Get the logo URL from the form
+        logo_url = request.form.get('logo_url')
         error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url=logo_url)
         if error_message:
             return render_template('register.html', error=error_message)
@@ -419,8 +397,7 @@ def register_farmacia():
         nombre_usuario = request.form['nombre_usuario']
         contraseña = request.form['contraseña']
         role = 'farmacia'
-        logo_url = request.form.get('logo_url')  # Get the logo URL from the form
-
+        logo_url = request.form.get('logo_url')
         error_message = register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico,logo_url=logo_url)
         if error_message:
             return render_template('register.html', error=error_message)
@@ -594,7 +571,6 @@ def agregar_al_carrito(id_producto):
                     carrito_id = carrito[0]
                 else:
                     carrito_id = carrito[0]
-                # Calcular el nuevo total sumando el precio_unitario del producto agregado multiplicado por la cantidad
                 new_total = carrito[4] + (producto[5] * cantidad)
                 cursor.execute('UPDATE carritos SET total=? WHERE id=?', (new_total, carrito_id))
                 db.commit()
@@ -605,7 +581,6 @@ def agregar_al_carrito(id_producto):
                 abort(404)
     else:
         abort(403)
-
 
 @app.route('/eliminar_del_carrito/<int:id_detalle_carrito>', methods=['POST'])
 def eliminar_del_carrito(id_detalle_carrito):
@@ -619,7 +594,6 @@ def eliminar_del_carrito(id_detalle_carrito):
             return redirect(url_for('ver_carrito'))
     else:
         abort(403)
-
 
 @app.route('/carrito', methods=['GET'])
 def ver_carrito():
@@ -655,17 +629,16 @@ def comprar_carrito():
             detalles_carrito = cursor.fetchall()
             if detalles_carrito:
                 total = sum(detalle[3] * detalle[4] for detalle in detalles_carrito)
-                cursor.execute('SELECT id_usuario FROM farmacia_productos WHERE id_producto = ?', (detalles_carrito[0][2],))
-                id_vendedor = cursor.fetchone()[0]
-                nombre_producto = "Compra en Tienda"
-                precio_producto = total
-                cantidad_producto = 1
+                nombres_productos = []
+                for detalle in detalles_carrito:
+                    cursor.execute('SELECT nombre FROM productos WHERE id = ?', (detalle[2],))
+                    nombre_producto = cursor.fetchone()[0]
+                    nombres_productos.append(nombre_producto)
+                cantidad_producto = len(detalles_carrito)
                 descripcion_producto = "Productos en el carrito de compra"
-                link_pago = crear_enlace_de_pago(nombre_producto, precio_producto, cantidad=cantidad_producto, descripcion=descripcion_producto)
+                link_pago = crear_enlace_de_pago(nombres_productos, total, cantidad=cantidad_producto, descripcion=descripcion_producto)
                 db.commit()
-            
                 return render_template('carrito_pago.html', link_pago=link_pago)
-
     return redirect(url_for('ver_carrito'))
 
 @app.route('/pago_exitoso', methods=['GET'])
