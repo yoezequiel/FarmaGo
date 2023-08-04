@@ -10,20 +10,16 @@
     <h1>Inventario de la Farmacia</h1>
     <table border="1">
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
-            <th>Descripción</th>
             <th>Cantidad</th>
             <th>Precio Unitario</th>
             <th>Acciones</th>
         </tr>
         {% for producto in inventario %}
         <tr>
-            <td>{{ producto[0] }}</td>
             <td>{{ producto[1] }}</td>
             <td>{{ producto[3] }}</td>
             <td>{{ producto[4] }}</td>
-            <td>{{ producto[5] }}</td>
             <td>
                 <a href="{{ url_for('editar_producto', id_producto=producto[0]) }}">Editar</a>
                 <form action="{{ url_for('eliminar_producto', id_producto=producto[0]) }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">

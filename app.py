@@ -230,7 +230,7 @@ def farmacia_inventario():
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('SELECT p.id, p.nombre, COALESCE(i.cantidad_disponible, 0) as cantidad_disponible FROM productos p LEFT JOIN inventario i ON p.id = i.id_producto AND i.id_farmacia = ? WHERE p.id_farmacia = ?', (farmacia_id, farmacia_id))
+                cursor.execute('SELECT p.id, p.nombre, COALESCE(i.cantidad_disponible, 0) as cantidad_disponible, p.cantidad, p.precio_unitario FROM productos p LEFT JOIN inventario i ON p.id = i.id_producto AND i.id_farmacia = ? WHERE p.id_farmacia = ?', (farmacia_id, farmacia_id))
                 inventario = cursor.fetchall()
         return render_template('farmacia_inventario.html', inventario=inventario)
     else:
@@ -435,7 +435,7 @@ def editar_perfil():
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('UPDATE usuarios SET nombre=?, apellido=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=?, contraseña=?, nombre_usuario=? logo_url=? WHERE id=?',
+                cursor.execute('UPDATE usuarios SET nombre=?, apellido=?, direccion=?, provincia=?, localidad=?, numero_telefono=?, correo_electronico=?, contraseña=?, nombre_usuario=?, logo_url=? WHERE id=?',
                             (nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, contraseña, nombre_usuario, logo_url, user_id))
                 db.commit()
             return redirect(url_for('perfil'))
@@ -515,7 +515,7 @@ def editar_producto(id_producto):
                 cursor.execute('UPDATE productos SET nombre=?, descripcion=?, precio_unitario=?, cantidad=? WHERE id=?',
                             (nombre, descripcion, precio_unitario, cantidad, id_producto))
                 db.commit()
-            return redirect(url_for('listar_productos'))
+            return redirect(url_for('dashboard'))
         else:
             with app.app_context():
                 db = get_db()
@@ -608,8 +608,7 @@ def ver_carrito():
                 cursor.execute('SELECT dc.id, p.id, p.nombre, p.precio_unitario, dc.cantidad FROM detalles_carrito dc JOIN productos p ON dc.id_producto = p.id JOIN carritos c ON dc.id_carrito = c.id WHERE c.id_usuario = ? AND c.estado = "abierto"', (user_id,))
                 carrito = cursor.fetchall()
                 total_carrito = 0
-                for detalle_carrito in carrito:
-                    total_carrito += detalle_carrito[3] * detalle_carrito[4]
+                total_carrito = sum(detalle[3] * detalle[4] for detalle in carrito)
                 return render_template('carrito.html', carrito=carrito, total_carrito=total_carrito)
             else:
                 return redirect(url_for('listar_productos'))
@@ -632,11 +631,10 @@ def comprar_carrito():
                 nombres_productos = []
                 for detalle in detalles_carrito:
                     cursor.execute('SELECT nombre FROM productos WHERE id = ?', (detalle[2],))
-                    nombre_producto = cursor.fetchone()[0]
+                    nombre_producto = cursor.fetchone()
                     nombres_productos.append(nombre_producto)
-                cantidad_producto = len(detalles_carrito)
-                descripcion_producto = "Productos en el carrito de compra"
-                link_pago = crear_enlace_de_pago(nombres_productos, total, cantidad=cantidad_producto, descripcion=descripcion_producto)
+                descripcion_producto = len(detalles_carrito)
+                link_pago = crear_enlace_de_pago(nombres_productos, total, cantidad=1, descripcion=descripcion_producto)
                 db.commit()
                 return render_template('carrito_pago.html', link_pago=link_pago)
     return redirect(url_for('ver_carrito'))
