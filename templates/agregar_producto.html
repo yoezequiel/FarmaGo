@@ -8,31 +8,59 @@
 </head>
 <body>
     {% block content %}
-    <h1>Agregar Producto</h1>
-    <form method="post" action="{{ url_for('agregar_producto') }}">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
-        <br>
-        <label for="imagen">Imagen (URL):</label>
-        <input type="text" id="imagen" name="imagen" required>
-        <br>
-        <label for="descripcion">Descripción:</label>
-        <textarea id="descripcion" name="descripcion" required></textarea>
-        <br>
-        <label for="cantidad">Cantidad:</label>
-        <input type="number" id="cantidad" name="cantidad" min="1" required>
-        <br>
-        <label for="precio_unitario">Precio Unitario:</label>
-        <input type="number" id="precio_unitario" name="precio_unitario" min="0" step="0.01" required>
-        <br>
-        <label for="categoria">Categoría:</label>
-        <select id="categoria" name="categoria" required>
-            {% for categoria in categorias %}
-            <option value="{{ categoria[0] }}">{{ categoria[1] }}</option>
-            {% endfor %}
-        </select>
-        <br>
-        <input type="submit" value="Agregar Producto">
-    </form>
+    <div class="left-column">
+        <img src="/static/img/logo.png" alt="">
+    </div>
+    <div class="right-column">
+        <h1>Agregar Producto</h1>
+        <form method="post" action="{{ url_for('agregar_producto') }}">
+            <div class="row">
+                <label for="nombre" class="col-sm-2 col-form-label col-form-label-lg">Nombre:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="nombre" name="nombre" placeholder="Ingresa tu Nombre" required>
+                </div>
+            </div>
+            <div class="row">
+                <label for="imagen" class="col-sm-2 col-form-label col-form-label-lg">Imagen (URL):</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="imagen" name="imagen" placeholder="Ingresa la URL de la Imagen" required>
+                </div>
+            </div>
+            <div class="row">
+                <label for="descripcion" class="col-sm-2 col-form-label col-form-label-lg">Descripción:</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control form-control-lg" id="descripcion" name="descripcion" placeholder="Ingresa la Descripción" required></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <label for="cantidad" class="col-sm-2 col-form-label col-form-label-lg">Cantidad:</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control form-control-lg" id="cantidad" name="cantidad" min="1" placeholder="Ingresa la Cantidad" required>
+                </div>
+            </div>
+            <div class="row">
+                <label for="precio_unitario" class="col-sm-2 col-form-label col-form-label-lg">Precio Unitario:</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control form-control-lg" id="precio_unitario" name="precio_unitario" min="0" step="0.01" placeholder="Ingresa el Precio Unitario" required>
+                </div>
+            </div>
+            <div class="row">
+                <label for="categoria" class="col-sm-2 col-form-label col-form-label-lg">Categoría:</label>
+                <div class="col-sm-10">
+                    <select class="form-control form-control-lg" id="categoria" name="categoria" required>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria[0] }}">{{ categoria[1] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <input type="submit" class="btn btn-primary btn-lg" value="Agregar Producto">
+                </div>
+            </div>
+        </form>
+    </div>
     {% endblock content %}
 </body>

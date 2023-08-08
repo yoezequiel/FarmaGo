@@ -2,7 +2,7 @@
 
 <head>
     {% block head %}
-    <title>Editar perfil</title>
+    <title>Editar perfil | {{ nombre_usuario }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/editar_perfil.css') }}">
     {% endblock head %}
 </head>
@@ -13,7 +13,7 @@
         <img src="/static/img/logo.png" alt="">
     </div>
     <div class="right-column">
-    <h1>Editar Información</h1>
+    <h1>Editar Información de {{ nombre_usuario }}</h1>
     <div class="container">
         <form method="post">
             <div class="row mb-3">

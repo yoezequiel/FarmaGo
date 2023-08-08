@@ -506,21 +506,22 @@ def editar_producto(id_producto):
                 abort(403)
         if request.method == 'POST':
             nombre = request.form['nombre']
+            imagen=request.form['imagen']
             descripcion = request.form['descripcion']
             precio_unitario = float(request.form['precio_unitario'])
             cantidad = int(request.form['cantidad'])
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('UPDATE productos SET nombre=?, descripcion=?, precio_unitario=?, cantidad=? WHERE id=?',
-                            (nombre, descripcion, precio_unitario, cantidad, id_producto))
+                cursor.execute('UPDATE productos SET nombre=?, imagen=?,descripcion=?, precio_unitario=?, cantidad=? WHERE id=?',
+                            (nombre, imagen,descripcion, precio_unitario, cantidad, id_producto))
                 db.commit()
             return redirect(url_for('dashboard'))
         else:
             with app.app_context():
                 db = get_db()
                 cursor = db.cursor()
-                cursor.execute('SELECT nombre, descripcion, precio_unitario, cantidad FROM productos WHERE id=?',
+                cursor.execute('SELECT nombre, imagen,descripcion, precio_unitario, cantidad FROM productos WHERE id=?',
                             (id_producto,))
                 producto = cursor.fetchone()
             if producto:
