@@ -625,17 +625,12 @@ def comprar_carrito():
         cursor.execute('SELECT * FROM carritos WHERE id_usuario = ?', (user_id,))
         carrito = cursor.fetchone()
         if carrito:
-            cursor.execute('SELECT * FROM detalles_carrito WHERE id_carrito = ?', (carrito[0],))
+            cursor.execute('SELECT dc.id, p.nombre, dc.precio_unitario, dc.cantidad FROM detalles_carrito dc INNER JOIN productos p ON dc.id_producto = p.id WHERE dc.id_carrito = ?', (carrito[0],))
             detalles_carrito = cursor.fetchall()
             if detalles_carrito:
-                total = sum(detalle[3] * detalle[4] for detalle in detalles_carrito)
-                nombres_productos = []
-                for detalle in detalles_carrito:
-                    cursor.execute('SELECT nombre FROM productos WHERE id = ?', (detalle[2],))
-                    nombre_producto = cursor.fetchone()
-                    nombres_productos.append(nombre_producto)
-                descripcion_producto = len(detalles_carrito)
-                link_pago = crear_enlace_de_pago(nombres_productos, total, cantidad=1, descripcion=descripcion_producto)
+                total = sum(detalle[2] * detalle[3] for detalle in detalles_carrito)
+                descripcion_productos = "\n".join(f"{detalle[1]} (Precio unitario: ${detalle[2]:.2f}, Cantidad: {detalle[3]}) | " for detalle in detalles_carrito)
+                link_pago = crear_enlace_de_pago(descripcion_productos, total)
                 db.commit()
                 return render_template('carrito_pago.html', link_pago=link_pago)
     return redirect(url_for('ver_carrito'))
