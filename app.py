@@ -122,7 +122,7 @@ def get_farmacia_info(id_usuario):
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
-        cursor.execute('SELECT nombre, direccion, provincia, localidad, numero_telefono, correo_electronico FROM usuarios WHERE id = ?', (id_usuario,))
+        cursor.execute('SELECT nombre, apellido, direccion, provincia, localidad, numero_telefono, correo_electronico, nombre_usuario, contraseña, logo_url FROM usuarios WHERE id = ?', (id_usuario,))
         result = cursor.fetchone()
         return result if result else None
 
