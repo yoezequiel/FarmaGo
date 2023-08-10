@@ -1,0 +1,3 @@
+services:
+  - name: FarmaGo
+    startCommand: gunicorn app:app
