@@ -1,0 +1,77 @@
+{% extends 'base.html' %} 
+{% block head %}
+<title>Listado de productos</title>
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/listar_productos.css') }}"
+/>
+{% endblock head %}
+{% block content %}
+
+<nav class="navbar2">
+    <div id="busqueda">
+        <form action="{{ url_for('listar_productos') }}" method="get">
+            <div class="form-group">
+                <input type="text" class="form-control" name="search_query" placeholder="Buscar productos por nombre">
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+    </div>
+    <div id="filtro">
+        <form method="GET" action="{{ url_for('listar_productos') }}" class="mb-4">
+            <div class="form-group">
+                <select class="form-control" id="categoria" name="categoria_id">
+                <option value="">Seleccionar Categoría</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria[0] }}" {% if categoria_id == categoria[0] %}selected{% endif %}>{{ categoria[1] }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+    </div>
+</nav>
+<div class="productos">
+    <h1>Listado de Productos</h1>
+    <div class="product-list">
+        {% for producto in productos %}
+        <div
+            class="product-card"
+            onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';"
+        >
+            <div class="product-image">
+                <img src="{{ producto[2] }}" alt="">
+            </div>
+            <div class="product-info">
+                <h2 class="product-name">{{ producto[1] }}</h2>
+                <p class="product-description">{{ producto[3] }}</p>
+                <div class="product-details">
+                    <p class="product-quantity">
+                        Cantidad Disponible: {{ producto[4] }}
+                    </p>
+                    <p class="product-price">Precio: {{ producto[5] }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <nav aria-label="Navegación de páginas">
+        <ul class="pagination">
+            {% if pagina > 1 %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', pagina=pagina-1) }}">Anterior</a></li>
+            {% endif %}
+            {% for num_pagina in range(1, total_paginas + 1) %}
+                {% if num_pagina == pagina %}
+                    <li class="page-item active"><span class="page-link">{{ num_pagina }}</span></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', pagina=num_pagina) }}">{{ num_pagina }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if pagina < total_paginas %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('listar_productos', pagina=pagina+1) }}">Siguiente</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock content %}

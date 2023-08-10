@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Eliminar Cuenta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/eliminar_cuenta') }}">
+
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <h1>Eliminar Cuenta</h1>
+    <p>¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.</p>
+    <form method="post">
+        <input type="submit" value="Eliminar Cuenta">
+    </form>
+    {% endblock content %}
+</body>

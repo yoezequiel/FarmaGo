@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Detalle Producto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detalle_producto.css') }}">
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <section class="product-details">
+        <div class="product-image">
+            <img src="{{ producto[2] }}" alt="">
+        </div>
+        <div class="product-info">
+            <h2>{{ producto[1] }}</h2>
+            <p><strong>Descripción:</strong> <br>{{ producto[3] }}</p>
+            <p><strong>Precio:</strong> ${{ producto[5] }}</p>
+            <p><strong>Cantidad Disponible:</strong> {{ producto[4] }}</p>
+            <p><strong>Categoria:</strong><a href="{{ url_for('productos_por_categoria', id_categoria=producto[6]) }}">{{ categoria_nombre }}</a></p> <!-- Enlazar al listado de productos por categoría -->
+            <p><strong>Farmacia:</strong><a href="{{ url_for('productos_por_farmacia', id_usuario=id_farmacia) }}"> {{ farmacia_info[0] }}</a></p>
+            <form method="post" action="{{ url_for('agregar_al_carrito', id_producto=producto[0]) }}">
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" id="cantidad" name="cantidad" min="1" max="{{ producto[4] }}" value="1">
+                <br>
+                <br>
+                <input type="submit" value="Agregar al Carrito">
+            </form>
+            
+            <!--
+                <p><a href="{{ url_for('listar_productos') }}">Volver a la lista de productos</a></p>
+            -->
+        </div>
+    </section>
+    {% endblock content%}
+</body>

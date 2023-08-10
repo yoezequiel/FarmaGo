@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Productos de la Farmacia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/productos_farmacia.css') }}">
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <div class="productos">
+        <h1>Listado de Productos</h1>
+        {% if user_role == 'farmacia' %}
+        <a href="/productos/agregar" class="add-button">Agregar Producto</a>
+        {% endif %}
+        <div class="product-list">
+            {% for producto in productos %}
+            <div
+                class="product-card"
+                onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';"
+            >
+                <div class="product-image">
+                    <img src="{{ producto[2] }}" alt="">
+                </div>
+                <div class="product-info">
+                    <h2 class="product-name">{{ producto[1] }}</h2>
+                    <p class="product-description">{{ producto[3] }}</p>
+                    <div class="product-details">
+                        <p class="product-quantity">
+                            Cantidad Disponible: {{ producto[4] }}
+                        </p>
+                        <p class="product-price">Precio: {{ producto[5] }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endblock content%}
+</body>

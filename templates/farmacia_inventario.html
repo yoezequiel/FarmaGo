@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Inventario de la Farmacia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/farmacia_inventario.css') }}">
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <h1>Inventario de la Farmacia</h1>
+    <table border="1">
+        <tr>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Acciones</th>
+        </tr>
+        {% for producto in inventario %}
+        <tr>
+            <td>{{ producto[1] }}</td>
+            <td>{{ producto[3] }}</td>
+            <td>${{ producto[4] }}</td>
+            <td>
+                <a id="a" href="{{ url_for('editar_producto', id_producto=producto[0]) }}">Editar</a>
+                <form action="{{ url_for('eliminar_producto', id_producto=producto[0]) }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
+                    <input type="submit" value="Eliminar">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('agregar_producto') }}">Agregar Nuevo Producto</a></p>
+    <p><a href="{{ url_for('dashboard') }}">Volver al panel</a></p>
+    {% endblock content %}
+</body>

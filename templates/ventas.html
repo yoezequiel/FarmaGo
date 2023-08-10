@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Ventas Realizadas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ventas.css') }}">
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    
+    <h1>Ventas Realizadas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Comprador</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta[1] }}</td>
+                <td>{{ venta[2] }}</td>
+                <td>{{ venta[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock content %}
+</body>

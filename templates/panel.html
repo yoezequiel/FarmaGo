@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/panel.css') }}">
+
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <h1>Bienvenido a tu Panel de Control</h1>
+    <p>Aquí puedes gestionar tus productos e inventario.</p>
+    <a id="a" href="/editar_perfil">Editar información de la farmacia</a>
+    <a id="a" href="/farmacia/inventario">Gestionar inventario</a>
+    <a id="a" href="/ventas">Ventas</a>
+    {% endblock content %}
+</body>

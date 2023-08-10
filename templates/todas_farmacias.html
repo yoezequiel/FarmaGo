@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Todas las Farmacias</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/todas_farmacias.css') }}">
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <form action="{{ url_for('todas_farmacias') }}" method="post">
+        <div class="form-group">
+            <input type="text" class="form-control" name="search_query" placeholder="Buscar farmacias por nombre">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+    <h1>Todas las Farmacias</h1>
+    <div class="container">
+        {% for farmacia in farmacias %}
+            <div class="card" style="width: 18rem;">
+                <img src="{{ farmacia[11] }}" class="card-img-top" alt="Logo de la Farmacia (no disponible)">
+                <div class="card-body">
+                    <h5 class="card-title">{{ farmacia[1] }}</h5>
+                    <p class="card-text">Dirección: {{ farmacia[3] }}</p>
+                    <a href="{{ url_for('productos_por_farmacia', id_usuario=farmacia[0]) }}" class="btn btn-primary">Ver Productos</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endblock content%}
+</body>

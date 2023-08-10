@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+<head>
+    {% block head %}
+    <title>Editar perfil | {{ nombre_usuario }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editar_perfil.css') }}">
+    {% endblock head %}
+</head>
+
+<body>
+    {% block content %}
+    <div class="left-column">
+        <img src="/static/img/logo.png" alt="">
+    </div>
+    <div class="right-column">
+    <h1>Editar Información de {{ nombre_usuario }}</h1>
+    <div class="container">
+        <form method="post">
+            <div class="row mb-3">
+                <label for="nombre" class="col-sm-2 col-form-label col-form-label-lg">Nombre:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="nombre" name="nombre" value="{{ nombre }}" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <label for="apellido" class="col-sm-2 col-form-label col-form-label-lg">Apellido:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="apellido" name="apellido" value="{{ apellido }}" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <label for="direccion" class="col-sm-2 col-form-label col-form-label-lg">Dirección:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="direccion" name="direccion" value="{{ direccion }}" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <label for="numero_telefono" class="col-sm-2 col-form-label col-form-label-lg">Número de Teléfono:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="numero_telefono" name="numero_telefono" value="{{ numero_telefono }}" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <label for="provincia" class="col-sm-2 col-form-label col-form-label-lg">Provincia:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="provincia" name="provincia" value="{{ provincia }}" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <label for="localidad" class="col-sm-2 col-form-label col-form-label-lg">Localidad:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="localidad" name="localidad" value="{{ localidad }}" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <label for="correo_electronico" class="col-sm-2 col-form-label col-form-label-lg">Correo Electrónico:</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control form-control-lg" id="correo_electronico" name="correo_electronico" value="{{ correo_electronico }}" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <label for="nombre_usuario" class="col-sm-2 col-form-label col-form-label-lg">Nombre de Usuario:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="nombre_usuario" name="nombre_usuario" value="{{ nombre_usuario }}" required>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="logo_url" class="col-sm-2 col-form-label col-form-label-lg">Logo:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control form-control-lg" id="logo_url" name="logo_url" placeholder="Ingresa tu nuevo Logo" value="{{ logo_url }}" required>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <label for="contraseña" class="col-sm-2 col-form-label col-form-label-lg">Contraseña:</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control form-control-lg" id="contraseña" name="contraseña" placeholder="Ingresa tu contraseña" required>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+                <div class="col-sm-10 offset-sm-2">
+                    <input type="submit" class="btn btn-primary" value="Guardar Cambios">
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    </div>
+    {% endblock content %}
+</body>
