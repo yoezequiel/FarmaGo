@@ -22,7 +22,7 @@ img{
 
 .right-column h1 {
     font-size: 35px;
-    background-color: rgb(153, 255, 0);
+    background-color: #00FF63;
     padding: 30px;
     padding-top: 90px;
     text-align: center;
@@ -36,7 +36,7 @@ img{
     margin: 10px auto;
     text-decoration: none;
     color: white;
-    background-color: rgb(153, 255, 0);
+    background-color: #00FF63;
     text-align: center;
     padding: 5px 10px;
     border-radius: 10px;
@@ -53,7 +53,7 @@ img{
 
 #a:hover {
     color: white;
-    background-color: rgb(79, 132, 0);
+    background-color: green;
     border: 2px solid black;
 }
 
