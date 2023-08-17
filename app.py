@@ -336,7 +336,7 @@ def todas_farmacias():
             cursor.execute('SELECT * FROM usuarios WHERE role="farmacia"')
             farmacias = cursor.fetchall()
     return render_template('todas_farmacias.html', farmacias=farmacias)
-
+    
 @app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
 def productos_por_farmacia(id_usuario):
     with app.app_context():
@@ -685,11 +685,11 @@ def ventas():
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
-            cursor.execute('SELECT v.id, v.fecha, v.total, u.nombre AS comprador_nombre, u.correo_electronico AS comprador_correo FROM ventas v INNER JOIN usuarios u ON v.id_comprador = u.id WHERE v.id_vendedor = ?', (farmacia_id,))
+            cursor.execute('SELECT v.id, v.fecha, v.total, u.nombre AS comprador_nombre, u.correo_electronico AS comprador_correo, u.direccion AS comprador_direccion FROM ventas v INNER JOIN usuarios u ON v.id_comprador = u.id WHERE v.id_vendedor = ?', (farmacia_id,))
             ventas = cursor.fetchall()
         return render_template('ventas.html', ventas=ventas)
     else:
-        abort(403) 
+        abort(403)
 
 @app.route('/logout')
 def logout():
