@@ -5,6 +5,379 @@ import mercadopago
 from datetime import datetime
 from config import SECRET_KEY, access_token
 
+import nltk
+from nltk.corpus import wordnet
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+import string
+
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+nltk.download('stopwords')
+
+knowledge_base = {
+    "Hola":
+        "¡Hola! Bienvenido a nuestra aplicación de pedidos en farmacias. ¿En qué puedo ayudarte hoy?",
+    "¿Cómo funciona la aplicación?":
+        "Nuestra aplicación te permite realizar pedidos de productos farmacéuticos desde tu hogar. Puedes buscar productos, agregarlos al carrito y seleccionar la farmacia de tu elección para el retiro o entrega.",
+    
+    "¿Cuáles son las ventajas de usar esta aplicación en comparación con ir a la farmacia físicamente?":
+        "Nuestra aplicación te ahorra tiempo al evitar desplazamientos. Puedes explorar productos, verificar la disponibilidad, comparar precios y recibir notificaciones sobre ofertas especiales.",
+    
+    "¿Qué tipos de productos puedo ordenar a través de la aplicación?":
+        "Puedes pedir medicamentos recetados, medicamentos de venta libre, productos de cuidado personal, suplementos y más.",
+    
+    "¿Cuáles son las ofertas actuales disponibles en las farmacias?":
+        "Actualmente, tenemos ofertas en vitaminas y suplementos, así como descuentos en productos para el cuidado de la piel.",
+    
+    "¿Puedo realizar un pedido y luego recogerlo en la farmacia más cercana?":
+        "¡Claro! Puedes hacer un pedido y elegir la opción de recogida en la farmacia que te resulte más conveniente. Te notificaremos cuando esté listo.",
+    
+    "¿Cómo encuentro la farmacia más cercana a mi ubicación?":
+        "La aplicación muestra las farmacias cercanas según tu ubicación. Puedes usar la búsqueda o permitir que acceda a tu ubicación.",
+    
+    "¿Cuáles son los horarios de atención de las farmacias?":
+        "Los horarios varían. La mayoría está abierta de lunes a viernes de 8 AM a 8 PM, y los fines de semana de 9 AM a 6 PM.",
+    
+    "¿Puedo renovar mis recetas médicas a través de la aplicación?":
+        "Actualmente, la renovación de recetas no está disponible en la aplicación. Contacta a tu médico para renovarlas.",
+    
+    "¿Cómo puedo realizar el pago de mi pedido?":
+        "Aceptamos pagos en línea con tarjetas de crédito y débito. También puedes pagar en efectivo al recoger el pedido.",
+    
+    "¿Qué debo hacer si tengo problemas con mi pedido o necesito ayuda adicional?":
+        "Comunícate con nuestro servicio al cliente al 123-456-7890 o escríbenos a farmago.shop@gmail.com",
+    
+    "¿Puedo obtener asesoramiento sobre medicamentos a través de la aplicación?":
+        "Nuestra aplicación ofrece información general sobre medicamentos, pero siempre es recomendable consultar a un profesional de la salud para obtener asesoramiento médico específico.",
+    
+    "¿Cómo puedo buscar un producto en la aplicación?":
+        "Puedes usar la función de búsqueda en la parte superior de la pantalla para encontrar productos por nombre, categoría o palabra clave.",
+    
+    "¿Las farmacias aceptan seguros médicos para los pagos?":
+        "Sí, muchas de nuestras farmacias asociadas aceptan seguros médicos. Puedes verificar la opción de pago al realizar el pedido.",
+    
+    "¿Ofrecen entregas a domicilio?":
+        "Sí, ofrecemos entregas a domicilio en áreas seleccionadas. Puedes seleccionar la opción de entrega al realizar tu pedido.",
+    
+    "¿Cuánto tiempo tardará en llegar mi pedido a mi domicilio?":
+        "El tiempo de entrega puede variar según tu ubicación y la disponibilidad de productos. Te proporcionaremos una estimación al confirmar tu pedido.",
+    
+    "¿Puedo realizar cambios en mi pedido después de haberlo realizado?":
+        "Una vez que hayas realizado el pedido, es posible que no puedas hacer cambios. Te recomendamos revisar cuidadosamente antes de confirmar.",
+    
+    "¿Cómo puedo rastrear el estado de mi pedido?":
+        "Puedes rastrear el estado de tu pedido a través de la aplicación. Te enviaremos notificaciones sobre su progreso.",
+    
+    "¿Cuáles son los métodos de entrega disponibles?":
+        "Ofrecemos opciones de recogida en la farmacia y entregas a domicilio, según tu preferencia y disponibilidad.",
+    
+    "¿Qué debo hacer si olvidé mi contraseña de la cuenta?":
+        "Puedes usar la opción 'Recuperar contraseña' en la pantalla de inicio de sesión para restablecerla.",
+    
+    "¿La aplicación está disponible para dispositivos iOS y Android?":
+        "Sí, nuestra aplicación está disponible tanto en la App Store de iOS como en Google Play Store para dispositivos Android.",
+    
+    "¿Puedo cancelar mi pedido después de haberlo confirmado?":
+        "Dependiendo del estado de tu pedido y las políticas de la farmacia, es posible que puedas cancelarlo. Te recomendamos contactar a la farmacia lo antes posible para obtener ayuda.",
+    
+    "¿Cómo puedo verificar la disponibilidad de un producto en una farmacia específica?":
+        "Puedes buscar el producto que deseas y seleccionar la farmacia de tu elección para ver si está disponible.",
+    
+    "¿Se requiere receta médica para comprar medicamentos recetados?":
+        "Sí, generalmente se requiere una receta médica válida para comprar medicamentos recetados. Asegúrate de proporcionar la receta al realizar el pedido.",
+    
+    "¿Cómo puedo agregar productos a mi lista de favoritos?":
+        "Puedes marcar productos como favoritos haciendo clic en el botón de 'Agregar a favoritos' en la página del producto.",
+    
+    "¿Ofrecen descuentos especiales para clientes frecuentes?":
+        "Sí, tenemos un programa de recompensas para clientes frecuentes que ofrece descuentos y ofertas exclusivas.",
+    
+    "¿Puedo hacer devoluciones o cambios en los productos que he comprado?":
+        "Las políticas de devolución y cambio pueden variar según la farmacia. Te recomendamos comunicarte con la farmacia para obtener información específica.",
+    
+    "¿Qué métodos de pago aceptan para las compras?":
+        "Aceptamos pagos en línea con tarjetas de crédito y débito de las principales marcas.",
+    
+    "¿Puedo programar la entrega de mi pedido para un horario específico?":
+        "En la mayoría de los casos, puedes elegir una franja horaria para la entrega de tu pedido. Selecciona la opción adecuada durante el proceso de pedido.",
+    
+    "¿Cómo puedo actualizar la información de mi cuenta, como la dirección de entrega?":
+        "Puedes actualizar la información de tu cuenta en la sección 'Configuración' de la aplicación.",
+    
+    "¿Qué debo hacer si no recibí la notificación de mi pedido listo para recoger?":
+        "Si no recibiste una notificación, te recomendamos comunicarte con la farmacia para confirmar el estado de tu pedido.",
+    
+    "¿Ofrecen productos orgánicos y naturales en la aplicación?":
+        "Sí, ofrecemos una variedad de productos orgánicos y naturales en nuestra plataforma.",
+    
+    "¿Puedo recibir ayuda en vivo a través del chat de la aplicación?":
+        "Sí, ofrecemos asistencia en vivo a través del chat de la aplicación durante las horas de atención al cliente.",
+    
+    "¿Cómo puedo realizar un seguimiento de mis gastos en la aplicación?":
+        "Puedes consultar el historial de pedidos en tu cuenta para realizar un seguimiento de tus gastos anteriores.",
+    
+    "¿Las farmacias ofrecen servicios de consulta médica a través de la aplicación?":
+        "Algunas farmacias pueden ofrecer servicios de consulta médica en línea. Verifica la disponibilidad en la sección de servicios de la farmacia.",
+    
+    "¿Puedo obtener reembolso si mi pedido llega dañado o incompleto?":
+        "Sí, si tu pedido llega dañado o incompleto, comunícate con la farmacia para gestionar un reembolso o reemplazo.",
+    
+    "¿Cuánto tiempo se guardan mis datos personales en la aplicación?":
+        "Respetamos tu privacidad. Puedes consultar nuestra política de privacidad para obtener información detallada sobre la retención de datos.",
+    
+    "¿Puedo obtener información sobre interacciones entre medicamentos a través de la aplicación?":
+        "Nuestra aplicación ofrece información básica sobre interacciones entre medicamentos, pero siempre es aconsejable consultar a un profesional de la salud para obtener asesoramiento específico.",
+    
+    "¿Tienen un programa de lealtad para acumular puntos por compras?":
+        "Sí, tenemos un programa de lealtad que te permite acumular puntos por tus compras y canjearlos por descuentos y recompensas.",
+    
+    "¿La aplicación ofrece recordatorios para tomar medicamentos?":
+        "Sí, puedes configurar recordatorios en la aplicación para recibir notificaciones y asegurarte de tomar tus medicamentos a tiempo.",
+    
+    "¿La aplicación ofrece información sobre alergias o restricciones alimentarias?":
+        "Sí, proporcionamos información sobre alergias y restricciones alimentarias para algunos productos. Si tienes preocupaciones específicas, te recomendamos verificar los detalles del producto o contactar a la farmacia.",
+    
+    "¿Qué debo hacer si tengo problemas con el proceso de pago?":
+        "Si experimentas problemas con el proceso de pago, verifica que los detalles de la tarjeta sean correctos y asegúrate de tener suficientes fondos. Si el problema persiste, comunícate con nuestro equipo de soporte.",
+    
+    "¿Puedo comprar productos de cuidado infantil a través de la aplicación?":
+        "Sí, ofrecemos una variedad de productos de cuidado infantil, como pañales, fórmula para bebés y productos de higiene.",
+    
+    "¿Cuánto tiempo toma procesar mi pedido antes de la entrega o recogida?":
+        "El tiempo de procesamiento puede variar según la farmacia y la ubicación. Por lo general, intentamos procesar los pedidos lo más rápido posible para que estén listos en un plazo razonable.",
+    
+    "¿Puedo agregar varios destinos de entrega en un solo pedido?":
+        "Actualmente, la función de agregar varios destinos de entrega en un solo pedido no está disponible. Debes hacer pedidos separados para diferentes direcciones de entrega.",
+    
+    "¿La aplicación ofrece opciones de idioma además del español?":
+        "Por ahora, la aplicación está disponible solo en español. Estamos trabajando para agregar más opciones de idioma en futuras actualizaciones.",
+    
+    "¿Puedo ver las reseñas y calificaciones de los productos en la aplicación?":
+        "Sí, puedes ver las reseñas y calificaciones de otros usuarios para algunos productos. Esto puede ayudarte a tomar decisiones informadas al realizar un pedido.",
+    
+    "¿Cómo puedo buscar productos específicos de una marca en particular?":
+        "Puedes buscar productos de una marca específica utilizando la función de búsqueda y agregando el nombre de la marca como palabra clave.",
+    
+    "¿Puedo hacer cambios en mi cuenta, como cambiar mi dirección de correo electrónico?":
+        "Sí, puedes realizar cambios en tu cuenta, incluida la dirección de correo electrónico, en la sección de configuración de la aplicación.",
+    
+    "¿Qué información necesito proporcionar al realizar un pedido de medicamentos recetados?":
+        "Debes proporcionar la información de la receta médica, incluido el nombre del medicamento, la dosis, las instrucciones y el médico que la recetó.",
+    
+    "¿La aplicación ofrece opciones de entrega exprés para pedidos urgentes?":
+        "Sí, ofrecemos opciones de entrega exprés para pedidos urgentes. Puedes seleccionar esta opción al finalizar el pedido.",
+    
+    "¿Cómo puedo estar al tanto de las últimas ofertas y promociones?":
+        "Puedes suscribirte a nuestras notificaciones y boletines para recibir información sobre las últimas ofertas y promociones en la aplicación.",
+    
+    "¿Puedo programar una entrega para una fecha futura específica?":
+        "Sí, puedes programar una entrega para una fecha futura específica durante el proceso de pedido.",
+    
+    "¿La aplicación permite hacer seguimiento de mi historial de compras anteriores?":
+        "Sí, puedes acceder a tu historial de compras anteriores en la sección de 'Mis pedidos' de la aplicación.",
+    
+    "¿Ofrecen servicios de asesoría en salud a través de la aplicación?":
+        "Actualmente, no ofrecemos servicios de asesoría en salud a través de la aplicación. Te recomendamos consultar a un profesional médico para obtener asesoramiento personalizado.",
+    
+    "¿Puedo pedir productos en grandes cantidades a través de la aplicación?":
+        "Sí, puedes realizar pedidos de grandes cantidades de productos. Ten en cuenta que algunas restricciones podrían aplicar según la disponibilidad.",
+    
+    "¿La aplicación proporciona información nutricional para los productos?":
+        "Proporcionamos información nutricional para algunos productos alimenticios. Debes verificar la página del producto para obtener detalles específicos.",
+    
+    "¿Puedo solicitar una factura después de realizar un pedido?":
+        "Sí, puedes solicitar una factura después de realizar un pedido. Comunícate con la farmacia para obtener la factura correspondiente.",
+    
+    "¿Cómo puedo acceder a mis cupones y códigos de descuento en la aplicación?":
+        "Puedes acceder a tus cupones y códigos de descuento en la sección de 'Cupones' o 'Ofertas' de la aplicación.",
+    
+    "¿Qué medidas de seguridad tienen en su plataforma para proteger mis datos personales?":
+        "Nos tomamos en serio la seguridad de tus datos. Implementamos medidas de seguridad robustas para proteger tu información personal y financiera.",
+    
+    "¿Puedo realizar pedidos de productos fuera de mi país de residencia?":
+        "Actualmente, solo aceptamos pedidos para entrega en áreas específicas dentro de tu país de residencia.",
+    
+    "¿Cómo puedo proporcionar comentarios o sugerencias sobre la aplicación?":
+        "Valoramos tus comentarios. Puedes enviar tus sugerencias y comentarios a través de la sección de 'Contacto' en la aplicación.",
+    
+    "No puedo encontrar lo que necesito. ¿Puedes ayudarme?":
+        "Por supuesto. Por favor, dime qué producto estás buscando o qué necesitas, y estaré encantado de ayudarte a encontrarlo.",
+    
+    "¿Qué marcas de productos ofrecen en la aplicación?":
+        "Ofrecemos una amplia variedad de marcas reconocidas en la industria farmacéutica y de cuidado personal, como Bayer, Johnson & Johnson, y más.",
+    
+    "Necesito algo para el dolor de cabeza. ¿Qué me recomiendas?":
+        "Para el dolor de cabeza, te recomendaría consultar nuestra sección de analgésicos, donde encontrarás opciones como acetaminofén o ibuprofeno.",
+    
+    "¿Hay algo nuevo o popular en la aplicación que debería ver?":
+        "Sí, actualmente tenemos una promoción en productos para el cuidado de la piel. ¡Te recomiendo echar un vistazo a nuestras ofertas destacadas!",
+    
+    "Quiero mejorar mi sistema inmunológico. ¿Qué productos tienen para eso?":
+        "Para mejorar tu sistema inmunológico, te sugiero explorar nuestra sección de vitaminas y suplementos, donde encontrarás opciones como la vitamina C y el zinc.",
+    
+    "¿Qué debo hacer si mi pedido llega tarde o hay un problema con la entrega?":
+        "Si tu pedido se retrasa o experimentas problemas con la entrega, te recomiendo comunicarte con nuestro equipo de atención al cliente para que podamos resolverlo.",
+    
+    "¿Tienen productos naturales para el alivio de resfriados y gripes?":
+        "Sí, ofrecemos una selección de productos naturales como tés de hierbas y suplementos que pueden ayudar en el alivio de resfriados y gripes.",
+    
+    "Quiero algo para el cuidado de mis pies. ¿Qué opciones tienen?":
+        "Para el cuidado de tus pies, te invito a explorar nuestra sección de productos para el cuidado personal, donde encontrarás cremas hidratantes y productos para el cuidado de los pies.",
+    
+    "Estoy buscando algo para aliviar la congestión nasal. ¿Puedes sugerirme algo?":
+        "Para aliviar la congestión nasal, te recomiendo revisar nuestra categoría de descongestionantes nasales, donde encontrarás opciones efectivas.",
+    
+    "¿Cuál es la diferencia entre los productos genéricos y de marca?":
+        "Los productos genéricos generalmente contienen los mismos ingredientes activos que los de marca, pero pueden ser más económicos. Te invito a comparar las opciones disponibles.",
+    
+    "¿Qué me recomiendas para el cuidado del cabello dañado?":
+        "Para el cuidado del cabello dañado, te sugeriría examinar nuestra selección de productos para el cuidado del cabello, incluidos acondicionadores y tratamientos reparadores.",
+    
+    "No estoy seguro de qué producto necesito. ¿Puedes guiarme en la dirección correcta?":
+        "Por supuesto, ¿hay algo en particular en lo que estés interesado o alguna preocupación específica que pueda ayudarte a abordar?",
+    
+    "¿Puedo usar mi seguro médico para pagar los productos recetados?":
+        "Sí, en algunas farmacias aceptamos seguros médicos para el pago de productos recetados. Asegúrate de verificar las opciones de pago al finalizar tu pedido.",
+    
+    "¿Tienen productos para el cuidado de la piel sensible?":
+        "Sí, ofrecemos una selección de productos específicamente diseñados para el cuidado de la piel sensible. Te recomendaría explorar nuestra sección de cuidado facial.",
+    
+    "¿Hay algún producto en oferta para el alivio del estrés o la ansiedad?":
+        "Actualmente, tenemos ofertas en suplementos naturales que pueden ayudar en el alivio del estrés y la ansiedad. Te sugiero explorar nuestra sección de bienestar.",
+    
+    "Quiero algo para mantener mi energía durante el día. ¿Qué me sugieres?":
+        "Para mantener la energía durante el día, puedes explorar nuestra selección de suplementos energéticos y vitaminas B.",
+    
+    "Estoy buscando productos para bebés. ¿Qué tienen disponible?":
+        "Tenemos una variedad de productos para bebés, como pañales, fórmula para bebés, productos de higiene y más. Te invito a explorar nuestra sección de cuidado infantil.",
+    
+    "¿Cómo puedo verificar la disponibilidad de un producto en mi farmacia local?":
+        "Puedes utilizar la función de búsqueda y seleccionar tu farmacia local para ver la disponibilidad de productos en esa ubicación.",
+    
+    "Quiero algo para mejorar mi sueño. ¿Qué opciones tienen?":
+        "Para mejorar el sueño, te recomiendo explorar nuestra selección de suplementos naturales para el sueño, como la melatonina.",
+    
+    "¿Puedo obtener ayuda para encontrar alternativas genéricas a los medicamentos recetados?":
+        "Por supuesto, puedo ayudarte a buscar alternativas genéricas a los medicamentos recetados. Por favor, proporciona el nombre del medicamento para que pueda asistirte mejor.",
+    
+    "Necesito algo para el dolor muscular. ¿Tienen productos para eso?":
+        "Para el dolor muscular, te sugiero revisar nuestra selección de analgésicos tópicos y cremas para el alivio del dolor.",
+    
+    "¿Puedo recibir información sobre cómo cuidar la piel seca?":
+        "Claro, puedo proporcionarte consejos y recomendaciones sobre cómo cuidar la piel seca. ¿Deseas sugerencias para productos específicos?",
+    
+    "¿Cuál es el producto más popular en la categoría de cuidado facial?":
+        "Uno de nuestros productos más populares en la categoría de cuidado facial es la crema hidratante de ácido hialurónico. ¡Te recomiendo probarla!",
+    
+    "No sé qué producto elegir. ¿Puedes decirme cuáles son los más vendidos?":
+        "Por supuesto, algunos de nuestros productos más vendidos incluyen vitaminas, analgésicos y productos de cuidado facial. ¿Hay alguna categoría en particular que te interese?",
+    
+    "¿Cómo usar esta app?":
+        "Puedes comprar medicamentos y productos a través de la aplicación. Busca los productos que necesitas, agrégalos al carrito, realiza el pago y elige la opción de recoger en la farmacia que prefieras. Te notificaremos cuando tu pedido esté listo para recoger.",
+    
+    "¿Ventajas de app vs. farmacia?":
+        "La aplicación te permite ahorrar tiempo al evitar desplazamientos a la farmacia. Puedes explorar una amplia gama de productos desde la comodidad de tu hogar, ver ofertas especiales y comparar precios antes de hacer tu compra.",
+    
+    "¿Productos en app?":
+        "En la aplicación, encontrarás una variedad de productos que incluyen medicamentos recetados y de venta libre, productos de cuidado personal como cremas, lociones y champús, vitaminas, suplementos y más.",
+    
+    "¿Ofertas actuales?":
+        "En este momento, tenemos descuentos en una variedad de productos, incluyendo vitaminas y productos para el cuidado de la piel. Puedes explorar nuestras ofertas en la sección correspondiente de la aplicación.",
+    
+    "¿Ordenar y recoger?":
+        "El proceso es sencillo. Después de agregar los productos a tu carrito y realizar el pago, selecciona la farmacia donde deseas recoger tus productos. Te notificaremos cuando tu pedido esté listo para ser retirado en la ubicación que elijas.",
+    
+    "¿Farmacia cercana?":
+        "Puedes encontrar farmacias cercanas utilizando la función de búsqueda en la aplicación. También puedes permitir que la aplicación acceda a tu ubicación para mostrar las farmacias más cercanas según tu posición actual.",
+    
+    "¿Horarios de farmacia?":
+        "Los horarios de las farmacias pueden variar, pero en general, muchas de nuestras farmacias asociadas están abiertas de lunes a viernes de 8 AM a 8 PM, y los fines de semana de 9 AM a 6 PM. Te recomendamos verificar los horarios específicos de la farmacia en la que planeas recoger tus productos.",
+    
+    "¿Renovar recetas app?":
+        "Actualmente, no es posible renovar recetas médicas a través de la aplicación. Debes ponerte en contacto con tu médico para solicitar la renovación de tus recetas.",
+    
+    "¿Formas de pago?":
+        "Aceptamos pagos en línea con tarjetas de crédito y débito de las principales marcas. También puedes optar por pagar en efectivo al momento de recoger tus productos en la farmacia.",
+    
+    "¿Problemas con pedido?":
+        "Si tienes algún problema con tu pedido o necesitas asistencia adicional, puedes comunicarte con nuestro servicio al cliente. Simplemente llama al número de servicio al cliente que aparece en la aplicación y con gusto te ayudaremos a resolver cualquier problema que puedas tener.",
+    
+    "¿Cómo comprar aquí?":
+        "Para realizar una compra en la aplicación, primero busca los productos que necesitas utilizando la función de búsqueda. Luego, agrega los productos al carrito de compras, sigue las indicaciones para completar el pago y elige la farmacia donde deseas recoger tus productos.",
+    
+    "¿Para qué es app?":
+        "La aplicación está diseñada para facilitar tus compras de medicamentos y productos de cuidado personal. Puedes buscar productos, agregarlos al carrito, realizar pagos y elegir dónde recoger tus productos, todo desde tu dispositivo móvil.",
+    
+    "¿Nombres marcas aquí?":
+        "Ofrecemos una amplia gama de productos de marcas conocidas en la industria farmacéutica y de cuidado personal. Puedes encontrar marcas como Bayer, Johnson & Johnson, y muchas otras en la aplicación.",
+    
+    "¿Hay promociones hoy?":
+        "Sí, en este momento tenemos promociones y descuentos en una variedad de productos. Puedes explorar nuestras ofertas actuales en la sección de promociones dentro de la aplicación.",
+    
+    "¿Hacer pedido, luego qué?":
+        "Después de hacer tu pedido y completar el pago, podrás elegir la farmacia donde deseas recoger tus productos. Una vez que tu pedido esté listo para ser retirado, te enviaremos una notificación para que sepas que puedes pasar a recogerlo.",
+    
+    "¿Cómo saber farmacia cerca?":
+        "Utiliza la función de búsqueda en la aplicación y busca 'farmacias cercanas'. También puedes permitir que la aplicación acceda a tu ubicación para mostrarte las farmacias que están más cerca de ti.",
+    
+    "¿Horario de farmacias?":
+        "Las horas de operación de las farmacias pueden variar según la ubicación. En general, muchas de nuestras farmacias asociadas están abiertas de lunes a viernes de 8 AM a 8 PM, y los fines de semana de 9 AM a 6 PM. Te recomendamos verificar los horarios específicos de la farmacia en la que planeas recoger tus productos.",
+    
+    "¿Renovar recetas aquí?":
+        "No, actualmente no puedes renovar recetas médicas a través de la aplicación. Debes comunicarte con tu médico para solicitar la renovación de tus recetas.",
+    
+    "¿Formas de pagar compras?":
+        "Aceptamos varias formas de pago, incluyendo tarjetas de crédito y débito de las principales marcas. También puedes optar por pagar en efectivo cuando recojas tus productos en la farmacia.",
+    
+    "¿Problemas con pedido, solución?":
+        "Si enfrentas algún problema con tu pedido, te recomendamos llamar a nuestro servicio al cliente. Nuestro equipo estará disponible para ayudarte a resolver cualquier problema que puedas tener y encontrar una solución adecuada.",
+    
+    "¿Cómo buscar producto?":
+        "Para buscar un producto específico, utiliza la función de búsqueda en la aplicación. Escribe el nombre del producto o una palabra clave relacionada y verás los resultados correspondientes.",
+    
+    "¿Productos para bebés?":
+        "Tenemos una variedad de productos para bebés disponibles en la aplicación. Puedes encontrar pañales, productos de cuidado infantil, fórmula para bebés y más en nuestra selección.",
+    
+    "¿Medicamentos sin receta?":
+        "Sí, puedes comprar medicamentos de venta libre sin necesidad de receta médica a través de la aplicación. Estos productos están disponibles para su compra directa.",
+    
+    "¿Consultar salud app?":
+        "La aplicación no reemplaza la consulta médica. Si tienes preocupaciones sobre tu salud, es importante consultar a un médico en persona para obtener un diagnóstico y recomendaciones adecuadas.",
+    
+    "¿Cómo recibir mi pedido?":
+        "Después de realizar tu pedido y recibir la notificación de que está listo, puedes dirigirte a la farmacia que elegiste para recoger tus productos. Asegúrate de llevar contigo una identificación válida al momento de recoger tu pedido."
+}   
+
+def preprocess_text(text):
+    tokens = word_tokenize(text.lower())
+    tokens = [token for token in tokens if token not in stopwords.words('english') and token not in string.punctuation]
+    return tokens
+
+def get_synonyms(word):
+    synonyms = []
+    for syn in wordnet.synsets(word):
+        for lemma in syn.lemmas():
+            synonyms.append(lemma.name())
+    return synonyms
+
+def find_best_match(question, knowledge_base):
+    question_words = preprocess_text(question)
+    best_match = None
+    max_similarity = 0
+    for q, a in knowledge_base.items():
+        answer_words = preprocess_text(q)
+        similarity = len(set(question_words).intersection(answer_words))
+        synonyms = get_synonyms(q)
+        similarity += len(set(question_words).intersection(synonyms))
+        if similarity > max_similarity:
+            max_similarity = similarity
+            best_match = a
+    return best_match
+
+chat_history = []
+
 DATABASE = 'FarmaGo.db'
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -201,6 +574,22 @@ def crear_enlace_de_pago(producto, precio, moneda='ARS', cantidad=1, descripcion
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/help')
+def help():
+    return render_template('chat.html', chat_history=chat_history)
+
+@app.route('/get_response', methods=['POST'])
+def get_response():
+    user_input = request.form['user_input']
+    chat_history.append(('user', user_input))
+    if user_input.lower() == 'salir' or user_input.lower() == 'adios':
+        response = "¡Hasta luego!"
+        chat_history.clear()
+    else:
+        response = find_best_match(user_input, knowledge_base) or "Lo siento, no entendí la pregunta."
+    chat_history.append(('bot', response))
+    return render_template('chat.html', chat_history=chat_history)
 
 @app.route('/perfil')
 def perfil():
@@ -685,7 +1074,7 @@ def ventas():
         with app.app_context():
             db = get_db()
             cursor = db.cursor()
-            cursor.execute('SELECT v.id, v.fecha, v.total, u.nombre AS comprador_nombre, u.correo_electronico AS comprador_correo, u.direccion AS comprador_direccion FROM ventas v INNER JOIN usuarios u ON v.id_comprador = u.id WHERE v.id_vendedor = ?', (farmacia_id,))
+            cursor.execute('SELECT v.id, v.fecha, v.total, u.nombre AS comprador_nombre, u.correo_electronico AS comprador_correo FROM ventas v INNER JOIN usuarios u ON v.id_comprador = u.id WHERE v.id_vendedor = ?', (farmacia_id,))
             ventas = cursor.fetchall()
         return render_template('ventas.html', ventas=ventas)
     else:

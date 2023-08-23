@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+<head>
+    {% block head %}
+    <title>Detalle Producto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    {% endblock head %}
+</head>
+<body>
+    {% block content %}
+    <div class="chatbox">
+        {% for message_type, message_content in chat_history %}
+            <div class="message {{ 'user-message' if message_type == 'user' else 'bot-message' }}">
+                <p><strong>{{ 'Tú' if message_type == 'user' else 'FarmaGo' }}:</strong> {{ message_content }}</p>
+            </div>
+        {% endfor %}
+        <form action="/get_response" method="post">
+            <input type="text" name="user_input" placeholder="Escribe tu pregunta..." />
+            <input type="submit" value="Enviar" />
+        </form>
+    </div>
+    {% endblock content %}
+</body>
