@@ -411,8 +411,7 @@ def create_tables():
                 nombre_usuario TEXT UNIQUE,
                 contraseña TEXT,
                 role TEXT,
-                logo_url TEXT,
-                pharmacy_uuid TEXT
+                logo_url TEXT
             );
             CREATE TABLE IF NOT EXISTS productos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -525,7 +524,7 @@ def authenticate_user(correo_electronico, contraseña):
             return result[0], result[1]
         return None, None
 
-def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid=None,logo_url=None):
+def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico,logo_url=None):
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
@@ -538,7 +537,7 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
         if existing_user:
             return "El correo electrónico ya está en uso. Por favor, elige otro."
         if role == 'farmacia':
-            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid, logo_url))
+            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url))
             farmacia_id = cursor.lastrowid
             db.commit()
             cursor.execute('SELECT id FROM productos')
@@ -725,7 +724,7 @@ def todas_farmacias():
             cursor.execute('SELECT * FROM usuarios WHERE role="farmacia"')
             farmacias = cursor.fetchall()
     return render_template('todas_farmacias.html', farmacias=farmacias)
-    
+
 @app.route('/productos/farmacia/<int:id_usuario>', methods=['GET'])
 def productos_por_farmacia(id_usuario):
     with app.app_context():
