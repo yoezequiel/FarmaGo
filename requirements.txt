@@ -4,4 +4,5 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 mercadopago==2.2.0
 requests==2.31.0
+nltk==3.8.1
 gunicorn==20.1.0
