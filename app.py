@@ -38,8 +38,7 @@ def create_tables():
                 nombre_usuario TEXT UNIQUE,
                 contraseña TEXT,
                 role TEXT,
-                logo_url TEXT,
-                pharmacy_uuid TEXT
+                logo_url TEXT
             );
             CREATE TABLE IF NOT EXISTS productos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -152,7 +151,7 @@ def authenticate_user(correo_electronico, contraseña):
             return result[0], result[1]
         return None, None
 
-def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid=None,logo_url=None):
+def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico,logo_url=None):
     with app.app_context():
         db = get_db()
         cursor = db.cursor()
@@ -165,7 +164,7 @@ def register_user(nombre_usuario, contraseña, role, nombre, apellido, direccion
         if existing_user:
             return "El correo electrónico ya está en uso. Por favor, elige otro."
         if role == 'farmacia':
-            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, pharmacy_uuid, logo_url))
+            cursor.execute('INSERT INTO usuarios (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (nombre_usuario, contraseña, role, nombre, apellido, direccion, numero_telefono, provincia, localidad, correo_electronico, logo_url))
             farmacia_id = cursor.lastrowid
             db.commit()
             cursor.execute('SELECT id FROM productos')
@@ -201,6 +200,10 @@ def crear_enlace_de_pago(producto, precio, moneda='ARS', cantidad=1, descripcion
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/help')
+def help():
+    return render_template('chat.html')
 
 @app.route('/perfil')
 def perfil():
@@ -689,7 +692,7 @@ def ventas():
             ventas = cursor.fetchall()
         return render_template('ventas.html', ventas=ventas)
     else:
-        abort(403) 
+        abort(403)
 
 @app.route('/logout')
 def logout():

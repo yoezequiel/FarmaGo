@@ -36,13 +36,12 @@ form {
     max-width: none !important;
 }
 .col-sm-12{
-    background-color: rgb(153, 255, 0);
     padding: 30px;
     width: 700px;
 }
 
 input[type="submit"]{
-    background-color: lightgreen;
+    background-color: #00FF63;
     font-size: 30px;
     padding-left: 150px;
     padding-right: 150px;
@@ -66,7 +65,7 @@ input[type="submit"]:hover{
 
 .right-column h1 {
     font-size: 35px;
-    background-color: rgb(153, 255, 0);
+    background-color: #00FF63;
     padding: 70px;
     color: white;
     width: 100%;
@@ -96,7 +95,7 @@ input[type="submit"]:hover{
         display: block !important;
     }
     input[type="submit"]{
-        background-color: lightgreen;
+        background-color: #00FF63;
         padding: 30px;
     }
     .right-column h1 {

@@ -1,13 +1,16 @@
-html{
+html {
     background-color: #D5FFB9;
 }
+
 #contain {
     display: flex;
     padding-left: 0px;
 }
-img{
+
+img {
     width: 450px;
 }
+
 .left-column {
     flex: 1;
     text-align: center;
@@ -22,7 +25,7 @@ img{
 
 .right-column h1 {
     font-size: 35px;
-    background-color: rgb(153, 255, 0);
+    background-color: #00FF63;
     padding: 30px;
     padding-top: 90px;
     text-align: center;
@@ -36,7 +39,7 @@ img{
     margin: 10px auto;
     text-decoration: none;
     color: white;
-    background-color: rgb(153, 255, 0);
+    background-color: #00FF63;
     text-align: center;
     padding: 5px 10px;
     border-radius: 10px;
@@ -47,35 +50,38 @@ img{
     border: 2px solid transparent;
 }
 
-.right-column .a{
+.right-column .a {
     padding: 20px;
 }
 
 #a:hover {
     color: white;
-    background-color: rgb(79, 132, 0);
+    background-color: green;
     border: 2px solid black;
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1300px) {
     #contain {
         flex-direction: column;
     }
-    .left-column{
+
+    .left-column {
         display: none;
     }
-    .right-column h1{
+
+    .right-column h1 {
         padding: 10px;
         padding-top: 20px;
         margin-bottom: 20px;
         padding-bottom: 20px;
     }
+
     .right-column a {
         margin-left: 10px;
         margin-right: 10px;
     }
-    .right-column .a{
+
+    .right-column .a {
         padding: 10px;
     }
 }
-

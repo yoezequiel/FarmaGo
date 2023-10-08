@@ -10,22 +10,25 @@
     
     <h1>Ventas Realizadas</h1>
     <table>
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Comprador</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for venta in ventas %}
-            <tr>
-                <td>{{ venta[1] }}</td>
-                <td>{{ venta[2] }}</td>
-                <td>{{ venta[4] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Comprador</th>
+            <th>Correo Electrónico</th>
+            <th>Dirección</th>
+        </tr>
+        {% for venta in ventas %}
+        <tr>
+            <td>{{ venta.id }}</td>
+            <td>{{ venta.fecha }}</td>
+            <td>{{ venta.total }}</td>
+            <td>{{ venta.comprador_nombre }}</td>
+            <td>{{ venta.comprador_correo }}</td>
+            <td>{{ venta.comprador_direccion }}</td>
+        </tr>
+        {% endfor %}
     </table>
+    
     {% endblock content %}
 </body>
