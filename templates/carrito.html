@@ -1,48 +1,43 @@
-{% extends 'base.html' %}
-
-<head>
-    {% block head %}
-    <title>Carrito de Compras</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/carrito.css') }}">
-    {% endblock head %}
-</head>
-<body>
-    {% block content %}
+{% extends 'base.html' %} {% block head %}
+<title>Carrito de Compras</title>
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/carrito.css') }}" />
+{% endblock head %} {% block content %}
+<div class="container">
     <h1>Carrito de Compras</h1>
     <p class="success">{{ success }}</p>
-    {% if carrito %}
-        <table>
-            <tr>
-                <th>Nombre</th>
-                <th>Precio Unitario</th>
-                <th>Cantidad</th>
-                <th>Total</th>
-                <th>Acciones</th>
-            </tr>
-            {% for producto in carrito %}
-            <tr onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';">
-                <td>{{ producto[2] }}</td>
-                <td>${{ producto[3] }}</td>
-                <td>{{ producto[4] }}</td>
-                <td>{{ producto[3] * producto[4]}}</td>
-                <td>
-                    <form action="{{ url_for('eliminar_del_carrito', id_detalle_carrito=producto[0]) }}" method="post">
-                        <button type="submit">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="3"><strong>Total:</strong></td>
-                <td><strong>${{ total_carrito }}</strong></td>
-            </tr>
-        </table>
-
-        <form action="{{ url_for('comprar_carrito') }}" method="post">
-            <button type="submit">Comprar</button>
-        </form>
-    {% else %}
-        <p>No hay productos en el carrito.</p>
-    {% endif %}
-    {% endblock content %}
-</body>
+    <div class="product-list">
+        {% if carrito %} {% for producto in carrito %}
+        <div
+            class="product-card"
+            onclick="window.location.href='{{ url_for('ver_detalle_producto', id_producto=producto[0]) }}';">
+            <div class="product-info">
+                <h2>{{ producto[2] }}</h2>
+                <p><strong>Precio Unitario:</strong> ${{ producto[3] }}</p>
+                <p><strong>Cantidad:</strong> {{ producto[4] }}</p>
+                <p><strong>Total:</strong> ${{ producto[3] * producto[4] }}</p>
+            </div>
+            <div class="product-actions">
+                <form
+                    action="{{ url_for('eliminar_del_carrito', id_detalle_carrito=producto[0]) }}"
+                    method="post">
+                    <button class="delete-button" type="submit">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="total">
+            <p><strong>Total:</strong> ${{ total_carrito }}</p>
+            <form action="{{ url_for('comprar_carrito') }}" method="post">
+                <button class="buy-button" type="submit">Comprar</button>
+            </form>
+        </div>
+        {% else %}
+        <p class="no-products">No hay productos en el carrito.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

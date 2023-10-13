@@ -242,7 +242,7 @@ def farmacia_inventario():
 @app.route('/productos', methods=['GET'])
 def listar_productos():
     user_role = session.get('user_role')
-    if user_role == 'farmacia' or user_role == 'cliente':
+    if user_role == 'farmacia' or user_role == 'cliente' or user_role == None:
         pagina = request.args.get('pagina', default=1, type=int)
         productos_por_pagina = 9
         categoria_id = request.args.get('categoria_id', default=None, type=int)

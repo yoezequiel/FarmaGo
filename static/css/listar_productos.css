@@ -21,16 +21,15 @@ h1 {
     padding: 15px;
     background-color: #fff;
     cursor: pointer;
+    display: flex;
+    align-content: stretch;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
 }
 
 .product-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.product-image {
-    display: flex;
-    justify-content: center;
-    max-width: 300px;
 }
 
 .product-image img {
@@ -51,12 +50,13 @@ h1 {
     margin-bottom: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-height: 5ch;
 }
 
 .product-details {
     display: flex;
     justify-content: space-between;
-    
+
 }
 
 .product-quantity,
@@ -66,31 +66,32 @@ h1 {
     color: black;
 }
 
-.navbar2{
+.navbar2 {
     background-color: rgb(0, 190, 0) !important;
     display: flex;
     justify-content: center;
     padding: 3px;
 }
-.page-link{
+
+.page-link {
     color: black !important;
 }
 
-form{
+form {
     display: flex;
     flex-direction: column;
 }
 
-.btn-primary{
+.btn-primary {
     background-color: green !important;
     border-color: green !important;
 }
 
-.btn-primary:hover{
+.btn-primary:hover {
     background-color: rgb(2, 175, 2) !important;
     border-color: black !important;
 }
 
-#busqueda{
+#busqueda {
     margin-right: 30px;
 }
