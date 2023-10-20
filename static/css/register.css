@@ -1,14 +1,17 @@
-html{
+html {
     background-color: #D5FFB9;
 }
+
 #contain {
     display: flex;
     flex-wrap: wrap;
     height: min-content;
 }
-img{
+
+img {
     width: 450px;
 }
+
 .form-control {
     width: 100% !important;
     box-sizing: border-box;
@@ -20,35 +23,42 @@ form {
     max-width: 700px;
     margin: 0 auto !important;
 }
-.row{
+
+.row {
     flex-wrap: nowrap !important;
     margin-right: auto !important;
 }
-.col-sm-2{
+
+.col-sm-2 {
     width: auto !important;
 }
-.col-sm-10{
+
+.col-sm-10 {
     max-width: none !important;
     width: auto !important;
     margin-left: auto;
 }
-.row>*{
+
+.row>* {
     max-width: none !important;
 }
-.col-sm-12{
+
+.col-sm-12 {
     padding: 30px;
     width: 700px;
 }
 
-input[type="submit"]{
+input[type="submit"] {
     background-color: #00FF63;
     font-size: 30px;
     padding-left: 150px;
     padding-right: 150px;
 }
-input[type="submit"]:hover{
+
+input[type="submit"]:hover {
     background-color: green;
 }
+
 .left-column {
     display: flex;
     flex: 1;
@@ -74,30 +84,35 @@ input[type="submit"]:hover{
 
 @media screen and (max-width: 1080px) {
 
-    .left-column{
+    .left-column {
         display: none;
     }
-    .row{
+
+    .row {
         flex-wrap: wrap !important;
     }
 }
 
 @media screen and (max-width: 700px) {
-    .left-column{
+    .left-column {
         display: none;
     }
-    .col-sm-2{
+
+    .col-sm-2 {
         text-align: center !important;
     }
-    .row{
+
+    .row {
         flex-wrap: wrap !important;
         text-align: center !important;
         display: block !important;
     }
-    input[type="submit"]{
+
+    input[type="submit"] {
         background-color: #00FF63;
         padding: 30px;
     }
+
     .right-column h1 {
         padding: 30px;
     }
