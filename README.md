@@ -32,5 +32,5 @@ FarmaGo está pensado y destinado para uso de un público general, dividiéndose
 
 El desarrollo de "Farmago" es posible gracias al esfuerzo y dedicación de las siguientes personas:
 
-- [Blanco Candela ](https://github.com/Candela-blanco): Desarrolladora
-- [Casiano Ezequiel ](https://github.com/yoezequiel): Desarrollador
+- [Blanco Candela ](https://github.com/Candela-blanco): Proyect Manager
+- [Casiano Ezequiel ](https://github.com/yoezequiel): Developer
