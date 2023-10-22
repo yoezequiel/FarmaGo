@@ -2,5 +2,19 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "cSpell.words": [
+        "appcontext",
+        "categoria",
+        "categorias",
+        "descripcion",
+        "direccion",
+        "electronico",
+        "errorhandler",
+        "executescript",
+        "Farma",
+        "lastrowid",
+        "mercadopago",
+        "telefono"
+    ]
 }
