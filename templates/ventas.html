@@ -2,12 +2,14 @@
 <head>
     {% block head %}
     <title>Ventas Realizadas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/ventas.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/ventas.css') }}" />
     {% endblock head %}
 </head>
 <body>
     {% block content %}
-    
+
     <h1>Ventas Realizadas</h1>
     <table>
         <tr>
@@ -29,6 +31,6 @@
         </tr>
         {% endfor %}
     </table>
-    
+
     {% endblock content %}
 </body>

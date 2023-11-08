@@ -1,35 +1,42 @@
-{% extends 'base.html' %}
-<head>
-    {% block head %}
-    <title>Inventario de la Farmacia</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/farmacia_inventario.css') }}">
-    {% endblock head %}
-</head>
-<body>
-    {% block content %}
+{% extends 'base.html' %} {% block head %}
+<title>Inventario de la Farmacia</title>
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/farmacia_inventario.css') }}" />
+{% endblock head %} {% block content %}
+<div class="container">
     <h1>Inventario de la Farmacia</h1>
-    <table border="1">
-        <tr>
-            <th>Nombre</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Acciones</th>
-        </tr>
+    <div class="product-list">
         {% for producto in inventario %}
-        <tr>
-            <td>{{ producto[1] }}</td>
-            <td>{{ producto[3] }}</td>
-            <td>${{ producto[4] }}</td>
-            <td>
-                <a id="a" href="{{ url_for('editar_producto', id_producto=producto[0]) }}">Editar</a>
-                <form action="{{ url_for('eliminar_producto', id_producto=producto[0]) }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
-                    <input type="submit" value="Eliminar">
+        <div class="product">
+            <div class="product-info">
+                <h2>{{ producto[1] }}</h2>
+                <p><strong>Cantidad:</strong> {{ producto[3] }}</p>
+                <p><strong>Precio Unitario:</strong> ${{ producto[4] }}</p>
+            </div>
+            <div class="product-actions">
+                <a
+                    id="a"
+                    href="{{ url_for('editar_producto', id_producto=producto[0]) }}"
+                    >Editar</a
+                >
+                <form
+                    action="{{ url_for('eliminar_producto', id_producto=producto[0]) }}"
+                    method="post"
+                    onsubmit="return confirm('¿Estás seguro de eliminar este producto?')">
+                    <input id="del" type="submit" value="Eliminar" />
                 </form>
-            </td>
-        </tr>
+            </div>
+        </div>
         {% endfor %}
-    </table>
-    <p><a href="{{ url_for('agregar_producto') }}">Agregar Nuevo Producto</a></p>
-    <p><a href="{{ url_for('dashboard') }}">Volver al panel</a></p>
-    {% endblock content %}
-</body>
+    </div>
+    <div class="buttons">
+        <a class="add-product" href="{{ url_for('agregar_producto') }}"
+            >Agregar Nuevo Producto</a
+        >
+        <a class="back-to-dashboard" href="{{ url_for('dashboard') }}"
+            >Volver al panel</a
+        >
+    </div>
+</div>
+{% endblock content %}
