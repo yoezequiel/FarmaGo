@@ -161,5 +161,4 @@ cython_debug/
 
 # Extras
 config.py
-FarmaGo.db
 .vscode
