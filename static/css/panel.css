@@ -1,5 +1,5 @@
 h1 {
-    color: #336699;
+    color: #00aa41;
     text-align: center;
 }
 
@@ -12,12 +12,16 @@ h1 {
     text-align: center;
     text-decoration: none;
     color: #fff;
-    background-color: #336699;
+    background-color: #00792e;
     border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
 }
 
 #a:hover {
-    background-color: #0044cc;
+    background-color: #00df55;
 }
 
 

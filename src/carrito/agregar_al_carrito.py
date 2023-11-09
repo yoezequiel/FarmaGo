@@ -1,9 +1,11 @@
-import datetime
+from datetime import datetime
 from flask import abort, redirect, request, session, url_for
 from flask import Flask
 
 app = Flask(__name__)
 from src.helpers.helpers import get_db
+
+current_datetime = datetime.now()
 
 
 def agregar_al_carrito(id_producto):

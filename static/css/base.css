@@ -1,4 +1,12 @@
+html {
+    background-color: #D5FFB9;
+}
+
 .navbar {
     background-color: green !important;
     color: white !important;
+}
+
+.contain {
+    background-color: #D5FFB9;
 }
