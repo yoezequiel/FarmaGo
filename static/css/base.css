@@ -1,12 +1,38 @@
+:root {
+    --texto: #e0e0e0;
+    --fondo: #1E1E1E;
+    --fondo-nav: #2d2d2d;
+    --fondo-titulo: #2E8B57;
+    --fondo-boton: #1E1E1E;
+    --fondo-boton-hover: #2d2d2d;
+}
+
 html {
-    background-color: #D5FFB9;
+    background-color: var(--fondo);
 }
 
 .navbar {
-    background-color: green !important;
-    color: white !important;
+    background-color: var(--fondo-nav) !important;
+    color: var(--texto) !important;
+}
+
+a.nav-link {
+    color: var(--texto) !important;
+
+}
+
+.navbar-brand {
+    color: var(--texto) !important;
+}
+
+.navbar-dark .navbar-toggler {
+    border-color: var(--texto) !important;
+}
+
+.navbar-dark .navbar-toggler-icon {
+    color: var(--texto) !important;
 }
 
 .contain {
-    background-color: #D5FFB9;
+    background-color: var(--fondo);
 }
