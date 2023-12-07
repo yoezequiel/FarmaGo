@@ -1,8 +1,7 @@
 h1 {
-    color: #00aa41;
+    color: var(--texto);
     text-align: center;
 }
-
 
 #a {
     display: block;
@@ -11,9 +10,13 @@ h1 {
     padding: 10px;
     text-align: center;
     text-decoration: none;
-    color: #fff;
-    background-color: #00792e;
+    color: var(--texto);
+    background-color: var(--fondo-boton);
     border-radius: 4px;
+    background-color: var(--fondo-boton);
+    border: 2px solid var(--borde-boton);
+    width: 200px;
+    transition: all 1s ease;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;
@@ -21,11 +24,12 @@ h1 {
 }
 
 #a:hover {
-    background-color: #00df55;
+    background-color: var(--fondo-boton-hover);
 }
 
 
 p {
     text-align: center;
     margin-bottom: 20px;
+    color: var(--texto);
 }

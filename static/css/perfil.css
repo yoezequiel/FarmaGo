@@ -1,5 +1,7 @@
-body {
-    text-align: center;
+.contain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #a,
@@ -15,19 +17,28 @@ input[type="submit"] {
 }
 
 #a {
-    color: white;
-    background-color: #4CAF50;
+    color: var(--texto);
+    background-color: var(--fondo-boton);
+    border: 2px solid var(--borde-boton);
+    width: 200px;
+    transition: all 1s ease;
 }
 
 #a:hover {
-    background-color: #45a049;
+    background-color: var(--fondo-boton-hover);
+    border: 2px solid var(--borde-boton);
 }
 
 input[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--fondo-boton);
+    color: var(--texto);
+    border: 2px solid var(--borde-boton);
+    width: 200px;
+    transition: all 1s ease;
+
 }
 
 input[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: var(--fondo-boton-hover);
+    border: 2px solid var(--borde-boton);
 }
