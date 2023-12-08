@@ -28,3 +28,22 @@ button#themeToggle {
 #moonIcon {
     display: none;
 }
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #D5FFB9 green;
+}
+
+*::-webkit-scrollbar {
+    width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #D5FFB9;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: green;
+    border-radius: 20px;
+    border: 3px solid #D5FFB9;
+}
