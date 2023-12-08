@@ -1,0 +1,44 @@
+.contain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#a,
+input[type="submit"] {
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+#a {
+    color: var(--texto);
+    background-color: var(--fondo-boton);
+    border: 2px solid var(--borde-boton);
+    width: 200px;
+    transition: all 1s ease;
+}
+
+#a:hover {
+    background-color: var(--fondo-boton-hover);
+    border: 2px solid var(--borde-boton);
+}
+
+input[type="submit"] {
+    background-color: var(--fondo-boton);
+    color: var(--texto);
+    border: 2px solid var(--borde-boton);
+    width: 200px;
+    transition: all 1s ease;
+
+}
+
+input[type="submit"]:hover {
+    background-color: var(--fondo-boton-hover);
+    border: 2px solid var(--borde-boton);
+}

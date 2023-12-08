@@ -2,7 +2,8 @@
 <head>
     {% block head %}
     <title>Inicio</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" id="estilos-claro" disabled>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index-oscuro.css') }}" id="estilos-oscuro">
     {% endblock head %}
 </head>
 <body>

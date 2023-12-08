@@ -4,7 +4,13 @@
     <title>Inicio</title>
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/carrito_pago.css') }}" />
+        href="{{ url_for('static', filename='css/carrito_pago.css') }}"
+        id="estilos-claro"
+        disabled />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/carrito_pago-oscuro.css') }}"
+        id="estilos-oscuro" />
     {% endblock head %}
 </head>
 <body>

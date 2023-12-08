@@ -2,7 +2,13 @@
 <title>Carrito de Compras</title>
 <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='css/carrito.css') }}" />
+    href="{{ url_for('static', filename='css/carrito.css') }}"
+    id="estilos-claro"
+    disabled />
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/carrito-oscuro.css') }}"
+    id="estilos-oscuro" />
 {% endblock head %} {% block content %}
 <div class="container">
     <h1>Carrito de Compras</h1>

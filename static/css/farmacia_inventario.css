@@ -7,13 +7,10 @@
 .product {
     flex-basis: calc(33.33% - 20px);
     padding: 20px;
-    background-color: var(--subfondo);
-    border-radius: 15px;
-    color: var(--texto);
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
-    -ms-border-radius: 15px;
-    -o-border-radius: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .product-info {
@@ -28,8 +25,6 @@
 h1 {
     font-size: 24px;
     margin: 0;
-    color: var(--texto);
-    text-align: center;
 }
 
 #a,
@@ -41,32 +36,23 @@ input[type="submit"] {
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
 }
 
 #a {
-    color: var(--texto);
-    background-color: var(--fondo-boton);
-    border: 2px solid var(--borde-boton);
+    color: white;
+    background-color: #4CAF50;
 }
 
 #a:hover {
-    background-color: var(--fondo-titulo);
-    border: 2px solid var(--borde-boton);
+    background-color: #45a049;
 }
 
 #del {
-    color: var(--texto);
-    background-color: var(--fondo-boton);
-    border: 2px solid var(--borde-boton);
+    background-color: rgb(212, 32, 32);
 }
 
 #del:hover {
     background-color: red;
-    border: 2px solid var(--borde-boton);
 }
 
 .buttons {
@@ -74,50 +60,37 @@ input[type="submit"] {
 }
 
 .add-product {
-    background-color: var(--fondo-boton);
-    color: var(--texto);
+    background-color: #00a841;
+    color: black;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    border: 2px solid var(--borde-boton);
-    text-decoration: none;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
 }
 
 .add-product:hover {
-    background-color: var(--fondo-boton-hover);
-    color: var(--texto);
-    border: 2px solid var(--borde-boton);
-
+    background-color: #00c94d;
+    color: black;
 }
 
 .back-to-dashboard {
-    background-color: var(--fondo-boton);
-    color: var(--texto);
+    background-color: #ccc;
+    color: black;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    border: 2px solid var(--borde-boton);
-    text-decoration: none;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -ms-border-radius: 5px;
-    -o-border-radius: 5px;
 }
 
 .back-to-dashboard:hover {
-    background-color: var(--fondo-boton-hover);
-    color: var(--texto);
+    background-color: #999;
 }
 
+/* Estilos responsivos */
 @media (max-width: 768px) {
     .product {
         flex-basis: calc(100% - 20px);
+        /* Un producto por fila en pantallas pequeñas */
     }
 
     .buttons {

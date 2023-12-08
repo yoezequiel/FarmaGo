@@ -3,7 +3,11 @@
 <title>Listado de productos</title>
 <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='css/listar_productos.css') }}"
+    href="{{ url_for('static', filename='css/listar_productos.css') }}" id ="estilos-claro"
+    disabled/>
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/listar_productos-oscuro.css') }}" id="estilos-oscuro"
 />
 {% endblock head %}
 {% block content %}

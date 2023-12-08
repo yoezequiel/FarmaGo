@@ -1,3 +1,7 @@
+html {
+    background-color: #D5FFB9;
+}
+
 #contain {
     display: flex;
     flex-wrap: wrap;
@@ -11,7 +15,7 @@ img {
 .form-control {
     width: 100% !important;
     box-sizing: border-box;
-    color: var(--texto) !important;
+    color: black !important;
 }
 
 form {
@@ -40,63 +44,20 @@ form {
 }
 
 .col-sm-12 {
-    background-color: var(--fondo);
+    background-color: #00FF63;
     padding: 30px;
     width: 700px;
 }
 
-form {
-    color: var(--texto);
-}
-
-input[type="text"] {
-    background-color: var(--fondo);
-    color: var(--texto) !important;
-}
-
-input[type="text"]:focus {
-    background-color: var(--subfondo);
-}
-
-input[type="number"] {
-    background-color: var(--fondo);
-    color: var(--texto) !important;
-}
-
-input[type="number"]:focus {
-    background-color: var(--subfondo);
-}
-
-textarea#descripcion {
-    background-color: var(--fondo);
-    color: var(--texto) !important;
-}
-
-select#categoria {
-    background-color: var(--fondo);
-    color: var(--texto) !important;
-}
-
-option {
-    background-color: var(--fondo);
-    color: var(--texto);
-}
-
-input[type="text"]:focus {
-    background-color: var(--subfondo);
-}
-
 input[type="submit"] {
-    background-color: var(--fondo-boton);
+    background-color: lightgreen;
     font-size: 30px;
     padding-left: 150px;
     padding-right: 150px;
-    border: 2px solid var(--borde-boton)
 }
 
 input[type="submit"]:hover {
-    background-color: var(--fondo-boton-hover);
-    border: 2px solid var(--borde-boton)
+    background-color: green;
 }
 
 .left-column {
@@ -104,20 +65,20 @@ input[type="submit"]:hover {
     flex: 1;
     justify-content: center;
     align-items: center;
-    background-color: var(--fondo);
+    background-color: #D5FFB9;
 }
 
 .right-column {
     flex: 1;
     flex-direction: column;
-    background-color: var(--fondo);
+    background-color: #D5FFB9;
 }
 
 .right-column h1 {
     font-size: 35px;
-    background-color: var(--fondo-titulo);
+    background-color: #00FF63;
     padding: 70px;
-    color: var(--texto);
+    color: white;
     width: 100%;
     text-align: center;
 }
@@ -149,6 +110,7 @@ input[type="submit"]:hover {
     }
 
     input[type="submit"] {
+        background-color: lightgreen;
         padding: 30px;
     }
 

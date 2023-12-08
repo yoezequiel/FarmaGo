@@ -1,62 +1,30 @@
-:root {
-    --texto: #e0e0e0;
-    --fondo: #1E1E1E;
-    --fondo-nav: #2d2d2d;
-    --fondo-titulo: #2E8B57;
-    --fondo-boton: #1E1E1E;
-    --fondo-boton-hover: #2d2d2d;
-    --borde-boton: #61bc84;
-    --fondo-form: #1E1E1E;
-    --fondo-form-focus: #2d2d2d;
-    --subfondo: #2d2d2d;
-}
-
 html {
-    background-color: var(--fondo);
+    background-color: #D5FFB9;
 }
 
 .navbar {
-    background-color: var(--fondo-nav) !important;
-    color: var(--texto) !important;
-}
-
-a.nav-link {
-    color: var(--texto) !important;
-
-}
-
-.navbar-brand {
-    color: var(--texto) !important;
-}
-
-.navbar-dark .navbar-toggler {
-    border-color: var(--texto) !important;
-}
-
-.navbar-dark .navbar-toggler-icon {
-    color: var(--texto) !important;
+    background-color: green !important;
+    color: white !important;
 }
 
 .contain {
-    background-color: var(--fondo);
+    background-color: #D5FFB9;
 }
 
-.widget .pop-up .pop-up-circle.bubble {
-    background-color: var(--fondo-titulo) !important;
+
+button#themeToggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--texto);
 }
 
-.widget .chat-container .chat-window .messages-window {
-    background-color: var(--subfondo) !important;
+#sunIcon,
+#moonIcon {
+    margin: 0 5px;
 }
 
-.widget .chat-container .chat-window .topbar {
-    background-color: var(--fondo-nav) !important;
-}
-
-.widget .chat-container .chat-window .footer input {
-    background-color: var(--subfondo) !important;
-}
-
-.widget .chat-container .chat-window .footer>form .powered-by-container {
-    background-color: var(--subfondo) !important;
+#moonIcon {
+    display: none;
 }

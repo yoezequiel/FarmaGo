@@ -1,0 +1,129 @@
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.product {
+    flex-basis: calc(33.33% - 20px);
+    padding: 20px;
+    background-color: var(--subfondo);
+    border-radius: 15px;
+    color: var(--texto);
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    -ms-border-radius: 15px;
+    -o-border-radius: 15px;
+}
+
+.product-info {
+    margin-bottom: 10px;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+}
+
+h1 {
+    font-size: 24px;
+    margin: 0;
+    color: var(--texto);
+    text-align: center;
+}
+
+#a,
+input[type="submit"] {
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+#a {
+    color: var(--texto);
+    background-color: var(--fondo-boton);
+    border: 2px solid var(--borde-boton);
+}
+
+#a:hover {
+    background-color: var(--fondo-titulo);
+    border: 2px solid var(--borde-boton);
+}
+
+#del {
+    color: var(--texto);
+    background-color: var(--fondo-boton);
+    border: 2px solid var(--borde-boton);
+}
+
+#del:hover {
+    background-color: red;
+    border: 2px solid var(--borde-boton);
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+.add-product {
+    background-color: var(--fondo-boton);
+    color: var(--texto);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid var(--borde-boton);
+    text-decoration: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.add-product:hover {
+    background-color: var(--fondo-boton-hover);
+    color: var(--texto);
+    border: 2px solid var(--borde-boton);
+
+}
+
+.back-to-dashboard {
+    background-color: var(--fondo-boton);
+    color: var(--texto);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid var(--borde-boton);
+    text-decoration: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.back-to-dashboard:hover {
+    background-color: var(--fondo-boton-hover);
+    color: var(--texto);
+}
+
+@media (max-width: 768px) {
+    .product {
+        flex-basis: calc(100% - 20px);
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 100px;
+    }
+}

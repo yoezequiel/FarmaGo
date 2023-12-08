@@ -2,7 +2,13 @@
 <title>Listado de productos</title>
 <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='css/productos_por_categoria.css') }}" />
+    href="{{ url_for('static', filename='css/productos_por_categoria.css') }}"
+    id="estilos-claro"
+    disabled />
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/productos_por_categoria-oscuro.css') }}"
+    id="estilos-oscuro" />
 {% endblock head %} {% block content %}
 <div class="productos">
     <h1>Listado de Productos por categoria</h1>

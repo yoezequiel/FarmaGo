@@ -4,8 +4,13 @@
     <title>panel</title>
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/panel.css') }}" />
-
+        href="{{ url_for('static', filename='css/panel.css') }}"
+        id="estilos-claro"
+        disabled />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/panel-oscuro.css') }}"
+        id="estilos-oscuro" />
     {% endblock head %}
 </head>
 <body>

@@ -4,7 +4,13 @@
     <title>Ventas Realizadas</title>
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/ventas.css') }}" />
+        href="{{ url_for('static', filename='css/ventas.css') }}"
+        id="estilos-claro"
+        disabled />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/ventas-oscuro.css') }}"
+        id="estilos-oscuro" />
     {% endblock head %}
 </head>
 <body>

@@ -1,3 +1,7 @@
+html {
+    background-color: #D5FFB9;
+}
+
 #contain {
     display: flex;
     flex-wrap: wrap;
@@ -50,49 +54,23 @@ form {
     font-size: 25px !important;
 }
 
-.form-control {
-    color: var(--texto) !important;
-}
-
-form {
-    color: var(--texto)
-}
-
 input[type="text"] {
     padding: 20px;
-    background-color: var(--fondo-form);
-    color: var(--texto);
-
-}
-
-input[type="text"]:focus {
-    padding: 20px;
-    background-color: var(--fondo-form-focus);
-    color: var(--texto);
 }
 
 input[type="password"] {
     padding: 20px;
-    background-color: var(--fondo-form);
-}
-
-input[type="password"]:focus {
-    padding: 20px;
-    background-color: var(--fondo-from-focus);
-    color: var(--texto);
 }
 
 input[type="submit"] {
-    background-color: var(--fondo-boton);
+    background-color: #00FF63;
     font-size: 30px;
     padding-left: 150px;
     padding-right: 150px;
-    border: 2px solid var(--borde-boton)
 }
 
 input[type="submit"]:hover {
-    background-color: var(--fondo-boton-hover);
-    border: 2px solid var(--borde-boton)
+    background-color: green;
 }
 
 .left-column {
@@ -100,21 +78,21 @@ input[type="submit"]:hover {
     flex: 1;
     justify-content: center;
     align-items: center;
-    background-color: var(--fondo);
+    background-color: #D5FFB9;
     padding-top: 230px;
 }
 
 .right-column {
     flex: 1;
     flex-direction: column;
-    background-color: var(--fondo);
+    background-color: #D5FFB9;
 }
 
 .right-column h1 {
     font-size: 35px;
-    background-color: var(--fondo-titulo);
+    background-color: #00FF63;
     padding: 70px;
-    color: var(--texto);
+    color: white;
     width: 100%;
     text-align: center;
     margin-bottom: 100px;

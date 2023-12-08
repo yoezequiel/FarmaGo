@@ -3,30 +3,26 @@ body {
 }
 
 h1 {
-    background-color: var(--fondo-titulo);
-    color: var(--texto);
+    background-color: #00FF63;
+    color: #fff;
     padding: 20px;
 }
 
 p {
     font-size: 18px;
     margin: 20px;
-    color: var(--texto)
 }
 
 #a {
     display: inline-block;
-    background-color: var(--fondo-boton);
+    background-color: #00FF63;
     color: #fff;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
     margin: 10px;
-    border: 2px solid var(--borde-boton);
 }
 
 #a:hover {
-    background-color: var(--fondo-boton-hover);
-    border: 2px solid var(--borde-boton);
-
+    background-color: #006426;
 }

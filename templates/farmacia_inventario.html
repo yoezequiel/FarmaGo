@@ -2,7 +2,13 @@
 <title>Inventario de la Farmacia</title>
 <link
     rel="stylesheet"
-    href="{{ url_for('static', filename='css/farmacia_inventario.css') }}" />
+    href="{{ url_for('static', filename='css/farmacia_inventario.css') }}"
+    id="estilos-claro"
+    disabled />
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/farmacia_inventario-oscuro.css') }}"
+    id="estilos-oscuro" />
 {% endblock head %} {% block content %}
 <div class="container">
     <h1>Inventario de la Farmacia</h1>

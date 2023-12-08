@@ -4,8 +4,13 @@
     <title>Agregar Productos</title>
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/agregar_producto.css') }}" />
-
+        href="{{ url_for('static', filename='css/agregar_producto.css') }}"
+        id="estilos-claro"
+        disabled />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/agregar_producto-oscuro.css') }}"
+        id="estilos-oscuro" />
     {% endblock head %}
 </head>
 <body>

@@ -4,7 +4,13 @@
     <title>Todas las Farmacias</title>
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/todas_farmacias.css') }}" />
+        href="{{ url_for('static', filename='css/todas_farmacias.css') }}"
+        id="estilos-claro"
+        disabled />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/todas_farmacias-oscuro.css') }}"
+        id="estilos-oscuro" />
     {% endblock head %}
 </head>
 <body>

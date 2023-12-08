@@ -6,8 +6,8 @@
         <meta charset="UTF-8" />
         <meta
             name="description"
-            content="web de delivery y compras para farmacias" />
-        <meta name="keywords" content="farmacias, delivery, nose" />
+            content="Web de delivery y compras para farmacias" />
+        <meta name="keywords" content="farmacias, delivery" />
         <meta name="author" content="yoezequiel, candela-blanco" />
         <link
             rel="stylesheet"
@@ -15,7 +15,13 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"></script>
         <link
             rel="stylesheet"
-            href="{{ url_for('static', filename='css/base.css') }}" />
+            href="{{ url_for('static', filename='css/base.css') }}"
+            id="estilos-claro"
+            disabled />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/base-oscuro.css') }}"
+            id="estilos-oscuro" />
         <link
             rel="icon"
             type="image"
@@ -53,11 +59,18 @@
                                 ><i class="fa-solid fa-cart-shopping fa-xl"></i
                             ></a>
                         </li>
+                        <li class="nav-item">
+                            <button id="themeToggle" onclick="cambiarTema()">
+                                <span id="sunIcon">&#9728;</span>
+                                <!-- Sun icon -->
+                                <span id="moonIcon">&#9790;</span>
+                                <!-- Moon icon -->
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
-
         <div class="contain" id="contain">
             {% block content %} {% endblock %}
         </div>
@@ -76,5 +89,6 @@
                 s.parentNode.insertBefore(ldk, s);
             })();
         </script>
+        <script src="{{ url_for('static', filename='js/cambio-tema.js') }}"></script>
     </body>
 </html>

@@ -5,7 +5,13 @@
     <title>Editar perfil | {{ nombre_usuario }}</title>
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/editar_perfil.css') }}" />
+        href="{{ url_for('static', filename='css/editar_perfil.css') }}"
+        id="estilos-claro"
+        disabled />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/editar_perfil-oscuro.css') }}"
+        id="estilos-oscuro" />
     {% endblock head %}
 </head>
 

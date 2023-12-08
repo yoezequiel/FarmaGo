@@ -2,7 +2,8 @@
 <head>
     {% block head %}
     <title>Productos de la Farmacia</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/productos_farmacia.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/productos_farmacia.css') }}" id="estilos-claro" disabled/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/productos_farmacia-oscuro.css') }}" id="estilos-oscuro"/>
     {% endblock head %}
 </head>
 <body>

@@ -7,7 +7,6 @@
 h1 {
     text-align: center;
     margin-bottom: 30px;
-    color: var(--texto);
 }
 
 .product-list {
@@ -17,43 +16,36 @@ h1 {
 }
 
 .product-card {
-    color: var(--texto);
-    border-radius: 15px;
+    border: 1px solid #014649;
+    border-radius: 5px;
     padding: 15px;
-    background-color: var(--subfondo);
+    background-color: #fff;
     cursor: pointer;
     display: flex;
     align-content: stretch;
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
-    -ms-border-radius: 15px;
-    -o-border-radius: 15px;
 }
 
 .product-card:hover {
-    background-color: #454545;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-image img {
     max-width: 100%;
-    max-height: 250px;
-    border-radius: 15px;
-    -webkit-border-radius: 15px;
-    -moz-border-radius: 15px;
-    -ms-border-radius: 15px;
-    -o-border-radius: 15px;
+    max-height: 100%;
 }
 
 .product-name {
-    padding-top: 30px;
     font-size: 20px;
+    margin: 0;
+    color: #333;
 }
 
 .product-description {
     font-size: 14px;
+    color: #777;
     margin-top: 5px;
     margin-bottom: 10px;
     overflow: hidden;
@@ -71,25 +63,18 @@ h1 {
 .product-price {
     font-size: 14px;
     margin: 0;
-    color: var(--texto);
+    color: black;
 }
 
 .navbar2 {
-    background-color: var(--fondo) !important;
+    background-color: rgb(0, 190, 0) !important;
     display: flex;
     justify-content: center;
     padding: 3px;
 }
 
 .page-link {
-    color: var(--texto) !important;
-    background-color: var(--fondo-boton) !important;
-    border-color: var(--borde-boton) !important;
-}
-
-.page-item.active .page-link {
-    background-color: var(--fondo-boton) !important;
-    border-color: var(--borde-boton) !important;
+    color: black !important;
 }
 
 form {
@@ -97,23 +82,14 @@ form {
     flex-direction: column;
 }
 
-.form-control {
-    background-color: var(--subfondo) !important;
-}
-
-option {
-    background-color: var(--fondo);
-    color: var(--texto);
-}
-
 .btn-primary {
-    background-color: var(--fondo-boton) !important;
-    border-color: var(--texto) !important;
+    background-color: green !important;
+    border-color: green !important;
 }
 
 .btn-primary:hover {
-    background-color: var(--fondo-boton-hover) !important;
-    border-color: var(--texto) !important;
+    background-color: rgb(2, 175, 2) !important;
+    border-color: black !important;
 }
 
 #busqueda {

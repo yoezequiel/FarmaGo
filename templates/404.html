@@ -4,7 +4,13 @@
     <title>Inicio</title>
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/404.css') }}" />
+        href="{{ url_for('static', filename='css/404.css') }}"
+        id="estilos-claro"
+        disabled />
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/404-oscuro.css') }}"
+        id="estilos-oscuro" />
     {% endblock head %}
 </head>
 <body>
