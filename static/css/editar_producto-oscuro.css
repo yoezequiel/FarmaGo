@@ -139,7 +139,6 @@ input[type="submit"]:hover {
     }
 
     input[type="submit"] {
-        background-color: lightgreen;
         padding: 30px;
     }
 
