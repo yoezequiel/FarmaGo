@@ -97,6 +97,8 @@ app.errorhandler(403)(forbidden_error)
 
 app.errorhandler(404)(page_not_found)
 
+import os
+
 if __name__ == "__main__":
     create_tables()
-    app.run()
+    app.run(host="0.0.0.0", port=os.environ.get("PORT", 5000))
