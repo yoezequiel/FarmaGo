@@ -1,0 +1,80 @@
+---
+const user = Astro.locals.user;
+const { title = "FarmaGo" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="FarmaGo - Tu farmacia online de confianza" />
+    <title>{title} — FarmaGo</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: system-ui, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+      nav { background: #1d4ed8; color: white; padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+      nav a { color: white; text-decoration: none; font-weight: 500; padding: 0.25rem 0.5rem; border-radius: 4px; }
+      nav a:hover { background: rgba(255,255,255,0.15); }
+      nav .brand { font-size: 1.25rem; font-weight: 700; margin-right: auto; }
+      main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+      .btn { display: inline-block; padding: 0.5rem 1.25rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.95rem; text-decoration: none; font-family: inherit; }
+      .btn-primary { background: #1d4ed8; color: white; }
+      .btn-primary:hover { background: #1e40af; }
+      .btn-danger { background: #dc2626; color: white; }
+      .btn-danger:hover { background: #b91c1c; }
+      .btn-secondary { background: #e2e8f0; color: #1e293b; }
+      .btn-secondary:hover { background: #cbd5e1; }
+      .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.1); padding: 1.5rem; margin-bottom: 1rem; }
+      .alert-error { background: #fee2e2; border: 1px solid #fca5a5; color: #dc2626; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+      .alert-success { background: #dcfce7; border: 1px solid #86efac; color: #16a34a; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+      .form-group { margin-bottom: 1rem; }
+      .form-group label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem; }
+      .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; font-family: inherit; }
+      .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: 2px solid #1d4ed8; outline-offset: 1px; border-color: #1d4ed8; }
+      .grid-productos { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
+      .producto-card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.1); overflow: hidden; transition: box-shadow .2s; }
+      .producto-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+      .producto-card img { width: 100%; height: 180px; object-fit: cover; }
+      .producto-card .info { padding: 1rem; }
+      .producto-card .nombre { font-weight: 600; margin-bottom: 0.25rem; }
+      .producto-card .precio { color: #1d4ed8; font-size: 1.1rem; font-weight: 700; }
+      .badge-agotado { display: inline-block; background: #fee2e2; color: #dc2626; font-size: 0.7rem; font-weight: 600; padding: 0.1rem 0.4rem; border-radius: 4px; text-transform: uppercase; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+      th { background: #f1f5f9; font-weight: 600; font-size: 0.875rem; }
+      tr:last-child td { border-bottom: none; }
+      @media (max-width: 640px) {
+        nav { gap: 0.5rem; }
+        main { margin: 1rem auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/" class="brand">💊 FarmaGo</a>
+      <a href="/productos">Productos</a>
+      <a href="/farmacias">Farmacias</a>
+      {user ? (
+        <>
+          {user.role === "farmacia" && <a href="/dashboard">Panel</a>}
+          {user.role === "cliente" && <a href="/pedidos">Mis pedidos</a>}
+          <a href="/carrito">🛒 Carrito</a>
+          <a href="/perfil">Mi perfil</a>
+          <form method="POST" action="/api/logout" style="display:inline">
+            <button type="submit" class="btn btn-secondary" style="font-size:0.85rem;padding:0.25rem 0.75rem;">Salir</button>
+          </form>
+        </>
+      ) : (
+        <>
+          <a href="/login">Iniciar sesión</a>
+          <a href="/register/cliente">Registrarse</a>
+        </>
+      )}
+    </nav>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+if (!user || user.role !== "farmacia") return Astro.redirect("/login");
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const token = Astro.cookies.get("token")?.value;
+
+const res = await fetch(`${API_URL}/api/ventas`, {
+  headers: { Cookie: `token=${token}` },
+});
+const ventas = await res.json();
+const totalAcumulado = ventas.reduce((acc: number, v: any) => acc + Number(v.total), 0);
+---
+
+<Layout title="Mis ventas">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+    <h1 style="font-size:1.75rem;font-weight:700;">💰 Mis Ventas</h1>
+    {ventas.length > 0 && (
+      <div class="card" style="padding:0.75rem 1.25rem;margin-bottom:0;">
+        <span style="font-size:0.875rem;color:#64748b;">Total acumulado: </span>
+        <span style="font-weight:700;color:#16a34a;">${totalAcumulado.toFixed(2)}</span>
+      </div>
+    )}
+  </div>
+
+  {ventas.length === 0 ? (
+    <div class="card" style="text-align:center;color:#64748b;padding:3rem;">
+      No hay ventas registradas aún.
+    </div>
+  ) : (
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Comprador</th>
+            <th>Correo</th>
+            <th style="text-align:right;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ventas.map((v: any) => (
+            <tr>
+              <td style="color:#94a3b8;">{v.id}</td>
+              <td>{new Date(v.fecha).toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric" })}</td>
+              <td style="font-weight:500;">{v.comprador_nombre}</td>
+              <td style="color:#64748b;font-size:0.875rem;">{v.comprador_correo}</td>
+              <td style="text-align:right;font-weight:600;color:#16a34a;">${Number(v.total).toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )}
+</Layout>

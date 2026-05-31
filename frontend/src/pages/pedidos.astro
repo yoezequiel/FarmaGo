@@ -1,0 +1,57 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect("/login");
+if (user.role !== "cliente") return Astro.redirect("/dashboard");
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const token = Astro.cookies.get("token")?.value;
+
+const res = await fetch(`${API_URL}/api/user/pedidos`, {
+  headers: { Cookie: `token=${token}` },
+});
+const pedidos = await res.json();
+---
+
+<Layout title="Mis pedidos">
+  <h1 style="font-size:1.75rem;font-weight:700;margin-bottom:1.5rem;">📦 Mis Pedidos</h1>
+
+  {pedidos.length === 0 ? (
+    <div class="card" style="text-align:center;color:#64748b;padding:3rem;">
+      <div style="font-size:3rem;margin-bottom:1rem;">📦</div>
+      <p style="margin-bottom:1rem;">Aún no realizaste ninguna compra.</p>
+      <a href="/productos" class="btn btn-primary">Ver productos</a>
+    </div>
+  ) : (
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      {pedidos.map((p: any) => (
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
+            <div>
+              <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:0.25rem;">
+                Pedido #{p.id} · {new Date(p.fecha).toLocaleDateString("es-AR", { day: "2-digit", month: "long", year: "numeric" })}
+              </div>
+              <div style="font-size:0.875rem;color:#64748b;">
+                Farmacia: <span style="font-weight:500;color:#1e293b;">{p.vendedor_nombre} {p.vendedor_usuario ? `(@${p.vendedor_usuario})` : ""}</span>
+              </div>
+            </div>
+            <div style="font-size:1.25rem;font-weight:700;color:#16a34a;">${Number(p.total).toFixed(2)}</div>
+          </div>
+          {p.items?.length > 0 && (
+            <div style="border-top:1px solid #f1f5f9;padding-top:0.75rem;">
+              <div style="display:flex;flex-direction:column;gap:0.4rem;">
+                {p.items.map((item: any) => (
+                  <div style="display:flex;justify-content:space-between;font-size:0.875rem;color:#475569;">
+                    <span>{item.nombre} × {item.cantidad}</span>
+                    <span>${(Number(item.precio_unitario) * Number(item.cantidad)).toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
+</Layout>

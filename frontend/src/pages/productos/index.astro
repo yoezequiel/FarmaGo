@@ -1,0 +1,86 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+
+const url = new URL(Astro.request.url);
+const pagina = Math.max(1, Number(url.searchParams.get("pagina") || 1));
+const categoria_id = url.searchParams.get("categoria_id") || "";
+const search_query = url.searchParams.get("search_query") || "";
+
+const params = new URLSearchParams({ pagina: String(pagina) });
+if (categoria_id) params.set("categoria_id", categoria_id);
+if (search_query) params.set("search_query", search_query);
+
+const res = await fetch(`${API_URL}/api/productos?${params}`);
+const data = await res.json();
+const { productos = [], paginas = 1, categorias = [] } = data;
+---
+
+<Layout title="Productos">
+  <h1 style="font-size:1.75rem;font-weight:700;margin-bottom:1.5rem;">Productos</h1>
+
+  <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:flex-end;">
+    <form method="GET" style="display:flex;gap:0.5rem;flex:1;min-width:200px;">
+      <input type="text" name="search_query" placeholder="Buscar productos..." value={search_query}
+        style="flex:1;padding:0.5rem 0.75rem;border:1px solid #cbd5e1;border-radius:6px;" />
+      <button type="submit" class="btn btn-primary">Buscar</button>
+      {search_query && <a href="/productos" class="btn btn-secondary">✕</a>}
+    </form>
+    <form method="GET" style="display:flex;gap:0.5rem;align-items:center;">
+      <select name="categoria_id" style="padding:0.5rem 0.75rem;border:1px solid #cbd5e1;border-radius:6px;">
+        <option value="">Todas las categorías</option>
+        {categorias.map((c: any) => (
+          <option value={c.id} selected={String(c.id) === categoria_id}>{c.nombre}</option>
+        ))}
+      </select>
+      <button type="submit" class="btn btn-secondary">Filtrar</button>
+      {categoria_id && <a href="/productos" class="btn btn-secondary">✕</a>}
+    </form>
+  </div>
+
+  {productos.length === 0 ? (
+    <div class="card" style="text-align:center;color:#64748b;padding:3rem;">
+      No se encontraron productos.
+      {(search_query || categoria_id) && <span> <a href="/productos">Ver todos</a></span>}
+    </div>
+  ) : (
+    <div class="grid-productos">
+      {productos.map((p: any) => (
+        <a href={`/productos/${p.id}`} style="text-decoration:none;color:inherit;">
+          <div class="producto-card">
+            <img
+              src={p.imagen || `https://placehold.co/300x180/e2e8f0/64748b?text=${encodeURIComponent(p.nombre)}`}
+              alt={p.nombre}
+              onerror="this.src='https://placehold.co/300x180/e2e8f0/64748b?text=Producto'"
+            />
+            <div class="info">
+              <div class="nombre">{p.nombre}</div>
+              <div class="precio" style="margin:0.25rem 0;">${Number(p.precio_unitario).toFixed(2)}</div>
+              {Number(p.cantidad) === 0
+                ? <span class="badge-agotado">Sin stock</span>
+                : <span style="font-size:0.8rem;color:#94a3b8;">Stock: {p.cantidad}</span>
+              }
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+
+  {paginas > 1 && (
+    <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;">
+      {pagina > 1 && (
+        <a href={`/productos?pagina=${pagina - 1}${categoria_id ? `&categoria_id=${categoria_id}` : ""}${search_query ? `&search_query=${encodeURIComponent(search_query)}` : ""}`}
+          class="btn btn-secondary">← Anterior</a>
+      )}
+      <span style="padding:0.5rem 0.75rem;background:white;border-radius:6px;border:1px solid #e2e8f0;">
+        {pagina} / {paginas}
+      </span>
+      {pagina < paginas && (
+        <a href={`/productos?pagina=${pagina + 1}${categoria_id ? `&categoria_id=${categoria_id}` : ""}${search_query ? `&search_query=${encodeURIComponent(search_query)}` : ""}`}
+          class="btn btn-secondary">Siguiente →</a>
+      )}
+    </div>
+  )}
+</Layout>

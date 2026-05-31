@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+Astro.response.status = 404;
+---
+
+<Layout title="Página no encontrada">
+  <div style="max-width:500px;margin:4rem auto;text-align:center;">
+    <div style="font-size:6rem;font-weight:900;color:#e2e8f0;line-height:1;">404</div>
+    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;margin-top:-1rem;">Página no encontrada</h1>
+    <p style="color:#64748b;margin-bottom:2rem;">La página que buscás no existe o fue movida.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;">
+      <a href="/" class="btn btn-primary">Ir al inicio</a>
+      <a href="/productos" class="btn btn-secondary">Ver productos</a>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,67 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+if (!user || user.role !== "farmacia") return Astro.redirect("/login");
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const token = Astro.cookies.get("token")?.value;
+const { id } = Astro.params;
+
+const prodRes = await fetch(`${API_URL}/api/productos/${id}`);
+if (!prodRes.ok) return Astro.redirect("/inventario");
+const { producto } = await prodRes.json();
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const form = await Astro.request.formData();
+  const body = Object.fromEntries(form.entries());
+  const res = await fetch(`${API_URL}/api/productos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", Cookie: `token=${token}` },
+    body: JSON.stringify(body),
+  });
+  if (res.ok) return Astro.redirect("/inventario");
+  const data = await res.json();
+  error = data.error || "Error al editar producto";
+}
+---
+
+<Layout title="Editar producto">
+  <div style="max-width:600px;margin:0 auto;">
+    <a href="/inventario" style="color:#1d4ed8;font-size:0.9rem;">← Volver al inventario</a>
+    <div class="card" style="margin-top:1rem;">
+      <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;">Editar producto</h2>
+      {error && <div class="alert-error">{error}</div>}
+      <form method="POST">
+        <div class="form-group">
+          <label>Nombre del producto</label>
+          <input type="text" name="nombre" value={producto.nombre} required />
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea name="descripcion" rows="3" style="width:100%;padding:0.5rem 0.75rem;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;resize:vertical;">{producto.descripcion}</textarea>
+        </div>
+        <div class="form-group">
+          <label>URL de imagen</label>
+          <input type="url" name="imagen" value={producto.imagen || ""} placeholder="https://..." />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group">
+            <label>Precio unitario ($)</label>
+            <input type="number" name="precio_unitario" step="0.01" min="0.01" value={producto.precio_unitario} required />
+          </div>
+          <div class="form-group">
+            <label>Cantidad en stock</label>
+            <input type="number" name="cantidad" min="0" value={producto.cantidad} required />
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <button type="submit" class="btn btn-primary" style="flex:1;">Guardar cambios</button>
+          <a href="/inventario" class="btn btn-secondary" style="flex:1;text-align:center;">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</Layout>

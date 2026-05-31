@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect("/login");
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const token = Astro.cookies.get("token")?.value;
+
+const url = new URL(Astro.request.url);
+const params = url.searchParams.toString();
+
+const res = await fetch(`${API_URL}/api/pagos/pago_exitoso?${params}`, {
+  headers: { Cookie: `token=${token}` },
+});
+const data = await res.json();
+---
+
+<Layout title="Resultado del pago">
+  <div style="max-width:500px;margin:4rem auto;text-align:center;">
+    <div class="card">
+      {data.ok ? (
+        <>
+          <div style="font-size:4rem;margin-bottom:1rem;">✅</div>
+          <h1 style="font-size:1.75rem;font-weight:700;color:#16a34a;margin-bottom:0.5rem;">¡Pago exitoso!</h1>
+          <p style="color:#64748b;margin-bottom:1.5rem;">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
+          <div style="display:flex;gap:1rem;justify-content:center;">
+            <a href="/pedidos" class="btn btn-primary">Ver mis pedidos</a>
+            <a href="/productos" class="btn btn-secondary">Seguir comprando</a>
+          </div>
+        </>
+      ) : (
+        <>
+          <div style="font-size:4rem;margin-bottom:1rem;">❌</div>
+          <h1 style="font-size:1.75rem;font-weight:700;color:#dc2626;margin-bottom:0.5rem;">Pago no completado</h1>
+          <p style="color:#64748b;margin-bottom:1.5rem;">{data.error || "El pago no fue aprobado."}</p>
+          <a href="/carrito" class="btn btn-primary">Volver al carrito</a>
+        </>
+      )}
+    </div>
+  </div>
+</Layout>

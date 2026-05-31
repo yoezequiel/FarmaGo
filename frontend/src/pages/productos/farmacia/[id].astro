@@ -1,0 +1,40 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const { id } = Astro.params;
+
+const res = await fetch(`${API_URL}/api/productos/farmacia/${id}`);
+if (!res.ok) return Astro.redirect("/farmacias");
+
+const { productos, farmacia } = await res.json();
+---
+
+<Layout title={`Productos de ${farmacia?.nombre || "Farmacia"}`}>
+  <a href="/farmacias" style="color:#1d4ed8;font-size:0.9rem;">← Ver farmacias</a>
+  <div class="card" style="margin:1rem 0;display:flex;align-items:center;gap:1rem;">
+    {farmacia?.logo_url && <img src={farmacia.logo_url} alt="logo" style="width:64px;height:64px;border-radius:50%;object-fit:cover;" />}
+    <div>
+      <h1 style="font-size:1.5rem;font-weight:700;">{farmacia?.nombre} {farmacia?.apellido}</h1>
+      <p style="color:#64748b;">{farmacia?.localidad}, {farmacia?.provincia}</p>
+    </div>
+  </div>
+
+  {productos.length === 0 ? (
+    <div class="card" style="text-align:center;color:#64748b;">Esta farmacia no tiene productos.</div>
+  ) : (
+    <div class="grid-productos">
+      {productos.map((p: any) => (
+        <a href={`/productos/${p.id}`} style="text-decoration:none;color:inherit;">
+          <div class="producto-card">
+            <img src={p.imagen || "https://via.placeholder.com/300x180?text=Producto"} alt={p.nombre} />
+            <div class="info">
+              <div class="nombre">{p.nombre}</div>
+              <div class="precio">${Number(p.precio_unitario).toFixed(2)}</div>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+</Layout>

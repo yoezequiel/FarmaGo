@@ -1,0 +1,57 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect("/login");
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const token = Astro.cookies.get("token")?.value;
+
+const res = await fetch(`${API_URL}/api/user/perfil`, {
+  headers: { Cookie: `token=${token}` },
+});
+const perfil = await res.json();
+---
+
+<Layout title="Mi Perfil">
+  <div style="max-width:600px;margin:0 auto;">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+        {perfil.logo_url
+          ? <img src={perfil.logo_url} alt="avatar" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #e2e8f0;" />
+          : <div style="width:80px;height:80px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;">👤</div>
+        }
+        <div>
+          <h1 style="font-size:1.5rem;font-weight:700;">{perfil.nombre} {perfil.apellido}</h1>
+          <p style="color:#64748b;margin-bottom:0.25rem;">@{perfil.nombre_usuario}</p>
+          <span style="background:#dbeafe;color:#1d4ed8;padding:0.15rem 0.6rem;border-radius:4px;font-size:0.8rem;font-weight:600;text-transform:capitalize;">{perfil.role}</span>
+        </div>
+      </div>
+      <div style="display:grid;gap:0.75rem;border-top:1px solid #f1f5f9;padding-top:1rem;">
+        <div style="display:flex;gap:1rem;">
+          <span style="font-size:0.8rem;color:#94a3b8;min-width:80px;">Correo</span>
+          <span>{perfil.correo_electronico}</span>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <span style="font-size:0.8rem;color:#94a3b8;min-width:80px;">Dirección</span>
+          <span>{perfil.direccion || "—"}</span>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <span style="font-size:0.8rem;color:#94a3b8;min-width:80px;">Localidad</span>
+          <span>{[perfil.localidad, perfil.provincia].filter(Boolean).join(", ") || "—"}</span>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <span style="font-size:0.8rem;color:#94a3b8;min-width:80px;">Teléfono</span>
+          <span>{perfil.numero_telefono || "—"}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+        <a href="/editar-perfil" class="btn btn-primary">Editar perfil</a>
+        {user.role === "cliente" && <a href="/pedidos" class="btn btn-secondary">Mis pedidos</a>}
+        <form method="POST" action="/api/cuenta/eliminar" style="margin-left:auto;">
+          <button type="submit" class="btn btn-danger" onclick="return confirm('¿Eliminar tu cuenta? Esta acción no se puede deshacer.')">Eliminar cuenta</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</Layout>

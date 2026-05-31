@@ -1,0 +1,71 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect("/login");
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const token = Astro.cookies.get("token")?.value;
+
+const res = await fetch(`${API_URL}/api/carrito`, {
+  headers: { Cookie: `token=${token}` },
+});
+const data = await res.json();
+const { carrito = [], total = 0 } = data;
+---
+
+<Layout title="Carrito">
+  <h1 style="font-size:1.75rem;font-weight:700;margin-bottom:1.5rem;">🛒 Mi Carrito</h1>
+
+  {carrito.length === 0 ? (
+    <div class="card" style="text-align:center;padding:3rem;">
+      <div style="font-size:3rem;margin-bottom:1rem;">🛒</div>
+      <p style="color:#64748b;font-size:1.1rem;margin-bottom:1rem;">Tu carrito está vacío</p>
+      <a href="/productos" class="btn btn-primary">Ver productos</a>
+    </div>
+  ) : (
+    <div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th style="text-align:right;">Precio unit.</th>
+              <th style="text-align:center;">Cantidad</th>
+              <th style="text-align:right;">Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {carrito.map((item: any) => (
+              <tr>
+                <td>
+                  <a href={`/productos/${item.id_producto}`} style="color:#1d4ed8;font-weight:500;text-decoration:none;">{item.nombre}</a>
+                </td>
+                <td style="text-align:right;">${Number(item.precio_unitario).toFixed(2)}</td>
+                <td style="text-align:center;">{item.cantidad}</td>
+                <td style="text-align:right;font-weight:600;">${(Number(item.precio_unitario) * Number(item.cantidad)).toFixed(2)}</td>
+                <td>
+                  <form method="POST" action={`/api/carrito/eliminar/${item.id}`}>
+                    <button type="submit" class="btn btn-danger" style="padding:0.25rem 0.5rem;font-size:0.8rem;">Quitar</button>
+                  </form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-size:0.875rem;color:#64748b;">{carrito.length} {carrito.length === 1 ? "producto" : "productos"}</div>
+          <div style="font-size:1.5rem;font-weight:800;">Total: ${Number(total).toFixed(2)}</div>
+        </div>
+        <form method="POST" action="/api/carrito/checkout">
+          <button type="submit" class="btn btn-primary" style="font-size:1rem;padding:0.75rem 2rem;">
+            Pagar con MercadoPago
+          </button>
+        </form>
+      </div>
+    </div>
+  )}
+</Layout>

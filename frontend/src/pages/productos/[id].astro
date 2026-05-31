@@ -1,0 +1,96 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const { id } = Astro.params;
+
+const res = await fetch(`${API_URL}/api/productos/${id}`);
+if (!res.ok) return Astro.redirect("/404");
+
+const { producto, farmacia, categoria_nombre } = await res.json();
+
+let cartError = "";
+
+if (Astro.request.method === "POST") {
+  if (!user) return Astro.redirect("/login");
+  const form = await Astro.request.formData();
+  const cantidad = form.get("cantidad");
+  const token = Astro.cookies.get("token")?.value;
+  const cartRes = await fetch(`${API_URL}/api/carrito/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Cookie: `token=${token}` },
+    body: JSON.stringify({ cantidad: Number(cantidad) }),
+  });
+  if (cartRes.ok) return Astro.redirect("/carrito");
+  const errData = await cartRes.json();
+  cartError = errData.error || "Error al agregar al carrito";
+}
+
+const sinStock = Number(producto.cantidad) === 0;
+---
+
+<Layout title={producto.nombre}>
+  <a href="/productos" style="color:#1d4ed8;font-size:0.9rem;">← Volver a productos</a>
+  <div class="card" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
+    <div style="position:relative;">
+      <img
+        src={producto.imagen || `https://placehold.co/500x400/e2e8f0/64748b?text=${encodeURIComponent(producto.nombre)}`}
+        alt={producto.nombre}
+        style="width:100%;border-radius:8px;object-fit:cover;max-height:400px;"
+        onerror="this.src='https://placehold.co/500x400/e2e8f0/64748b?text=Producto'"
+      />
+      {sinStock && (
+        <div style="position:absolute;top:1rem;left:1rem;background:#dc2626;color:white;padding:0.25rem 0.75rem;border-radius:4px;font-size:0.875rem;font-weight:600;">
+          Sin stock
+        </div>
+      )}
+    </div>
+    <div>
+      <div style="font-size:0.8rem;color:#64748b;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:.05em;">{categoria_nombre}</div>
+      <h1 style="font-size:1.75rem;font-weight:700;margin-bottom:0.75rem;">{producto.nombre}</h1>
+      <p style="color:#475569;margin-bottom:1rem;line-height:1.6;">{producto.descripcion}</p>
+      <div style="font-size:2rem;font-weight:800;color:#1d4ed8;margin-bottom:0.5rem;">
+        ${Number(producto.precio_unitario).toFixed(2)}
+      </div>
+      <div style="font-size:0.9rem;color:{sinStock ? '#dc2626' : '#64748b'};margin-bottom:1.5rem;font-weight:{sinStock ? '600' : '400'};">
+        {sinStock ? "Agotado" : `${producto.cantidad} unidades disponibles`}
+      </div>
+
+      {cartError && <div class="alert-error">{cartError}</div>}
+
+      {!sinStock && user && user.role !== "farmacia" && (
+        <form method="POST" style="display:flex;gap:0.75rem;align-items:center;margin-bottom:1rem;">
+          <div style="display:flex;flex-direction:column;gap:0.25rem;">
+            <label style="font-size:0.8rem;color:#64748b;">Cantidad</label>
+            <input type="number" name="cantidad" min="1" max={producto.cantidad} value="1"
+              style="width:80px;padding:0.5rem;border:1px solid #cbd5e1;border-radius:6px;text-align:center;" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:1.25rem;">Agregar al carrito</button>
+        </form>
+      )}
+
+      {!user && !sinStock && (
+        <a href="/login" class="btn btn-primary" style="display:inline-block;margin-bottom:1rem;">
+          Iniciar sesión para comprar
+        </a>
+      )}
+
+      {farmacia && (
+        <div style="border-top:1px solid #e2e8f0;margin-top:1rem;padding-top:1rem;">
+          <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:0.25rem;">Vendido por</div>
+          <a href={`/productos/farmacia/${producto.id_farmacia}`} style="font-weight:600;color:#1d4ed8;text-decoration:none;">
+            {farmacia.nombre} {farmacia.apellido}
+          </a>
+          <div style="font-size:0.875rem;color:#64748b;">{farmacia.localidad}, {farmacia.provincia}</div>
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  @media (max-width: 640px) {
+    .card { grid-template-columns: 1fr !important; }
+  }
+</style>

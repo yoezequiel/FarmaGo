@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+const user = Astro.locals.user;
+---
+
+<Layout title="Inicio">
+  <div style="text-align:center;padding:4rem 1rem;">
+    <h1 style="font-size:2.5rem;font-weight:800;margin-bottom:1rem;color:#1d4ed8;">Bienvenido a FarmaGo</h1>
+    <p style="font-size:1.2rem;color:#64748b;margin-bottom:2rem;">Tu farmacia online de confianza. Encontrá los medicamentos que necesitás.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="/productos" class="btn btn-primary" style="font-size:1.1rem;padding:0.75rem 2rem;">Ver Productos</a>
+      <a href="/farmacias" class="btn btn-secondary" style="font-size:1.1rem;padding:0.75rem 2rem;">Ver Farmacias</a>
+      {!user && <a href="/register/cliente" class="btn btn-secondary" style="font-size:1.1rem;padding:0.75rem 2rem;">Registrarse</a>}
+    </div>
+  </div>
+</Layout>

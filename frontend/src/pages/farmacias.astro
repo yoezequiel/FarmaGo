@@ -1,0 +1,50 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+
+const url = new URL(Astro.request.url);
+const search = url.searchParams.get("q") || "";
+
+const apiUrl = search
+  ? `${API_URL}/api/farmacias?search=${encodeURIComponent(search)}`
+  : `${API_URL}/api/farmacias`;
+
+const res = await fetch(apiUrl);
+const farmacias = await res.json();
+---
+
+<Layout title="Farmacias">
+  <h1 style="font-size:1.75rem;font-weight:700;margin-bottom:1.5rem;">Farmacias</h1>
+
+  <form method="GET" style="display:flex;gap:0.5rem;margin-bottom:1.5rem;max-width:400px;">
+    <input type="text" name="q" placeholder="Buscar farmacia..." value={search}
+      style="flex:1;padding:0.5rem 0.75rem;border:1px solid #cbd5e1;border-radius:6px;" />
+    <button type="submit" class="btn btn-primary">Buscar</button>
+    {search && <a href="/farmacias" class="btn btn-secondary">✕</a>}
+  </form>
+
+  {farmacias.length === 0 ? (
+    <div class="card" style="text-align:center;color:#64748b;">No se encontraron farmacias.</div>
+  ) : (
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;">
+      {farmacias.map((f: any) => (
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;">
+            {f.logo_url
+              ? <img src={f.logo_url} alt="logo" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0;" />
+              : <div style="width:56px;height:56px;border-radius:50%;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:1.75rem;flex-shrink:0;">💊</div>
+            }
+            <div style="min-width:0;">
+              <h3 style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{f.nombre} {f.apellido}</h3>
+              <p style="font-size:0.875rem;color:#64748b;">{f.localidad}, {f.provincia}</p>
+            </div>
+          </div>
+          {f.direccion && <p style="font-size:0.875rem;color:#64748b;margin-bottom:0.5rem;">📍 {f.direccion}</p>}
+          {f.numero_telefono && <p style="font-size:0.875rem;color:#64748b;margin-bottom:0.75rem;">📞 {f.numero_telefono}</p>}
+          <a href={`/productos/farmacia/${f.id}`} class="btn btn-primary" style="width:100%;text-align:center;display:block;">Ver productos</a>
+        </div>
+      ))}
+    </div>
+  )}
+</Layout>

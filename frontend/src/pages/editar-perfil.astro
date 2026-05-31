@@ -1,0 +1,86 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const user = Astro.locals.user;
+if (!user) return Astro.redirect("/login");
+
+const API_URL = import.meta.env.PUBLIC_API_URL || "http://localhost:3001";
+const token = Astro.cookies.get("token")?.value;
+
+const res = await fetch(`${API_URL}/api/user/perfil`, {
+  headers: { Cookie: `token=${token}` },
+});
+const perfil = await res.json();
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const form = await Astro.request.formData();
+  const body = Object.fromEntries(form.entries());
+  const putRes = await fetch(`${API_URL}/api/user/perfil`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", Cookie: `token=${token}` },
+    body: JSON.stringify(body),
+  });
+  if (putRes.ok) return Astro.redirect("/perfil");
+  const data = await putRes.json();
+  error = data.error || "Error al actualizar perfil";
+}
+---
+
+<Layout title="Editar perfil">
+  <div style="max-width:500px;margin:0 auto;">
+    <a href="/perfil" style="color:#1d4ed8;font-size:0.9rem;">← Volver al perfil</a>
+    <div class="card" style="margin-top:1rem;">
+      <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:1.5rem;">Editar perfil</h2>
+      {error && <div class="alert-error">{error}</div>}
+      <form method="POST">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" name="nombre" value={perfil.nombre} required />
+          </div>
+          <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" name="apellido" value={perfil.apellido} required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" name="correo_electronico" value={perfil.correo_electronico} required />
+        </div>
+        <div class="form-group">
+          <label>Nombre de usuario</label>
+          <input type="text" name="nombre_usuario" value={perfil.nombre_usuario} required />
+        </div>
+        <div class="form-group">
+          <label>Nueva contraseña <span style="color:#94a3b8;font-weight:400;">(dejar vacío para no cambiar)</span></label>
+          <input type="password" name="contrasena" minlength="8" autocomplete="new-password" />
+        </div>
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" name="direccion" value={perfil.direccion || ""} />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-group">
+            <label>Provincia</label>
+            <input type="text" name="provincia" value={perfil.provincia || ""} />
+          </div>
+          <div class="form-group">
+            <label>Localidad</label>
+            <input type="text" name="localidad" value={perfil.localidad || ""} />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" name="numero_telefono" value={perfil.numero_telefono || ""} />
+        </div>
+        <div class="form-group">
+          <label>Logo URL <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
+          <input type="url" name="logo_url" value={perfil.logo_url || ""} placeholder="https://..." />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Guardar cambios</button>
+      </form>
+    </div>
+  </div>
+</Layout>
