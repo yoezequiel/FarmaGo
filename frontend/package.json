@@ -9,8 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/node": "^9.2.2",
-    "astro": "^5.8.1",
+    "@astrojs/node": "^10.1.2",
+    "astro": "^6.4.2",
     "jsonwebtoken": "^9.0.2"
   }
 }
